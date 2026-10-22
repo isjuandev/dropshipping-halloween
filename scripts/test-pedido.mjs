@@ -8,8 +8,10 @@ let endpointsToTry = explicitEndpoint
   ? [explicitEndpoint]
   : ['http://localhost:4321/api/pedido', 'http://localhost:4322/api/pedido'];
 
+const randomSuffix = Math.random().toString(36).substring(2, 6).toUpperCase();
+
 const payloadPrueba = {
-  pedidoId: `PED-${new Date().toISOString().slice(0, 10).replace(/-/g, '')}-7KQ4`,
+  pedidoId: `PED-${new Date().toISOString().slice(0, 10).replace(/-/g, '')}-${randomSuffix}`,
   fecha: new Date().toISOString(),
   tienda: "TerrorExpress Colombia",
   landing: {
