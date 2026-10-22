@@ -324,42 +324,41 @@ export default function OrderForm() {
         // Limpiar borrador de localStorage y guardar resumen completo para la página /gracias
         try {
           localStorage.removeItem('draft_pedido_contraentrega');
-          sessionStorage.setItem(
-            'ultimo_pedido_resumen',
-            JSON.stringify({
-              pedidoId: payload.pedidoId,
-              fecha: payload.fecha,
-              nombreCliente: payload.cliente.nombreCompleto,
-              total: payload.producto.total,
-              productoNombre: payload.producto.nombre,
-              paquete: payload.producto.paquete,
+          const resumenJson = JSON.stringify({
+            pedidoId: payload.pedidoId,
+            fecha: payload.fecha,
+            nombreCliente: payload.cliente.nombreCompleto,
+            total: payload.producto.total,
+            productoNombre: payload.producto.nombre,
+            paquete: payload.producto.paquete,
+            ciudad: payload.cliente.ciudad,
+            direccion: payload.cliente.direccion,
+            cliente: {
+              nombreCompleto: payload.cliente.nombreCompleto,
+              celular: payload.cliente.celular,
+              departamento: payload.cliente.departamento,
               ciudad: payload.cliente.ciudad,
               direccion: payload.cliente.direccion,
-              cliente: {
-                nombreCompleto: payload.cliente.nombreCompleto,
-                celular: payload.cliente.celular,
-                departamento: payload.cliente.departamento,
-                ciudad: payload.cliente.ciudad,
-                direccion: payload.cliente.direccion,
-                indicaciones: payload.cliente.indicaciones,
-              },
-              producto: {
-                nombre: payload.producto.nombre,
-                variante: payload.producto.variante,
-                paquete: payload.producto.paquete,
+              indicaciones: payload.cliente.indicaciones,
+            },
+            producto: {
+              nombre: payload.producto.nombre,
+              variante: payload.producto.variante,
+              paquete: payload.producto.paquete,
+              cantidad: payload.producto.cantidad,
+              extras: payload.producto.extras,
+              total: payload.producto.total,
+            },
+            items: [
+              {
+                nombre: `${payload.producto.nombre} - ${payload.producto.paquete}`,
                 cantidad: payload.producto.cantidad,
-                extras: payload.producto.extras,
-                total: payload.producto.total,
+                precio: payload.producto.total,
               },
-              items: [
-                {
-                  nombre: `${payload.producto.nombre} - ${payload.producto.paquete}`,
-                  cantidad: payload.producto.cantidad,
-                  precio: payload.producto.total,
-                },
-              ],
-            })
-          );
+            ],
+          });
+          sessionStorage.setItem('ultimo_pedido_resumen', resumenJson);
+          localStorage.setItem('ultimo_pedido_resumen_backup', resumenJson);
         } catch (_) {}
 
         // Redirección limpia a /gracias

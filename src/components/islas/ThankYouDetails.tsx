@@ -34,6 +34,19 @@ interface ResumenData {
   }>;
 }
 
+function formatPhone(phone?: string) {
+  if (!phone) return '';
+  const digits = phone.replace(/\D/g, '');
+  if (digits.length === 12 && digits.startsWith('57')) {
+    const nat = digits.slice(2);
+    return `+57 ${nat.slice(0, 3)} ${nat.slice(3, 6)} ${nat.slice(6)}`;
+  }
+  if (digits.length === 10) {
+    return `${digits.slice(0, 3)} ${digits.slice(3, 6)} ${digits.slice(6)}`;
+  }
+  return phone;
+}
+
 export default function ThankYouDetails() {
   const [data, setData] = useState<ResumenData | null>(null);
   const [copied, setCopied] = useState(false);
@@ -46,7 +59,10 @@ export default function ThankYouDetails() {
     setPedidoId(idFromUrl);
 
     try {
-      const stored = sessionStorage.getItem('ultimo_pedido_resumen');
+      const stored =
+        sessionStorage.getItem('ultimo_pedido_resumen') ||
+        localStorage.getItem('ultimo_pedido_resumen_backup');
+
       if (stored) {
         const parsed: ResumenData = JSON.parse(stored);
         setData(parsed);
@@ -63,7 +79,7 @@ export default function ThankYouDetails() {
         }
       }
     } catch (e) {
-      console.warn('No se pudo leer resumen de sessionStorage');
+      console.warn('No se pudo leer resumen de almacenamiento');
     }
   }, []);
 
@@ -81,6 +97,7 @@ export default function ThankYouDetails() {
   const producto = data?.producto;
   const nombreCompleto = cliente?.nombreCompleto || data?.nombreCliente || '';
   const primerNombre = nombreCompleto ? nombreCompleto.split(' ')[0] : '';
+  const cantidad = producto?.cantidad ?? 1;
 
   return (
     <div class="space-y-6">
@@ -146,14 +163,14 @@ export default function ThankYouDetails() {
               <div class="flex justify-between items-baseline gap-2">
                 <span class="text-ceniza">Producto:</span>
                 <span class="text-hueso font-medium text-right">
-                  {producto?.nombre || data.productoNombre}
+                  {producto?.nombre || data.productoNombre || 'Máscara Fantasma del Grito'}
                 </span>
               </div>
 
               <div class="flex justify-between items-baseline gap-2">
                 <span class="text-ceniza">Paquete seleccionado:</span>
                 <span class="text-calabaza font-semibold text-right">
-                  {producto?.paquete || data.paquete} ({producto?.cantidad || 1} {producto?.cantidad === 1 ? 'unidad' : 'unidades'})
+                  {producto?.paquete || data.paquete} ({cantidad} {cantidad === 1 ? 'unidad' : 'unidades'})
                 </span>
               </div>
 
@@ -191,11 +208,11 @@ export default function ThankYouDetails() {
                 </span>
               </div>
 
-              {cliente?.celular && (
+              {(cliente?.celular) && (
                 <div class="flex justify-between items-baseline gap-2">
                   <span class="text-ceniza">Celular / WhatsApp:</span>
                   <span class="text-hueso font-mono font-medium text-right">
-                    {cliente.celular}
+                    {formatPhone(cliente.celular)}
                   </span>
                 </div>
               )}
