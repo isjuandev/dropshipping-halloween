@@ -29,9 +29,9 @@ export const POST: APIRoute = async ({ request, clientAddress }) => {
 
     const payload = validation.data;
 
-    // Filtro antispam: si llenó el honeypot o tardó menos de 4s, responder 200 silencioso
-    if (payload.antispam.empresa.trim() !== '' || payload.antispam.segundos < 4) {
-      console.warn(`[AntiSpam] Pedido ${payload.pedidoId} descartado silenciosamente (empresa="${payload.antispam.empresa}", segundos=${payload.antispam.segundos})`);
+    // Filtro antispam honeypot: solo descartar silenciosamente si llenaron el campo trampa
+    if (payload.antispam.empresa.trim() !== '') {
+      console.warn(`[AntiSpam] Pedido ${payload.pedidoId} descartado (honeypot empresa="${payload.antispam.empresa}")`);
       return new Response(
         JSON.stringify({ ok: true, pedidoId: payload.pedidoId, spam: true }),
         { status: 200, headers: { 'Content-Type': 'application/json' } }
@@ -54,7 +54,9 @@ export const POST: APIRoute = async ({ request, clientAddress }) => {
       },
     };
 
-    const n8nWebhookUrl = process.env.N8N_WEBHOOK_URL;
+    const n8nWebhookUrl =
+      process.env.N8N_WEBHOOK_URL ||
+      'https://n8n.nexobite.com/webhook/pedido-contraentrega';
     const n8nWebhookSecret = process.env.N8N_WEBHOOK_SECRET;
 
     if (!n8nWebhookUrl) {

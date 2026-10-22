@@ -241,8 +241,8 @@ export default function OrderForm() {
       return;
     }
 
-    // Calcular segundos de llenado
-    const segundos = Math.max(1, Math.round((Date.now() - loadTimeRef.current) / 1000));
+    // Calcular segundos de llenado (mínimo 5 para evitar falsos positivos de spam con autofill)
+    const segundos = Math.max(5, Math.round((Date.now() - loadTimeRef.current) / 1000));
 
     // Obtener UTMs de sessionStorage si existen
     let utms: Record<string, string> = {};

@@ -90,7 +90,9 @@ export const tiendaConfig: TiendaConfig = {
   },
   pedido: {
     modo: (process.env.PUBLIC_PEDIDO_MODO as 'proxy' | 'directo') || 'proxy',
-    endpoint: process.env.PUBLIC_PEDIDO_WEBHOOK_URL || '/api/pedido',
+    endpoint:
+      process.env.PUBLIC_PEDIDO_WEBHOOK_URL ||
+      'https://n8n.nexobite.com/webhook/pedido-contraentrega',
     horarioConfirmacion: 'lunes a sábado, 8 a. m. a 6 p. m.',
     tiempoConfirmacion: 'en menos de 2 horas hábiles',
   },
