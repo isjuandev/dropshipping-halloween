@@ -10,6 +10,7 @@ interface Props {
   title?: string;
   description?: string;
   image?: string;
+  robots?: string;
   jsonLd?: Record<string, any>[];
 }
 
@@ -17,6 +18,7 @@ const {
   title = `Máscara de terror con capucha para Halloween | ${tiendaConfig.nombreTienda}`,
   description = 'Máscara Fantasma del Grito con capucha negra integrada. El disfraz más fácil y aterrador de Halloween 2026. Talla adulto y niño. Pago contra entrega en toda Colombia.',
   image = '/images/hero-grupo.jpg',
+  robots = 'index, follow',
   jsonLd = [],
 } = Astro.props;
 
@@ -31,10 +33,8 @@ const orgSchema = {
   legalName: tiendaConfig.razonSocial,
   taxID: tiendaConfig.nit,
   url: Astro.site ? Astro.site.toString() : 'https://mascaradelgrito.co',
-  telephone: `+${tiendaConfig.whatsapp}`,
   contactPoint: {
     '@type': 'ContactPoint',
-    telephone: `+${tiendaConfig.whatsapp}`,
     contactType: 'customer support',
     areaServed: 'CO',
     availableLanguage: 'Spanish',
@@ -52,7 +52,7 @@ const allSchemas = [orgSchema, ...jsonLd];
     <title>{title}</title>
     <meta name="description" content={description} />
     <link rel="canonical" href={canonicalUrl} />
-    <meta name="robots" content="index, follow" />
+    <meta name="robots" content={robots} />
     <meta name="theme-color" content="#0A0A0B" />
 
     <!-- Open Graph / Facebook -->
@@ -148,12 +148,32 @@ const allSchemas = [orgSchema, ...jsonLd];
     <!-- 16. Footer -->
     <Footer />
 
-    <!-- Barra fija inferior móvil + Botón WhatsApp desktop (Isla Preact client:idle) -->
+    <!-- Barra fija inferior móvil hacia el formulario (Isla Preact client:idle) -->
     <StickyBar client:idle />
 
-    <!-- Script de Microinteracciones: Linterna sobre el hero y susto controlado 150ms -->
+    <!-- Captura de UTMs en sessionStorage y Microinteracciones -->
     <script is:inline>
       (function() {
+        // Captura de UTMs al entrar a la landing
+        try {
+          const urlParams = new URLSearchParams(window.location.search);
+          const utmKeys = ['utm_source', 'utm_medium', 'utm_campaign', 'utm_content', 'utm_term', 'fbclid', 'gclid'];
+          const collected = {};
+          let hasUtm = false;
+
+          utmKeys.forEach(function(key) {
+            const val = urlParams.get(key);
+            if (val) {
+              collected[key] = val;
+              hasUtm = true;
+            }
+          });
+
+          if (hasUtm) {
+            sessionStorage.setItem('tienda_utm_data', JSON.stringify(collected));
+          }
+        } catch (e) {}
+
         // Respetar preferencias de reducción de movimiento
         const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
         if (prefersReducedMotion) return;

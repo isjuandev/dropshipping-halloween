@@ -5,36 +5,83 @@ declare global {
   }
 }
 
-export function trackWhatsAppClick(params: {
+/**
+ * Registra evento de inicio de checkout al enfocar por primera vez el formulario de pedido
+ */
+export function trackBeginCheckout(params: {
   pack: string;
   valor: number;
-  ciudad?: string;
-  origen: string;
 }): void {
   if (typeof window === 'undefined') return;
 
-  // Google Tag Manager dataLayer
   window.dataLayer = window.dataLayer || [];
   window.dataLayer.push({
-    event: 'whatsapp_click',
-    pack_name: params.pack,
-    value: params.valor,
-    currency: 'COP',
-    city: params.ciudad || 'no_especificada',
-    button_origin: params.origen,
+    event: 'begin_checkout',
+    ecommerce: {
+      currency: 'COP',
+      value: params.valor,
+      items: [
+        {
+          item_name: `Máscara Fantasma del Grito - Pack ${params.pack}`,
+          price: params.valor,
+          quantity: 1,
+        },
+      ],
+    },
   });
 
-  // Meta Pixel
   if (typeof window.fbq === 'function') {
-    window.fbq('track', 'Contact', {
+    window.fbq('track', 'InitiateCheckout', {
       content_name: params.pack,
       value: params.valor,
       currency: 'COP',
-      content_category: 'halloween_mask',
+      num_items: 1,
     });
   }
 }
 
+/**
+ * Registra lead/conversión en /gracias con deduplicación por pedidoId
+ */
+export function trackGenerateLead(params: {
+  pedidoId: string;
+  valor: number;
+  pack: string;
+}): void {
+  if (typeof window === 'undefined') return;
+
+  window.dataLayer = window.dataLayer || [];
+  window.dataLayer.push({
+    event: 'generate_lead',
+    pedidoId: params.pedidoId,
+    value: params.valor,
+    currency: 'COP',
+    items: [
+      {
+        item_name: `Máscara Fantasma del Grito - Pack ${params.pack}`,
+        price: params.valor,
+        quantity: 1,
+      },
+    ],
+  });
+
+  if (typeof window.fbq === 'function') {
+    window.fbq(
+      'track',
+      'Lead',
+      {
+        content_name: params.pack,
+        value: params.valor,
+        currency: 'COP',
+      },
+      { eventID: params.pedidoId }
+    );
+  }
+}
+
+/**
+ * Registra verificación de llegada por ciudad
+ */
 export function trackArrivalCheck(params: {
   ciudad: string;
   aTiempo: boolean;

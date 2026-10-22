@@ -6,7 +6,6 @@ export interface CiudadEnvio {
 
 export interface TiendaConfig {
   nombreTienda: string;
-  whatsapp: string;
   horarioAtencion: string;
   moneda: 'COP';
   fechaHalloween: string; // ISO 8601 YYYY-MM-DD
@@ -31,6 +30,13 @@ export interface TiendaConfig {
     tiktok?: string;
     facebook?: string;
   };
+  pedido: {
+    modo: 'proxy' | 'directo';
+    endpoint: string;
+    horarioConfirmacion: string;
+    tiempoConfirmacion: string;
+  };
+  turnstileSiteKey?: string;
   gtmId?: string;
   pixelId?: string;
   razonSocial: string;
@@ -39,7 +45,6 @@ export interface TiendaConfig {
 
 export const tiendaConfig: TiendaConfig = {
   nombreTienda: 'TerrorExpress Colombia',
-  whatsapp: '573001234567',
   horarioAtencion: 'Lunes a Domingo · 8:00 AM a 10:00 PM',
   moneda: 'COP',
   fechaHalloween: '2026-10-31',
@@ -77,13 +82,19 @@ export const tiendaConfig: TiendaConfig = {
   },
   metodosPago: [
     'Pago Contra Entrega en efectivo al recibir',
-    'Transferencia Bancolombia / Nequi / Daviplata',
-    'Tarjetas débito y crédito contra entrega (según ciudad)',
+    'Transferencia Bancolombia / Nequi / Daviplata al recibir',
   ],
   redes: {
     instagram: 'https://instagram.com/terrorexpress.co',
     tiktok: 'https://tiktok.com/@terrorexpress.co',
   },
+  pedido: {
+    modo: (process.env.PUBLIC_PEDIDO_MODO as 'proxy' | 'directo') || 'proxy',
+    endpoint: process.env.PUBLIC_PEDIDO_WEBHOOK_URL || '/api/pedido',
+    horarioConfirmacion: 'lunes a sábado, 8 a. m. a 6 p. m.',
+    tiempoConfirmacion: 'en menos de 2 horas hábiles',
+  },
+  turnstileSiteKey: process.env.PUBLIC_TURNSTILE_SITE_KEY || '',
   gtmId: process.env.PUBLIC_GTM_ID || '',
   pixelId: process.env.PUBLIC_PIXEL_ID || '',
   razonSocial: 'NEXOBITE E-COMMERCE S.A.S.',

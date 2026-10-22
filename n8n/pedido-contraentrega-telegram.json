@@ -1,0 +1,349 @@
+{
+  "name": "Pedido Contraentrega a Telegram para Dropi",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "pedido-contraentrega",
+        "responseMode": "responseNode",
+        "options": {
+          "allowedOrigins": "*"
+        }
+      },
+      "id": "node-webhook-pedido",
+      "name": "Webhook pedido",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        200,
+        300
+      ],
+      "webhookId": "pedido-contraentrega"
+    },
+    {
+      "parameters": {
+        "jsCode": "const item = $input.item.json.body || $input.item.json;\n\nfunction escapeHtml(str) {\n  if (!str) return '';\n  return String(str)\n    .replace(/&/g, '&amp;')\n    .replace(/</g, '&lt;')\n    .replace(/>/g, '&gt;');\n}\n\n// Validación de campos obligatorios\nconst hasPedidoId = Boolean(item.pedidoId);\nconst hasProducto = Boolean(item.producto && item.producto.nombre && typeof item.producto.total === 'number');\nconst cliente = item.cliente || {};\nconst hasCliente = Boolean(cliente.nombreCompleto && cliente.celular && cliente.departamento && cliente.ciudad && cliente.direccion);\nconst hasConsentimiento = item.consentimiento === true;\n\n// Detección de spam\nconst antispam = item.antispam || {};\nconst isSpam = Boolean(antispam.empresa && antispam.empresa.trim().length > 0) || (typeof antispam.segundos === 'number' && antispam.segundos < 4);\n\n// Separación de nombre y apellidos\nconst partesNombre = (cliente.nombreCompleto || '').trim().split(/\\s+/);\nconst primerNombre = partesNombre.length > 0 ? partesNombre[0] : '';\nconst apellidos = partesNombre.length > 1 ? partesNombre.slice(1).join(' ') : '';\n\n// Limpieza de celular a 10 dígitos (sin +57)\nconst celularLimpio = String(cliente.celular || '').replace(/\\D/g, '').slice(-10);\n\n// Formato de moneda colombiana\nconst totalNum = item.producto?.total || 0;\nconst totalFormateado = '$' + totalNum.toLocaleString('es-CO');\n\n// Formato de fecha para Colombia\nlet fechaTexto = '';\ntry {\n  const d = item.fecha ? new Date(item.fecha) : new Date();\n  fechaTexto = d.toLocaleString('es-CO', { timeZone: 'America/Bogota', dateStyle: 'short', timeStyle: 'short' });\n} catch (e) {\n  fechaTexto = new Date().toISOString();\n}\n\n// Mensaje prellenado para botón de WhatsApp\nconst msgWa = `Hola ${cliente.nombreCompleto}, confirmamos tu pedido de ${item.producto?.nombre} (${item.producto?.paquete}) por valor de ${totalFormateado} para entregar en ${cliente.direccion}, ${cliente.ciudad}. ¿Nos confirmas para proceder con el despacho?`;\nconst waUrlEncoded = encodeURIComponent(msgWa);\n\nconst isValid = hasPedidoId && hasProducto && hasCliente && hasConsentimiento;\n\nreturn {\n  pedidoId: item.pedidoId || 'SIN-ID',\n  isValid,\n  isSpam,\n  fechaTexto,\n  tienda: escapeHtml(item.tienda || 'Tienda'),\n  landing: item.landing || {},\n  producto: {\n    nombre: escapeHtml(item.producto?.nombre || ''),\n    variante: escapeHtml(item.producto?.variante || ''),\n    paquete: escapeHtml(item.producto?.paquete || ''),\n    cantidad: item.producto?.cantidad || 1,\n    extras: (item.producto?.extras || []).map(escapeHtml),\n    precioUnitario: item.producto?.precioUnitario || 0,\n    total: totalNum,\n    totalFormateado\n  },\n  cliente: {\n    nombreCompleto: escapeHtml(cliente.nombreCompleto || ''),\n    primerNombre: escapeHtml(primerNombre),\n    apellidos: escapeHtml(apellidos),\n    celular: celularLimpio,\n    departamento: escapeHtml(cliente.departamento || ''),\n    ciudad: escapeHtml(cliente.ciudad || ''),\n    codigoDane: cliente.codigoDane || '',\n    direccion: escapeHtml(cliente.direccion || ''),\n    indicaciones: escapeHtml(cliente.indicaciones || '')\n  },\n  origen: item.origen || {},\n  whatsappConfirmUrl: `https://wa.me/57${celularLimpio}?text=${waUrlEncoded}`\n};"
+      },
+      "id": "node-validar-normalizar",
+      "name": "Validar y normalizar",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        420,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const staticData = $getWorkflowStaticData('global');\nstaticData.pedidosRecientes = staticData.pedidosRecientes || [];\n\nconst pedidoId = $input.item.json.pedidoId;\nlet isDuplicate = false;\n\nif (staticData.pedidosRecientes.includes(pedidoId)) {\n  isDuplicate = true;\n} else {\n  staticData.pedidosRecientes.push(pedidoId);\n  if (staticData.pedidosRecientes.length > 500) {\n    staticData.pedidosRecientes.shift();\n  }\n}\n\nreturn {\n  ...$input.item.json,\n  isDuplicate\n};"
+      },
+      "id": "node-duplicado",
+      "name": "¿Duplicado?",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        640,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "cond-valido",
+              "leftValue": "={{ $json.isValid }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "equals"
+              }
+            },
+            {
+              "id": "cond-no-spam",
+              "leftValue": "={{ $json.isSpam }}",
+              "rightValue": false,
+              "operator": {
+                "type": "boolean",
+                "operation": "equals"
+              }
+            },
+            {
+              "id": "cond-no-duplicado",
+              "leftValue": "={{ $json.isDuplicate }}",
+              "rightValue": false,
+              "operator": {
+                "type": "boolean",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        }
+      },
+      "id": "node-es-valido",
+      "name": "¿Es válido?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        860,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $vars.TELEGRAM_CHAT_ID || '-1001234567890' }}",
+        "text": "=🛒 <b>NUEVO PEDIDO CONTRAENTREGA</b>\n<b>#{{ $json.pedidoId }}</b> · {{ $json.fechaTexto }}\n\n<b>📦 PRODUCTO</b>\n{{ $json.producto.nombre }}{{ $json.producto.variante ? ' — ' + $json.producto.variante : '' }}\nPaquete: {{ $json.producto.paquete }}\nCantidad: {{ $json.producto.cantidad }}{{ $json.producto.extras.length > 0 ? '\\nExtras: ' + $json.producto.extras.join(', ') : '' }}\n<b>Cobrar al entregar: {{ $json.producto.totalFormateado }}</b>\n\n<b>👤 CLIENTE (para Dropi)</b>\nNombre: <code>{{ $json.cliente.primerNombre }}</code>\nApellidos: <code>{{ $json.cliente.apellidos }}</code>\nCelular: <code>{{ $json.cliente.celular }}</code>\nDepartamento: <code>{{ $json.cliente.departamento }}</code>\nCiudad: <code>{{ $json.cliente.ciudad }}</code>\nDirección: <code>{{ $json.cliente.direccion }}</code>{{ $json.cliente.indicaciones ? '\\nNotas: <code>' + $json.cliente.indicaciones + '</code>' : '' }}{{ ($json.origen.utm_source || $json.origen.utm_campaign) ? '\\n\\n<b>📊 ORIGEN</b>\\n' + ($json.origen.utm_source || 'directo') + ' / ' + ($json.origen.utm_medium || 'none') + ' / ' + ($json.origen.utm_campaign || 'sin_campaña') + ' · plantilla ' + ($json.landing.plantilla || 'grito') : '' }}",
+        "additionalFields": {
+          "parse_mode": "HTML",
+          "disable_web_page_preview": true,
+          "reply_markup": {
+            "inline_keyboard": [
+              [
+                {
+                  "text": "💬 Confirmar por WhatsApp",
+                  "url": "={{ $json.whatsappConfirmUrl }}"
+                },
+                {
+                  "text": "📋 Abrir Dropi",
+                  "url": "={{ $vars.DROPI_PANEL_URL || 'https://app.dropi.co' }}"
+                }
+              ]
+            ]
+          }
+        }
+      },
+      "id": "node-enviar-telegram",
+      "name": "Enviar a Telegram",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        1100,
+        200
+      ],
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 5000,
+      "continueOnFail": true,
+      "credentials": {
+        "telegramApi": {
+          "id": "TELEGRAM_CREDENTIAL_ID",
+          "name": "Telegram Bot Dropi"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "={{ $vars.GOOGLE_SHEETS_ID || '' }}",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "Pedidos",
+          "mode": "name"
+        },
+        "options": {}
+      },
+      "id": "node-google-sheets",
+      "name": "Registrar en Google Sheets",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        1320,
+        200
+      ],
+      "disabled": true,
+      "credentials": {
+        "googleSheetsOAuth2": {
+          "id": "GOOGLE_SHEETS_CREDENTIAL_ID",
+          "name": "Google Sheets Respaldo"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ JSON.stringify({ ok: true, pedidoId: $json.pedidoId }) }}",
+        "options": {
+          "responseCode": 200
+        }
+      },
+      "id": "node-responder-ok",
+      "name": "Responder OK",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [
+        1540,
+        200
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "cond-es-spam-o-duplicado",
+              "leftValue": "={{ $json.isSpam || $json.isDuplicate }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "or"
+        }
+      },
+      "id": "node-es-spam-duplicado",
+      "name": "¿Es spam o duplicado?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        1100,
+        420
+      ]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ JSON.stringify({ ok: true, pedidoId: $json.pedidoId, spam: true }) }}",
+        "options": {
+          "responseCode": 200
+        }
+      },
+      "id": "node-responder-ok-silencioso",
+      "name": "Responder OK Silencioso",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [
+        1340,
+        380
+      ]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ JSON.stringify({ ok: false, error: 'datos_invalidos' }) }}",
+        "options": {
+          "responseCode": 400
+        }
+      },
+      "id": "node-responder-error",
+      "name": "Responder error",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [
+        1340,
+        500
+      ]
+    }
+  ],
+  "connections": {
+    "Webhook pedido": {
+      "main": [
+        [
+          {
+            "node": "Validar y normalizar",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Validar y normalizar": {
+      "main": [
+        [
+          {
+            "node": "¿Duplicado?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "¿Duplicado?": {
+      "main": [
+        [
+          {
+            "node": "¿Es válido?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "¿Es válido?": {
+      "main": [
+        [
+          {
+            "node": "Enviar a Telegram",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "¿Es spam o duplicado?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Enviar a Telegram": {
+      "main": [
+        [
+          {
+            "node": "Registrar en Google Sheets",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Registrar en Google Sheets": {
+      "main": [
+        [
+          {
+            "node": "Responder OK",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "¿Es spam o duplicado?": {
+      "main": [
+        [
+          {
+            "node": "Responder OK Silencioso",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Responder error",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  }
+}

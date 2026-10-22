@@ -1,0 +1,56 @@
+{
+  "name": "Alerta de Errores - Flujo Pedidos Contraentrega",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "node-error-trigger",
+      "name": "Error Trigger",
+      "type": "n8n-nodes-base.errorTrigger",
+      "typeVersion": 1,
+      "position": [
+        250,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $vars.TELEGRAM_CHAT_ID || '-1001234567890' }}",
+        "text": "=⚠️ <b>FALLÓ EL FLUJO DE PEDIDOS</b>\n\n<b>Flujo:</b> {{ $json.workflow.name }}\n<b>ID de ejecución:</b> <code>{{ $json.execution.id }}</code>\n<b>Error:</b> <code>{{ $json.execution.error.message || 'Error desconocido' }}</code>\n\n🔗 <a href=\"{{ $json.execution.url }}\">Abrir ejecución en n8n</a>",
+        "additionalFields": {
+          "parse_mode": "HTML",
+          "disable_web_page_preview": true
+        }
+      },
+      "id": "node-enviar-alerta-telegram",
+      "name": "Enviar alerta a Telegram",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        480,
+        300
+      ],
+      "credentials": {
+        "telegramApi": {
+          "id": "TELEGRAM_CREDENTIAL_ID",
+          "name": "Telegram Bot Dropi"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Error Trigger": {
+      "main": [
+        [
+          {
+            "node": "Enviar a Telegram",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  }
+}

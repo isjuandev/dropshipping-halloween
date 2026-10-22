@@ -1,12 +1,13 @@
 # 🎃 Landing Page CRO "Grito" — Halloween Dropshipping Colombia
+### Pedido Contraentrega + Automatización n8n + Bot de Telegram (Listo para Dropi)
 
-Landing page de producto único de alta conversión (CRO) diseñada específicamente para campañas estacionales de Halloween en Colombia con cierre de ventas directo por WhatsApp y modalidad **Pago Contra Entrega**.
+Landing page de producto único de alta conversión (CRO) diseñada para campañas de Halloween en Colombia. Todos los pedidos se gestionan a través de un **formulario directo contraentrega** integrado con un webhook de **n8n**, el cual valida el pedido, detecta spam y envía una notificación formateada a **Telegram** con campos en `<code>` listos para copiar con un toque y cargar en la plataforma de dropshipping (**Dropi**).
 
 ---
 
-## 🚀 Inicio Rápido (Desarrollo y Build con pnpm)
+## 🚀 Inicio Rápido (Desarrollo y Scripts con pnpm)
 
-El proyecto utiliza **Astro 7**, **Tailwind CSS v4**, **TypeScript estricto** e **Islas Preact**. El gestor de paquetes oficial y obligatorio es **pnpm**.
+El gestor de paquetes oficial y obligatorio es **pnpm**.
 
 ```bash
 # 1. Instalar dependencias
@@ -15,188 +16,185 @@ pnpm install
 # 2. Iniciar servidor de desarrollo en http://localhost:4321
 pnpm dev
 
-# 3. Compilar para producción (Output estático ultraliviano en /dist)
+# 3. Compilar para producción (Output estático con endpoint de pedido)
 pnpm build
 
 # 4. Previsualizar el build de producción localmente
 pnpm preview
+
+# 5. Probar envío de pedido contraentrega con payload de prueba
+pnpm test:pedido
 ```
+
+---
+
+## 🤖 Pedidos por Formulario + n8n + Telegram
+
+El flujo de conversión opera de la siguiente manera:
+1. El usuario toca cualquier CTA (`Pedir ahora — pago contraentrega`) y es desplazado suavemente a la sección `#pedido` con la variante y pack seleccionados.
+2. Llena los 6 campos del formulario contraentrega: Nombre, Celular (WhatsApp de 10 dígitos), Departamento (32 departamentos + Bogotá D.C.), Ciudad/Municipio (búsqueda con DIVIPOLA DANE), Dirección con número e Indicaciones.
+3. El pedido se envía al webhook (vía proxy `/api/pedido` o directo a n8n) y redirige a la página `/gracias?id=PED-...`.
+4. n8n procesa la solicitud, previene duplicados, valida campos y envía una tarjeta a Telegram con botones de acción rápida.
+
+### Pasos de Configuración (Guía Paso a Paso)
+
+1. **Crear el Bot de Telegram con @BotFather:**
+   - Abre Telegram y busca `@BotFather`.
+   - Envía `/newbot`, asigna un nombre (ej. `Dropi Pedidos Grito`) y un usuario (ej. `DropiGritoPedidosBot`).
+   - Copia el **HTTP API Token** generado (ej. `7123456789:AAH...`). *Nunca subas este token al frontend ni al repositorio Git.*
+
+2. **Obtener el `chat_id` de Telegram:**
+   - Para chat privado: Inicia conversación con tu bot enviándole `/start`. Luego abre en tu navegador `https://api.telegram.org/bot<TU_TOKEN>/getUpdates` y busca `"chat":{"id":123456789}`.
+   - Para grupo (equipo de trabajo): Agrega el bot al grupo, hazlo administrador si es necesario, envía un mensaje al grupo y revisa `getUpdates`. El ID empezará por `-100...`.
+
+3. **Crear Credenciales en n8n:**
+   - Ve a **Credentials → New Credential**.
+   - Busca **Telegram API** y pega el token de `@BotFather`. Llámala `Telegram Bot Dropi`.
+   - Si usas el modo proxy con cabecera secreta, crea una credencial de tipo **Header Auth** llamada `X-Webhook-Secret` con un valor secreto seguro.
+
+4. **Importar los Dos Flujos en n8n:**
+   - **Flujo Principal:** Ve a **Workflows → Import from file** y sube [`n8n/pedido-contraentrega-telegram.json`](file:///Users/isjuandev/Documents/WS%20NEXOBITE/DropShipping/Halloween/n8n/pedido-contraentrega-telegram.json).
+   - **Flujo de Alerta de Errores:** Importa [`n8n/alerta-errores.json`](file:///Users/isjuandev/Documents/WS%20NEXOBITE/DropShipping/Halloween/n8n/alerta-errores.json) para recibir alertas inmediatas si ocurre algún fallo en la automatización.
+
+5. **Configurar Variables y Credenciales en el Flujo:**
+   - En el nodo **"Enviar a Telegram"**, asigna la credencial creada en el paso 3.
+   - Configura el `chatId` con tu ID de chat o grupo obtenido en el paso 2.
+   - En la variable del flujo `$vars.DROPI_PANEL_URL`, coloca la URL de acceso a tu panel de Dropi (por defecto `https://app.dropi.co`).
+
+6. **Activar el Flujo y Copiar la URL de Producción:**
+   - Haz clic en el interruptor **Active** (arriba a la derecha).
+   - En el nodo **"Webhook pedido"**, copia la **Production URL** (ej. `https://n8n.tudominio.com/webhook/pedido-contraentrega`). *No uses la Test URL en producción.*
+
+7. **Configurar Variables de Entorno en el Hosting:**
+   - En tu proveedor (Vercel, Netlify o Cloudflare Pages), añade las siguientes variables:
+     ```env
+     PUBLIC_PEDIDO_MODO=proxy
+     N8N_WEBHOOK_URL=https://n8n.tudominio.com/webhook/pedido-contraentrega
+     N8N_WEBHOOK_SECRET=tu_secreto_seguro_aqui
+     ```
+
+8. **Probar con un Pedido de Prueba:**
+   - Ejecuta localmente `pnpm test:pedido` o realiza un pedido desde la web en tu navegador.
+   - Comprueba que llegue el mensaje a Telegram con el formato exacto:
+
+   ```html
+   🛒 NUEVO PEDIDO CONTRAENTREGA
+   #PED-20261022-7KQ4 · 22/10/2026 2:55 p. m.
+
+   📦 PRODUCTO
+   Máscara Fantasma del Grito — Clásica blanca
+   Paquete: Pareja
+   Cantidad: 2
+   Cobrar al entregar: $49.900
+
+   👤 CLIENTE (para Dropi)
+   Nombre: Ana
+   Apellidos: Restrepo
+   Celular: 3001234567
+   Departamento: Antioquia
+   Ciudad: Medellín
+   Dirección: Calle 45 #12-30, apto 302, barrio Laureles
+   Notas: Entregar después de las 2 p. m.
+
+   📊 ORIGEN
+   facebook / paid / halloween_grito · plantilla grito
+   ```
+
+   - Toca cualquier dato del cliente en Telegram para copiarlo de inmediato en Dropi.
+   - Usa los botones interactivos:
+     - **💬 Confirmar por WhatsApp:** Abre WhatsApp con el mensaje de confirmación prellenado hacia el cliente.
+     - **📋 Abrir Dropi:** Abre la plataforma de despacho en un clic.
+
+9. **Checklist de Solución de Problemas:**
+   - ¿No llega el mensaje a Telegram? Verifica que el workflow esté en modo **Active** (no inactivo).
+   - ¿El bot responde 403 Forbidden? Asegúrate de haber iniciado conversación previa con el bot (`/start`).
+   - ¿Webhook devuelve 404? Verifica que estés usando la URL de **Production** y no la de Test.
+   - ¿Reintentos de envío no generan duplicados? El nodo `¿Duplicado?` almacena en memoria los últimos 500 `pedidoId` para evitar spam o dobles cobros.
+
+---
+
+## 🔄 Modos de Webhook: 'proxy' vs 'directo'
+
+Configurable en `src/config/tienda.ts` o mediante `PUBLIC_PEDIDO_MODO`:
+
+| Característica | Modo `proxy` (Recomendado) | Modo `directo` (100% Estático) |
+| :--- | :--- | :--- |
+| **Ruta del Formulario** | `/api/pedido` (servidor Astro) | `PUBLIC_PEDIDO_WEBHOOK_URL` (n8n directo) |
+| **Seguridad de Webhook** | Secreto protegido en servidor (`N8N_WEBHOOK_SECRET`) | Sin cabecera secreta visible en cliente |
+| **Metadatos del Cliente** | Captura IP real y User Agent del navegador | IP de la petición del navegador |
+| **Protección Antispam** | Honeypot, tiempo mínimo (4s) y Zod en servidor | Honeypot, tiempo mínimo (4s) y filtro en n8n |
+| **Hosting Requerido** | Vercel, Netlify, Cloudflare o Node.js | Cualquier hosting o CDN estático (S3, GitHub Pages) |
 
 ---
 
 ## ⚙️ Configuración de la Tienda (`src/config/tienda.ts`)
 
-Todos los parámetros clave del negocio se configuran en un único archivo centralizado: [`src/config/tienda.ts`](file:///Users/isjuandev/Documents/WS%20NEXOBITE/DropShipping/Halloween/src/config/tienda.ts).
-
-### 1. Cambiar Número de WhatsApp y Nombre de Tienda
 ```typescript
 export const tiendaConfig: TiendaConfig = {
-  nombreTienda: 'Tu Nombre de Tienda',     // Aparece en títulos, header, microcopy y mensajes
-  whatsapp: '573001234567',                // Código de país 57 + número de 10 dígitos sin espacios ni signos
+  nombreTienda: 'TerrorExpress Colombia',
   horarioAtencion: 'Lunes a Domingo · 8:00 AM a 10:00 PM',
-  razonSocial: 'TU EMPRESA O NOMBRE S.A.S.',
-  nit: '901.123.456-7',
+  moneda: 'COP',
+  fechaHalloween: '2026-10-31',
+  fechaLimitePedido: '2026-10-27T23:59:59',
+  pedido: {
+    modo: 'proxy',                          // 'proxy' | 'directo'
+    endpoint: '/api/pedido',
+    horarioConfirmacion: 'lunes a sábado, 8 a. m. a 6 p. m.',
+    tiempoConfirmacion: 'en menos de 2 horas hábiles',
+  },
   // ...
 };
 ```
-
-### 2. Fechas de Temporada y Límite de Envío
-```typescript
-  moneda: 'COP',
-  fechaHalloween: '2026-10-31',            // Fecha del evento (YYYY-MM-DD)
-  fechaLimitePedido: '2026-10-27T23:59:59',// Fecha límite para garantizar entrega antes de Halloween
-```
-
-### 3. Modos de Temporada (`temporada: 'auto' | 'preventa' | 'ultimos-dias' | 'liquidacion'`)
-- `'auto'` (por defecto): La landing detecta automáticamente la fecha y hora en zona horaria **America/Bogota**:
-  - **Antes de la fecha límite:** Modo preventa regular con cuenta regresiva en calabaza y cálculo de entrega a tiempo.
-  - **Entre la fecha límite y el 31 de octubre:** Modo **últimos días** con barra de alerta roja y prioridad a consulta de envío express.
-  - **Desde el 1 de noviembre:** Modo **liquidación** automática al -60%, ocultando contadores de Halloween y adaptando el mensaje para fiestas temáticas y eventos.
-- También puedes forzar manualmente cualquier temporada configurando `temporada: 'ultimos-dias'` o `'liquidacion'`.
-
-### 4. Configurar Ciudades y Tiempos de Entrega
-```typescript
-  ciudades: [
-    { nombre: 'Bogotá D.C.', diasEnvio: 1, express: true },
-    { nombre: 'Medellín', diasEnvio: 1, express: true },
-    { nombre: 'Cali', diasEnvio: 2, express: true },
-    { nombre: 'Barranquilla', diasEnvio: 2, express: true },
-    { nombre: 'Bucaramanga', diasEnvio: 2, express: true },
-    // ...
-  ],
-  diasEnvioOtras: 4,                       // Para municipios fuera de la lista principal
-  festivos: [                              // Días festivos de Colombia que no cuentan como hábiles
-    '2026-10-12',
-    '2026-11-02',
-    '2026-11-16',
-  ],
-```
-
-### 5. Configurar Envío Express y Stock
-```typescript
-  envioExpress: {
-    activo: true,
-    recargo: 15000,                        // COP
-    dias: 1,
-  },
-  stock: {
-    activo: true,
-    unidades: 38,                          // Unidades dinámicas en la barra de stock
-    totalInicial: 250,
-  },
-```
-
----
-
-## 🎭 Packs y Variantes (`src/lib/store.ts` y `src/content/producto/grito.json`)
-
-El producto cuenta con dos modelos y dos tallas:
-- **Modelos:** `Clásica blanca` y `Con sangre`.
-- **Tallas:** `Adulto` (ajuste elástico) y `Niño` (6 a 12 años).
-
-Packs disponibles:
-1. **Individual (1 máscara):** $29.900 COP (antes $49.900).
-2. **Pareja (2 máscaras):** $49.900 COP (antes $99.800) — **MÁS VENDIDO**. Permite elegir modelo y talla independientes para cada máscara.
-3. **Grupo (4 máscaras):** $89.900 COP (antes $199.600) — **PARA LA FIESTA**. Permite elegir modelo y talla para cada una de las 4 máscaras.
-4. **Kit Disfraz Completo:** $69.900 COP (antes $119.900) — Incluye máscara con capucha + túnica negra larga + guantes negros.
-
-Los pedidos generan enlaces automáticos con mensaje prellenado en WhatsApp:
-```
-Hola [NOMBRE_TIENDA], quiero pedir: Máscara Fantasma del Grito | Pack: Pareja | 1) Clásica blanca - Adulto 2) Con sangre - Adulto | Total: $ 49.900. Pago contra entrega. Mi ciudad es: Bogotá D.C.. La necesito antes del 31 de octubre. [origen=hero_cta]
-```
-
----
-
-## 🚢 Despliegue en Producción
-
-El proyecto genera un sitio estático puro (`output: 'static'`) en la carpeta `dist/`. No requiere Node.js en el servidor de producción.
-
-### Opción 1: Despliegue en Vercel
-1. Conecta tu repositorio de GitHub / GitLab a [Vercel](https://vercel.com).
-2. Framework Preset: **Astro**.
-3. Build Command: `pnpm build`.
-4. Output Directory: `dist`.
-5. Install Command: `pnpm install`.
-6. Variables de Entorno (opcionales): `PUBLIC_GTM_ID`, `PUBLIC_PIXEL_ID`.
-
-### Opción 2: Despliegue en Netlify
-1. Conecta el repositorio en [Netlify](https://netlify.com).
-2. Build command: `pnpm build`.
-3. Publish directory: `dist`.
-4. Asegúrate de que `packageManager: "pnpm@12.11.2"` en `package.json` sea detectado por el build container.
-
-### Opción 3: Despliegue en Cloudflare Pages
-1. Crea un nuevo proyecto en **Cloudflare Pages** conectado a tu Git.
-2. Framework preset: **Astro**.
-3. Build command: `pnpm build`.
-4. Build output directory: `dist`.
 
 ---
 
 ## 🏛️ Estructura del Código
 
 ```
+├── n8n/
+│   ├── pedido-contraentrega-telegram.json  # Flujo principal de recepción, validación y Telegram
+│   └── alerta-errores.json                 # Flujo de captura de errores para soporte
 ├── public/
-│   ├── fonts/              # Bebas Neue y Creepster WOFF2 preloaded
-│   ├── images/             # Imágenes optimizadas de producto, UGC y disfraces
-│   ├── videos/             # Video preview vertical
+│   ├── fonts/                              # Bebas Neue y Creepster WOFF2
+│   ├── images/                             # Fotografías y UGC optimizadas
 │   └── robots.txt
+├── scripts/
+│   └── test-pedido.mjs                     # Script de prueba pnpm test:pedido
 ├── src/
 │   ├── components/
-│   │   ├── islas/          # Preact Islands con @preact/signals (solo 5)
-│   │   │   ├── HalloweenCountdown.tsx
-│   │   │   ├── ArrivalChecker.tsx
-│   │   │   ├── VariantSelector.tsx
-│   │   │   ├── PackSelector.tsx
-│   │   │   └── StickyBar.tsx
-│   │   ├── secciones/      # Secciones estáticas en orden CRO (.astro)
-│   │   │   ├── Hero.astro
-│   │   │   ├── TrustBar.astro
-│   │   │   ├── WhyThisMask.astro
-│   │   │   ├── Details.astro
-│   │   │   ├── UgcGallery.astro
-│   │   │   ├── PacksSection.astro
-│   │   │   ├── CostumeIdeas.astro
-│   │   │   ├── Testimonials.astro
-│   │   │   ├── SafetyAndKids.astro
-│   │   │   ├── HowToOrder.astro
-│   │   │   ├── FaqSection.astro
-│   │   │   └── FinalCta.astro
-│   │   └── ui/             # Header mínimo y Footer legal
-│   │       ├── Header.astro
-│   │       └── Footer.astro
+│   │   ├── islas/                          # Preact Islands con @preact/signals
+│   │   │   ├── OrderForm.tsx               # Formulario contraentrega (#pedido)
+│   │   │   ├── ThankYouDetails.tsx         # Resumen y tracking en /gracias
+│   │   │   ├── HalloweenCountdown.tsx      # Contador regresivo de urgencia
+│   │   │   ├── ArrivalChecker.tsx          # Verificador de entrega por ciudad
+│   │   │   ├── VariantSelector.tsx         # Selector de modelo y talla en Hero
+│   │   │   ├── PackSelector.tsx            # Selector de paquetes de ahorro
+│   │   │   └── StickyBar.tsx               # Barra fija inferior hacia el formulario
+│   │   ├── secciones/                      # Secciones de la landing
+│   │   └── ui/                             # Header y Footer legal
 │   ├── config/
-│   │   └── tienda.ts       # Configuración global y cálculo de temporada
-│   ├── content/            # Colecciones de contenido tipadas con Zod
-│   │   ├── producto/
-│   │   ├── testimonios/
-│   │   ├── faqs/
-│   │   └── ideasDisfraz/
-│   ├── layouts/
-│   │   └── Base.astro      # Layout base, SEO, JSON-LD, linterna y microinteracciones
+│   │   └── tienda.ts                       # Configuración general y de pedido
+│   ├── data/
+│   │   └── colombia.json                   # 32 departamentos + Bogotá D.C. con DIVIPOLA DANE
 │   ├── lib/
-│   │   ├── fechas.ts       # Días hábiles y zona horaria America/Bogota
-│   │   ├── store.ts        # Estado compartido reactivo de Preact Signals
-│   │   ├── tracking.ts     # DataLayer GTM y Meta Pixel
-│   │   └── whatsapp.ts     # Generador de URLs y mensajes codificados
-│   └── styles/
-│       └── global.css      # Tailwind v4 @theme, tokens, niebla y grano
-└── astro.config.mjs
+│   │   ├── pedido-schema.ts                # Esquemas Zod compartidos y formateadores
+│   │   ├── store.ts                        # Señales compartidas de pedido y variantes
+│   │   ├── tracking.ts                     # Eventos DataLayer y Meta Pixel (Lead, InitiateCheckout)
+│   │   └── fechas.ts                       # Días hábiles y festivos en Colombia
+│   └── pages/
+│       ├── api/pedido.ts                   # Endpoint proxy para n8n con prerender = false
+│       ├── index.astro                     # Landing completa con sección #pedido
+│       ├── gracias.astro                   # Página de confirmación post-pedido
+│       ├── envios.astro                    # Políticas de despacho
+│       ├── devoluciones.astro              # Garantías y Ley 1480 de 2011
+│       ├── terminos.astro                  # Términos del servicio contraentrega
+│       └── privacidad.astro                # Ley 1581 de 2012 (Habeas Data)
+└── .env.example                            # Plantilla de variables de entorno
 ```
 
 ---
 
-## ⚖️ Páginas Legales Incluidas
-
-Cumplimiento estricto de la legislación de comercio electrónico y protección al consumidor en Colombia:
-- [`/envios`](file:///Users/isjuandev/Documents/WS%20NEXOBITE/DropShipping/Halloween/src/pages/envios.astro): Políticas de despacho, transportadoras aliadas y tiempos por ciudad.
-- [`/devoluciones`](file:///Users/isjuandev/Documents/WS%20NEXOBITE/DropShipping/Halloween/src/pages/devoluciones.astro): Derecho de retracto de 5 días hábiles conforme a la **Ley 1480 de 2011** (Estatuto del Consumidor) y garantía inmediata por daño de transporte.
-- [`/terminos`](file:///Users/isjuandev/Documents/WS%20NEXOBITE/DropShipping/Halloween/src/pages/terminos.astro): Términos y condiciones del servicio, modelo sin pasarela bancaria y compra por WhatsApp.
-- [`/privacidad`](file:///Users/isjuandev/Documents/WS%20NEXOBITE/DropShipping/Halloween/src/pages/privacidad.astro): Protección de datos personales conforme a la **Ley 1581 de 2012** (Habeas Data).
-
----
-
-## 🛡️ Reglas de Marca y Cumplimiento
-- **Sin marcas registradas:** No se utilizan nombres de películas, sagas cinematográficas o marcas protegidas. El producto se comercializa estrictamente como *"Máscara Fantasma del Grito"* o *"Máscara de terror"*.
-- **Precios e impuestos:** Moneda COP con formateador nativo `Intl.NumberFormat('es-CO')`.
-- **Rendimiento:** Cero dependencias pesadas en cliente. Tamaño total JS gzipped menor a 25 KB.
+## ⚖️ Cumplimiento Legal en Colombia
+- **Ley 1480 de 2011 (Estatuto del Consumidor):** Garantía legal de cambio por daño de transporte y derecho de retracto de 5 días hábiles.
+- **Ley 1581 de 2012 (Habeas Data):** Casilla obligatoria de autorización de tratamiento de datos personales para gestión de despacho contraentrega.
+- **Sin marcas registradas:** Denominación genérica "Máscara Fantasma del Grito" sin uso de marcas protegidas.

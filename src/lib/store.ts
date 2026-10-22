@@ -1,6 +1,9 @@
 import { signal, computed } from '@preact/signals';
-import { buildWhatsAppUrl, type UnidadItem } from './whatsapp';
-import { tiendaConfig } from '../config/tienda';
+
+export interface UnidadItem {
+  modelo: string; // 'Clásica blanca' | 'Con sangre'
+  talla: string;  // 'Adulto' | 'Niño'
+}
 
 export interface PackItemDef {
   id: string;
@@ -111,16 +114,29 @@ export function updateUnitVariant(index: number, modelo: string, talla: string) 
   }
 }
 
-// Generar URL de WhatsApp reactiva
-export function getActiveWhatsAppUrl(origen = 'landing'): string {
-  const pack = currentPack.value;
-  return buildWhatsAppUrl({
-    producto: 'Máscara Fantasma del Grito',
-    packNombre: pack.nombre,
-    precioTotal: pack.precio,
-    unidades: unitVariants.value,
-    ciudad: selectedCity.value,
-    tipo: 'pedido',
-    origen,
-  });
+/**
+ * Desplaza suavemente hacia la sección de pedido y enfoca el primer campo vacío
+ */
+export function scrollToOrderForm(packId?: string) {
+  if (packId) {
+    selectPack(packId);
+  }
+
+  const section = document.getElementById('pedido');
+  if (section) {
+    section.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+    // Foco en el primer campo vacío después del scroll suave
+    setTimeout(() => {
+      const inputs = section.querySelectorAll<HTMLInputElement | HTMLSelectElement>(
+        'input:not([type="hidden"]):not([tabindex="-1"]), select, textarea'
+      );
+      for (const input of Array.from(inputs)) {
+        if (!input.value.trim() && !input.disabled) {
+          input.focus();
+          break;
+        }
+      }
+    }, 450);
+  }
 }

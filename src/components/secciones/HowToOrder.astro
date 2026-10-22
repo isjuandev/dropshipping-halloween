@@ -2,21 +2,21 @@
 const steps = [
   {
     step: '01',
-    icon: '👆',
-    title: 'Toca el Botón de WhatsApp',
-    desc: 'Elige tu pack preferido y toca el botón. Se abrirá tu WhatsApp con el mensaje prellenado con tu selección.',
+    icon: '📝',
+    title: 'Llena tus Datos',
+    desc: 'Elige tu pack y completa el formulario con tu ciudad y dirección de entrega en menos de 1 minuto.',
   },
   {
     step: '02',
     icon: '💬',
-    title: 'Confirma tu Dirección',
-    desc: 'Uno de nuestros asesores te responderá en menos de 3 minutos para tomar tus datos de despacho y ciudad.',
+    title: 'Te Confirmamos el Pedido',
+    desc: 'Validamos contigo los detalles y despachamos de inmediato con transportadoras certificadas en Colombia.',
   },
   {
     step: '03',
     icon: '📦',
-    title: 'Paga Cuando te Llegue',
-    desc: 'El repartidor entrega el paquete sellado en la puerta de tu casa u oficina y pagas en efectivo o transferencia.',
+    title: 'Pagas Cuando te Llegue',
+    desc: 'El mensajero entrega el paquete sellado en la puerta de tu casa u oficina y pagas en efectivo o transferencia.',
   },
 ];
 ---
@@ -32,7 +32,7 @@ const steps = [
         ¿CÓMO PEDIR EN 3 PASOS?
       </h2>
       <p class="text-ceniza text-sm sm:text-base mt-3 m-0">
-        Sin tarjetas de crédito previas, sin formularios extensos. Fácil, rápido y 100% seguro.
+        Sin tarjetas de crédito previas, sin trámites bancarios. Fácil, rápido y 100% seguro.
       </p>
     </div>
 
@@ -59,9 +59,9 @@ const steps = [
           </div>
 
           <div class="mt-6 pt-3 border-t border-white/5 text-[11px] font-semibold text-emerald-400">
-            {idx === 0 && '⚡ Sin registros previos'}
-            {idx === 1 && '🤝 Asesoría personalizada'}
-            {idx === 2 && '🔒 Pago 100% contra entrega'}
+            {idx === 0 && '⚡ Sin registros ni tarjetas'}
+            {idx === 1 && '🤝 Confirmación ágil de despacho'}
+            {idx === 2 && '🔒 Pago 100% contraentrega'}
           </div>
         </div>
       ))}

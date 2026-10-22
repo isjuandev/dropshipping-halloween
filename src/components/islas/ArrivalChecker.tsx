@@ -1,9 +1,8 @@
 import { useState, useEffect } from 'preact/hooks';
 import { tiendaConfig, getTemporadaActiva } from '../../config/tienda';
 import { calcularFechaEntrega, formatFechaEntrega } from '../../lib/fechas';
-import { selectedCity } from '../../lib/store';
+import { selectedCity, scrollToOrderForm } from '../../lib/store';
 import { trackArrivalCheck } from '../../lib/tracking';
-import { buildWhatsAppUrl } from '../../lib/whatsapp';
 
 export default function ArrivalChecker() {
   const [ciudad, setCiudad] = useState(selectedCity.value || 'Bogotá D.C.');
@@ -31,14 +30,12 @@ export default function ArrivalChecker() {
   };
 
   if (temporada === 'liquidacion') {
-    return null; // Oculto en liquidación según requerimiento 6
+    return null; // Oculto en liquidación
   }
 
-  const expressWhatsAppUrl = buildWhatsAppUrl({
-    ciudad,
-    tipo: 'express',
-    origen: 'arrival_checker',
-  });
+  const handlePedirExpress = () => {
+    scrollToOrderForm();
+  };
 
   return (
     <div class="w-full bg-sombra border border-white/10 rounded-[14px] p-5 sm:p-7 my-6 shadow-xl relative overflow-hidden">
@@ -120,17 +117,16 @@ export default function ArrivalChecker() {
                 <span>⚠️</span>
                 <span>Puede no llegar antes del 31</span>
               </div>
-              <a
-                href={expressWhatsAppUrl}
-                target="_blank"
-                rel="noopener"
-                class="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-calabaza text-noche font-bold text-xs uppercase tracking-wide hover:bg-calabaza-hover transition-colors"
+              <button
+                type="button"
+                onClick={handlePedirExpress}
+                class="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-calabaza text-noche font-bold text-xs uppercase tracking-wide hover:bg-calabaza-hover transition-colors cursor-pointer"
               >
-                <span>Preguntar envío express</span>
+                <span>Pedir con envío express</span>
                 <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-                  <path d="M5 12h14M12 5l7 7-7 7"/>
+                  <path d="M12 5v14M19 12l-7 7-7-7"/>
                 </svg>
-              </a>
+              </button>
             </div>
           )}
         </div>

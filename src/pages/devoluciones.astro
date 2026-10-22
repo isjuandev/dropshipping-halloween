@@ -1,9 +1,6 @@
 ---
 import Base from '../layouts/Base.astro';
 import { tiendaConfig } from '../config/tienda';
-import { buildWhatsAppUrl } from '../lib/whatsapp';
-
-const whatsappUrl = buildWhatsAppUrl({ origen: 'politica_devoluciones' });
 ---
 
 <Base
@@ -32,7 +29,7 @@ const whatsappUrl = buildWhatsAppUrl({ origen: 'politica_devoluciones' });
           En <strong>{tiendaConfig.nombreTienda}</strong> garantizamos que tu máscara llegará en óptimas condiciones. Si al abrir el paquete el producto presenta alguna fisura plástica, desprendimiento de costura en la capucha o daño evidente ocasionado por la transportadora:
         </p>
         <ul class="list-disc pl-5 space-y-1 text-ceniza">
-          <li>Notifícanos dentro de las primeras 24 horas tras la entrega a través de nuestra línea de WhatsApp.</li>
+          <li>Notifícanos dentro de las primeras 24 horas tras la entrega a través de nuestros canales de atención al cliente.</li>
           <li>Adjunta una foto o video corto que demuestre el estado del empaque y del producto.</li>
           <li>Despachamos inmediatamente un reemplazo nuevo sin costo de flete alguno para ti.</li>
         </ul>
@@ -62,19 +59,8 @@ const whatsappUrl = buildWhatsAppUrl({ origen: 'politica_devoluciones' });
           3. Canales de Atención para Solicitudes
         </h2>
         <p>
-          Cualquier reclamación, solicitud de garantía o trámite se gestiona de forma rápida a través de nuestro canal centralizado de WhatsApp al número <strong>+{tiendaConfig.whatsapp}</strong> o al correo legal de {tiendaConfig.razonSocial}.
+          Cualquier reclamación, solicitud de garantía o trámite se gestiona de forma rápida a través de nuestro correo legal corporativo de <strong>{tiendaConfig.razonSocial}</strong> o a través del canal de contacto directo que te asistió durante la confirmación de tu pedido.
         </p>
-        <div class="pt-2">
-          <a
-            href={whatsappUrl}
-            target="_blank"
-            rel="noopener"
-            class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-whatsapp text-white font-bold text-sm hover:bg-[#20ba59] transition-colors"
-          >
-            <span>Iniciar solicitud por WhatsApp</span>
-            <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d="M12.04 2c-5.46 0-9.91 4.45-9.91 9.91 0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38c1.45.79 3.08 1.21 4.74 1.21 5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.816 9.816 0 0012.04 2zm0 18.06c-1.48 0-2.93-.4-4.2-1.15l-.3-.18-3.12.82.83-3.04-.2-.31a8.03 8.03 0 01-1.23-4.29c0-4.47 3.64-8.11 8.12-8.11 2.17 0 4.21.85 5.74 2.38a8.07 8.07 0 012.38 5.73c-.01 4.47-3.65 8.11-8.12 8.11z"/></svg>
-          </a>
-        </div>
       </section>
     </div>
   </div>

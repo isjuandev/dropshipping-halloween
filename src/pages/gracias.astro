@@ -1,0 +1,87 @@
+---
+import Base from '../layouts/Base.astro';
+import ThankYouDetails from '../components/islas/ThankYouDetails';
+import { tiendaConfig } from '../config/tienda';
+---
+
+<Base
+  title={`¡Pedido Recibido! | ${tiendaConfig.nombreTienda}`}
+  description="Confirmación de pedido contraentrega para tu Máscara Fantasma del Grito."
+  robots="noindex, nofollow"
+>
+  <div class="py-12 md:py-20 max-w-2xl mx-auto px-4">
+    
+    {/* Componente reactivo con resumen y tracking */}
+    <ThankYouDetails client:load />
+
+    {/* Qué sigue en 3 pasos */}
+    <div class="mt-8 bg-sombra border border-white/10 rounded-2xl p-6 sm:p-8 space-y-6">
+      <h3 class="font-heading text-2xl text-hueso tracking-wide m-0 text-center">
+        ¿QUÉ SIGUE AHORA?
+      </h3>
+
+      <div class="space-y-4 text-sm sm:text-base">
+        <div class="flex items-start gap-4">
+          <span class="w-8 h-8 rounded-full bg-calabaza text-noche font-bold font-heading text-lg flex items-center justify-center flex-shrink-0 mt-0.5">
+            1
+          </span>
+          <div>
+            <strong class="text-hueso block font-semibold mb-0.5">
+              Te contactamos para confirmar
+            </strong>
+            <p class="text-ceniza text-sm m-0 leading-relaxed">
+              Nuestro equipo revisará tu dirección y te escribirá o llamará ({tiendaConfig.pedido.horarioConfirmacion}) en {tiendaConfig.pedido.tiempoConfirmacion} para validar los datos antes de embalar.
+            </p>
+          </div>
+        </div>
+
+        <div class="flex items-start gap-4">
+          <span class="w-8 h-8 rounded-full bg-calabaza text-noche font-bold font-heading text-lg flex items-center justify-center flex-shrink-0 mt-0.5">
+            2
+          </span>
+          <div>
+            <strong class="text-hueso block font-semibold mb-0.5">
+              Despachamos tu pedido
+            </strong>
+            <p class="text-ceniza text-sm m-0 leading-relaxed">
+              Entregamos el paquete sellado a la transportadora (Interrapidísimo, Envía o Coordinadora) y te compartimos el número de guía para rastrearlo en tiempo real.
+            </p>
+          </div>
+        </div>
+
+        <div class="flex items-start gap-4">
+          <span class="w-8 h-8 rounded-full bg-calabaza text-noche font-bold font-heading text-lg flex items-center justify-center flex-shrink-0 mt-0.5">
+            3
+          </span>
+          <div>
+            <strong class="text-hueso block font-semibold mb-0.5">
+              Pagas cuando te llegue
+            </strong>
+            <p class="text-ceniza text-sm m-0 leading-relaxed">
+              El mensajero te entregará el paquete sellado en la puerta de tu casa u oficina y le pagas el valor exacto en efectivo o transferencia.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      {/* Nota de advertencia */}
+      <div class="p-4 rounded-xl bg-calabaza/10 border border-calabaza/30 text-xs sm:text-sm text-calabaza flex items-center gap-3">
+        <span class="text-xl">⚠️</span>
+        <span class="font-medium leading-relaxed">
+          <strong>Importante:</strong> Ten a mano tu celular. Si no logramos confirmar tu pedido por llamada o mensaje, no podremos realizar el despacho.
+        </span>
+      </div>
+    </div>
+
+    {/* Botón Volver a la Tienda */}
+    <div class="mt-8 text-center">
+      <a
+        href="/"
+        class="inline-flex items-center justify-center px-8 py-3.5 rounded-xl bg-white/10 hover:bg-white/20 text-hueso font-bold text-sm tracking-wide transition-all"
+      >
+        ← Volver a la página principal
+      </a>
+    </div>
+
+  </div>
+</Base>

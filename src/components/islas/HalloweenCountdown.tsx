@@ -73,7 +73,7 @@ export default function HalloweenCountdown() {
       <aside aria-label="Aviso de urgencia" class="w-full bg-sangre text-hueso py-2.5 px-4 text-center text-sm md:text-base font-semibold shadow-md">
         <div class="max-w-6xl mx-auto flex flex-wrap items-center justify-center gap-x-3 gap-y-1">
           <span class="inline-block">⚡</span>
-          <span><strong>Últimos días:</strong> Despacho express garantizado por WhatsApp para recibir antes del 31</span>
+          <span><strong>Últimos días:</strong> Despacho express garantizado contraentrega para recibir antes del 31</span>
         </div>
       </aside>
     );

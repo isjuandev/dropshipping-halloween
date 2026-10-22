@@ -11,6 +11,7 @@ import WhyThisMask from '../components/secciones/WhyThisMask.astro';
 import Details from '../components/secciones/Details.astro';
 import UgcGallery from '../components/secciones/UgcGallery.astro';
 import PacksSection from '../components/secciones/PacksSection.astro';
+import OrderForm from '../components/islas/OrderForm';
 import CostumeIdeas from '../components/secciones/CostumeIdeas.astro';
 import Testimonials from '../components/secciones/Testimonials.astro';
 import SafetyAndKids from '../components/secciones/SafetyAndKids.astro';
@@ -106,6 +107,9 @@ const faqSchema = {
 
   {/* 9. Packs: isla PackSelector sobre fondo bruma */}
   <PacksSection />
+
+  {/* SECCIÓN #pedido: Formulario de pedido contraentrega (inmediatamente después de paquetes) */}
+  <OrderForm client:visible />
 
   {/* 10. Ideas de disfraz: 3 tarjetas que enlazan a los packs */}
   <CostumeIdeas ideas={ideas} />
