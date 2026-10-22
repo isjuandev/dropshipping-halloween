@@ -97,7 +97,7 @@
     },
     {
       "parameters": {
-        "chatId": "={{ $vars.TELEGRAM_CHAT_ID || '-1001234567890' }}",
+        "chatId": "-1003981686470",
         "text": "=\ud83d\uded2 <b>NUEVO PEDIDO CONTRAENTREGA</b>\n<b>#{{ $json.pedidoId }}</b> \u00b7 {{ $json.fechaTexto }}\n\n<b>\ud83d\udce6 PRODUCTO</b>\n{{ $json.producto.nombre }}{{ $json.producto.variante ? ' \u2014 ' + $json.producto.variante : '' }}\nPaquete: {{ $json.producto.paquete }}\nCantidad: {{ $json.producto.cantidad }}{{ $json.producto.extras.length > 0 ? '\\nExtras: ' + $json.producto.extras.join(', ') : '' }}\n<b>Cobrar al entregar: {{ $json.producto.totalFormateado }}</b>\n\n<b>\ud83d\udc64 CLIENTE (para Dropi)</b>\nNombre: <code>{{ $json.cliente.primerNombre }}</code>\nApellidos: <code>{{ $json.cliente.apellidos }}</code>\nCelular: <code>{{ $json.cliente.celular }}</code>\nDepartamento: <code>{{ $json.cliente.departamento }}</code>\nCiudad: <code>{{ $json.cliente.ciudad }}</code>\nDirecci\u00f3n: <code>{{ $json.cliente.direccion }}</code>{{ $json.cliente.indicaciones ? '\\nNotas: <code>' + $json.cliente.indicaciones + '</code>' : '' }}{{ ($json.origen.utm_source || $json.origen.utm_campaign) ? '\\n\\n<b>\ud83d\udcca ORIGEN</b>\\n' + ($json.origen.utm_source || 'directo') + ' / ' + ($json.origen.utm_medium || 'none') + ' / ' + ($json.origen.utm_campaign || 'sin_campa\u00f1a') + ' \u00b7 plantilla ' + ($json.landing.plantilla || 'grito') : '' }}",
         "additionalFields": {
           "parse_mode": "HTML",
@@ -115,7 +115,9 @@
                 }
               ]
             ]
-          }
+          },
+          "message_thread_id": 46,
+          "messageThreadId": 46
         }
       },
       "id": "node-enviar-telegram",

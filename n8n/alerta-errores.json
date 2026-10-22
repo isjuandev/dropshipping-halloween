@@ -14,11 +14,13 @@
     },
     {
       "parameters": {
-        "chatId": "={{ $vars.TELEGRAM_CHAT_ID || '-1001234567890' }}",
+        "chatId": "-1003981686470",
         "text": "=\u26a0\ufe0f <b>FALL\u00d3 EL FLUJO DE PEDIDOS</b>\n\n<b>Flujo:</b> {{ $json.workflow.name }}\n<b>ID de ejecuci\u00f3n:</b> <code>{{ $json.execution.id }}</code>\n<b>Error:</b> <code>{{ $json.execution.error.message || 'Error desconocido' }}</code>\n\n\ud83d\udd17 <a href=\"{{ $json.execution.url }}\">Abrir ejecuci\u00f3n en n8n</a>",
         "additionalFields": {
           "parse_mode": "HTML",
-          "disable_web_page_preview": true
+          "disable_web_page_preview": true,
+          "message_thread_id": 46,
+          "messageThreadId": 46
         }
       },
       "id": "node-enviar-alerta-telegram",
