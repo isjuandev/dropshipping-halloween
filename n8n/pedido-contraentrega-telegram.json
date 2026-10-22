@@ -22,7 +22,7 @@
     },
     {
       "parameters": {
-        "jsCode": "const item = $input.item.json.body || $input.item.json;\n\nfunction escapeHtml(str) {\n  if (!str) return '';\n  return String(str)\n    .replace(/&/g, '&amp;')\n    .replace(/</g, '&lt;')\n    .replace(/>/g, '&gt;');\n}\n\n// Validaci\u00f3n de campos obligatorios\nconst hasPedidoId = Boolean(item.pedidoId);\nconst hasProducto = Boolean(item.producto && item.producto.nombre && typeof item.producto.total === 'number');\nconst cliente = item.cliente || {};\nconst hasCliente = Boolean(cliente.nombreCompleto && cliente.celular && cliente.departamento && cliente.ciudad && cliente.direccion);\nconst hasConsentimiento = item.consentimiento === true;\n\n// Detecci\u00f3n de spam\nconst antispam = item.antispam || {};\nconst isSpam = Boolean(antispam.empresa && antispam.empresa.trim().length > 0) || (typeof antispam.segundos === 'number' && antispam.segundos < 4);\n\n// Separaci\u00f3n de nombre y apellidos\nconst partesNombre = (cliente.nombreCompleto || '').trim().split(/\\s+/);\nconst primerNombre = partesNombre.length > 0 ? partesNombre[0] : '';\nconst apellidos = partesNombre.length > 1 ? partesNombre.slice(1).join(' ') : '';\n\n// Limpieza de celular a 10 d\u00edgitos (sin +57)\nconst celularLimpio = String(cliente.celular || '').replace(/\\D/g, '').slice(-10);\n\n// Formato de moneda colombiana\nconst totalNum = item.producto?.total || 0;\nconst totalFormateado = '$' + totalNum.toLocaleString('es-CO');\n\n// Formato de fecha para Colombia\nlet fechaTexto = '';\ntry {\n  const d = item.fecha ? new Date(item.fecha) : new Date();\n  fechaTexto = d.toLocaleString('es-CO', { timeZone: 'America/Bogota', dateStyle: 'short', timeStyle: 'short' });\n} catch (e) {\n  fechaTexto = new Date().toISOString();\n}\n\n// Mensaje prellenado para bot\u00f3n de WhatsApp\nconst msgWa = `Hola ${cliente.nombreCompleto}, confirmamos tu pedido de ${item.producto?.nombre} (${item.producto?.paquete}) por valor de ${totalFormateado} para entregar en ${cliente.direccion}, ${cliente.ciudad}. \u00bfNos confirmas para proceder con el despacho?`;\nconst waUrlEncoded = encodeURIComponent(msgWa);\n\nconst isValid = hasPedidoId && hasProducto && hasCliente && hasConsentimiento;\n\nreturn {\n  pedidoId: item.pedidoId || 'SIN-ID',\n  isValid,\n  isSpam,\n  fechaTexto,\n  tienda: escapeHtml(item.tienda || 'Tienda'),\n  landing: item.landing || {},\n  producto: {\n    nombre: escapeHtml(item.producto?.nombre || ''),\n    variante: escapeHtml(item.producto?.variante || ''),\n    paquete: escapeHtml(item.producto?.paquete || ''),\n    cantidad: item.producto?.cantidad || 1,\n    extras: (item.producto?.extras || []).map(escapeHtml),\n    precioUnitario: item.producto?.precioUnitario || 0,\n    total: totalNum,\n    totalFormateado\n  },\n  cliente: {\n    nombreCompleto: escapeHtml(cliente.nombreCompleto || ''),\n    primerNombre: escapeHtml(primerNombre),\n    apellidos: escapeHtml(apellidos),\n    celular: celularLimpio,\n    departamento: escapeHtml(cliente.departamento || ''),\n    ciudad: escapeHtml(cliente.ciudad || ''),\n    codigoDane: cliente.codigoDane || '',\n    direccion: escapeHtml(cliente.direccion || ''),\n    indicaciones: escapeHtml(cliente.indicaciones || '')\n  },\n  origen: item.origen || {},\n  whatsappConfirmUrl: `https://wa.me/57${celularLimpio}?text=${waUrlEncoded}`\n};"
+        "jsCode": "const item = $input.item.json.body || $input.item.json;\n\nfunction escapeHtml(str) {\n  if (!str) return '';\n  return String(str)\n    .replace(/&/g, '&amp;')\n    .replace(/</g, '&lt;')\n    .replace(/>/g, '&gt;');\n}\n\n// Validación de campos obligatorios\nconst hasPedidoId = Boolean(item.pedidoId);\nconst hasProducto = Boolean(item.producto && item.producto.nombre && typeof item.producto.total === 'number');\nconst cliente = item.cliente || {};\nconst hasCliente = Boolean(cliente.nombreCompleto && cliente.celular && cliente.departamento && cliente.ciudad && cliente.direccion);\nconst hasConsentimiento = item.consentimiento === true;\n\n// Detección de spam\nconst antispam = item.antispam || {};\nconst isSpam = Boolean(antispam.empresa && antispam.empresa.trim().length > 0) || (typeof antispam.segundos === 'number' && antispam.segundos < 4);\n\n// Separación de nombre y apellidos\nconst partesNombre = (cliente.nombreCompleto || '').trim().split(/\\s+/);\nconst primerNombre = partesNombre.length > 0 ? partesNombre[0] : '';\nconst apellidos = partesNombre.length > 1 ? partesNombre.slice(1).join(' ') : '';\n\n// Limpieza de celular a 10 dígitos (sin +57)\nconst celularLimpio = String(cliente.celular || '').replace(/\\D/g, '').slice(-10);\n\n// Formato de moneda colombiana\nconst totalNum = item.producto?.total || 0;\nconst totalFormateado = '$' + totalNum.toLocaleString('es-CO');\n\n// Formato de fecha para Colombia\nlet fechaTexto = '';\ntry {\n  const d = item.fecha ? new Date(item.fecha) : new Date();\n  fechaTexto = d.toLocaleString('es-CO', { timeZone: 'America/Bogota', dateStyle: 'short', timeStyle: 'short' });\n} catch (e) {\n  fechaTexto = new Date().toISOString();\n}\n\n// Mensaje prellenado para botón de WhatsApp\nconst msgWa = `Hola ${cliente.nombreCompleto}, confirmamos tu pedido de ${item.producto?.nombre} (${item.producto?.paquete}) por valor de ${totalFormateado} para entregar en ${cliente.direccion}, ${cliente.ciudad}. ¿Nos confirmas para proceder con el despacho?`;\nconst waUrlEncoded = encodeURIComponent(msgWa);\n\nconst isValid = hasPedidoId && hasProducto && hasCliente && hasConsentimiento;\n\nreturn {\n  pedidoId: item.pedidoId || 'SIN-ID',\n  isValid,\n  isSpam,\n  fechaTexto,\n  tienda: escapeHtml(item.tienda || 'Tienda'),\n  landing: item.landing || {},\n  producto: {\n    nombre: escapeHtml(item.producto?.nombre || ''),\n    variante: escapeHtml(item.producto?.variante || ''),\n    paquete: escapeHtml(item.producto?.paquete || ''),\n    cantidad: item.producto?.cantidad || 1,\n    extras: (item.producto?.extras || []).map(escapeHtml),\n    precioUnitario: item.producto?.precioUnitario || 0,\n    total: totalNum,\n    totalFormateado\n  },\n  cliente: {\n    nombreCompleto: escapeHtml(cliente.nombreCompleto || ''),\n    primerNombre: escapeHtml(primerNombre),\n    apellidos: escapeHtml(apellidos),\n    celular: celularLimpio,\n    departamento: escapeHtml(cliente.departamento || ''),\n    ciudad: escapeHtml(cliente.ciudad || ''),\n    codigoDane: cliente.codigoDane || '',\n    direccion: escapeHtml(cliente.direccion || ''),\n    indicaciones: escapeHtml(cliente.indicaciones || '')\n  },\n  origen: item.origen || {},\n  whatsappConfirmUrl: `https://wa.me/57${celularLimpio}?text=${waUrlEncoded}`\n};"
       },
       "id": "node-validar-normalizar",
       "name": "Validar y normalizar",
@@ -38,7 +38,7 @@
         "jsCode": "const staticData = $getWorkflowStaticData('global');\nstaticData.pedidosRecientes = staticData.pedidosRecientes || [];\n\nconst pedidoId = $input.item.json.pedidoId;\nlet isDuplicate = false;\n\nif (staticData.pedidosRecientes.includes(pedidoId)) {\n  isDuplicate = true;\n} else {\n  staticData.pedidosRecientes.push(pedidoId);\n  if (staticData.pedidosRecientes.length > 500) {\n    staticData.pedidosRecientes.shift();\n  }\n}\n\nreturn {\n  ...$input.item.json,\n  isDuplicate\n};"
       },
       "id": "node-duplicado",
-      "name": "\u00bfDuplicado?",
+      "name": "¿Duplicado?",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
@@ -87,7 +87,7 @@
         }
       },
       "id": "node-es-valido",
-      "name": "\u00bfEs v\u00e1lido?",
+      "name": "¿Es válido?",
       "type": "n8n-nodes-base.if",
       "typeVersion": 2,
       "position": [
@@ -98,26 +98,34 @@
     {
       "parameters": {
         "chatId": "-1003981686470",
-        "text": "=\ud83d\uded2 <b>NUEVO PEDIDO CONTRAENTREGA</b>\n<b>#{{ $json.pedidoId }}</b> \u00b7 {{ $json.fechaTexto }}\n\n<b>\ud83d\udce6 PRODUCTO</b>\n{{ $json.producto.nombre }}{{ $json.producto.variante ? ' \u2014 ' + $json.producto.variante : '' }}\nPaquete: {{ $json.producto.paquete }}\nCantidad: {{ $json.producto.cantidad }}{{ $json.producto.extras.length > 0 ? '\\nExtras: ' + $json.producto.extras.join(', ') : '' }}\n<b>Cobrar al entregar: {{ $json.producto.totalFormateado }}</b>\n\n<b>\ud83d\udc64 CLIENTE (para Dropi)</b>\nNombre: <code>{{ $json.cliente.primerNombre }}</code>\nApellidos: <code>{{ $json.cliente.apellidos }}</code>\nCelular: <code>{{ $json.cliente.celular }}</code>\nDepartamento: <code>{{ $json.cliente.departamento }}</code>\nCiudad: <code>{{ $json.cliente.ciudad }}</code>\nDirecci\u00f3n: <code>{{ $json.cliente.direccion }}</code>{{ $json.cliente.indicaciones ? '\\nNotas: <code>' + $json.cliente.indicaciones + '</code>' : '' }}{{ ($json.origen.utm_source || $json.origen.utm_campaign) ? '\\n\\n<b>\ud83d\udcca ORIGEN</b>\\n' + ($json.origen.utm_source || 'directo') + ' / ' + ($json.origen.utm_medium || 'none') + ' / ' + ($json.origen.utm_campaign || 'sin_campa\u00f1a') + ' \u00b7 plantilla ' + ($json.landing.plantilla || 'grito') : '' }}",
+        "text": "=🛒 <b>NUEVO PEDIDO CONTRAENTREGA</b>\n<b>#{{ $json.pedidoId }}</b> · {{ $json.fechaTexto }}\n\n<b>📦 PRODUCTO</b>\n{{ $json.producto.nombre }}{{ $json.producto.variante ? ' — ' + $json.producto.variante : '' }}\nPaquete: {{ $json.producto.paquete }}\nCantidad: {{ $json.producto.cantidad }}{{ $json.producto.extras.length > 0 ? '\\nExtras: ' + $json.producto.extras.join(', ') : '' }}\n<b>Cobrar al entregar: {{ $json.producto.totalFormateado }}</b>\n\n<b>👤 CLIENTE (para Dropi)</b>\nNombre: <code>{{ $json.cliente.primerNombre }}</code>\nApellidos: <code>{{ $json.cliente.apellidos }}</code>\nCelular: <code>{{ $json.cliente.celular }}</code>\nDepartamento: <code>{{ $json.cliente.departamento }}</code>\nCiudad: <code>{{ $json.cliente.ciudad }}</code>\nDirección: <code>{{ $json.cliente.direccion }}</code>{{ $json.cliente.indicaciones ? '\\nNotas: <code>' + $json.cliente.indicaciones + '</code>' : '' }}{{ ($json.origen.utm_source || $json.origen.utm_campaign) ? '\\n\\n<b>📊 ORIGEN</b>\\n' + ($json.origen.utm_source || 'directo') + ' / ' + ($json.origen.utm_medium || 'none') + ' / ' + ($json.origen.utm_campaign || 'sin_campaña') + ' · plantilla ' + ($json.landing.plantilla || 'grito') : '' }}",
         "additionalFields": {
-          "parse_mode": "HTML",
           "disable_web_page_preview": true,
-          "reply_markup": {
-            "inline_keyboard": [
-              [
-                {
-                  "text": "\ud83d\udcac Confirmar por WhatsApp",
-                  "url": "={{ $json.whatsappConfirmUrl }}"
-                },
-                {
-                  "text": "\ud83d\udccb Abrir Dropi",
-                  "url": "={{ $vars.DROPI_PANEL_URL || 'https://app.dropi.co' }}"
-                }
-              ]
-            ]
-          },
-          "message_thread_id": 46,
-          "messageThreadId": 46
+          "parse_mode": "HTML",
+          "message_thread_id": 46
+        },
+        "replyMarkup": "inlineKeyboard",
+        "inlineKeyboard": {
+          "rows": [
+            {
+              "row": {
+                "buttons": [
+                  {
+                    "text": "💬 Confirmar por WhatsApp",
+                    "additionalFields": {
+                      "url": "={{ $json.whatsappConfirmUrl }}"
+                    }
+                  },
+                  {
+                    "text": "📋 Abrir Dropi",
+                    "additionalFields": {
+                      "url": "={{ $vars.DROPI_PANEL_URL || 'https://app.dropi.co' }}"
+                    }
+                  }
+                ]
+              }
+            }
+          ]
         }
       },
       "id": "node-enviar-telegram",
@@ -134,8 +142,8 @@
       "continueOnFail": true,
       "credentials": {
         "telegramApi": {
-          "id": "hIhVO9mtzRITeULp",
-          "name": "Telegram account"
+          "id": "jd9tP3LVEuDaEf6l",
+          "name": "Telegram ViralyShop"
         }
       }
     },
@@ -209,7 +217,7 @@
         }
       },
       "id": "node-es-spam-duplicado",
-      "name": "\u00bfEs spam o duplicado?",
+      "name": "¿Es spam o duplicado?",
       "type": "n8n-nodes-base.if",
       "typeVersion": 2,
       "position": [
@@ -268,25 +276,25 @@
       "main": [
         [
           {
-            "node": "\u00bfDuplicado?",
+            "node": "¿Duplicado?",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "\u00bfDuplicado?": {
+    "¿Duplicado?": {
       "main": [
         [
           {
-            "node": "\u00bfEs v\u00e1lido?",
+            "node": "¿Es válido?",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "\u00bfEs v\u00e1lido?": {
+    "¿Es válido?": {
       "main": [
         [
           {
@@ -297,7 +305,7 @@
         ],
         [
           {
-            "node": "\u00bfEs spam o duplicado?",
+            "node": "¿Es spam o duplicado?",
             "type": "main",
             "index": 0
           }
@@ -326,7 +334,7 @@
         ]
       ]
     },
-    "\u00bfEs spam o duplicado?": {
+    "¿Es spam o duplicado?": {
       "main": [
         [
           {
