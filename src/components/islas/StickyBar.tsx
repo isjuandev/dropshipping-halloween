@@ -68,7 +68,12 @@ export default function StickyBar() {
   }, []);
 
   const handleCtaClick = () => {
-    scrollToOrderForm(pack.id);
+    const orderSection = document.getElementById('pedido');
+    if (orderSection) {
+      scrollToOrderForm(pack.id);
+    } else {
+      window.location.href = '/#pedido';
+    }
   };
 
   if (!visible || inOrderSection) {

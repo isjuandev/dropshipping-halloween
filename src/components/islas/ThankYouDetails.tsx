@@ -4,13 +4,30 @@ import { formatCOP } from '../../lib/pedido-schema';
 
 interface ResumenData {
   pedidoId: string;
+  fecha?: string;
   nombreCliente: string;
   total: number;
   productoNombre: string;
   paquete: string;
   ciudad: string;
   direccion: string;
-  items: Array<{
+  cliente?: {
+    nombreCompleto: string;
+    celular: string;
+    departamento: string;
+    ciudad: string;
+    direccion: string;
+    indicaciones?: string;
+  };
+  producto?: {
+    nombre: string;
+    variante?: string;
+    paquete: string;
+    cantidad: number;
+    extras?: string[];
+    total: number;
+  };
+  items?: Array<{
     nombre: string;
     cantidad: number;
     precio: number;
@@ -60,7 +77,10 @@ export default function ThankYouDetails() {
   };
 
   const finalId = data?.pedidoId || pedidoId || 'PED-CONFIRMADO';
-  const nombre = data?.nombreCliente ? data.nombreCliente.split(' ')[0] : '';
+  const cliente = data?.cliente;
+  const producto = data?.producto;
+  const nombreCompleto = cliente?.nombreCompleto || data?.nombreCliente || '';
+  const primerNombre = nombreCompleto ? nombreCompleto.split(' ')[0] : '';
 
   return (
     <div class="space-y-6">
@@ -70,7 +90,7 @@ export default function ThankYouDetails() {
           ✓
         </div>
         <h1 class="font-heading text-4xl sm:text-5xl md:text-6xl text-hueso tracking-wide m-0">
-          ¡PEDIDO RECIBIDO{nombre ? `, ${nombre.toUpperCase()}` : ''}!
+          ¡PEDIDO RECIBIDO{primerNombre ? `, ${primerNombre.toUpperCase()}` : ''}!
         </h1>
         <p class="text-ceniza text-sm sm:text-base mt-2 m-0 max-w-lg mx-auto">
           Hemos registrado tu solicitud de despacho contraentrega con éxito.
@@ -104,34 +124,124 @@ export default function ThankYouDetails() {
         </button>
       </div>
 
-      {/* Resumen del pedido si está disponible */}
+      {/* Resumen Completo del Pedido */}
       {data && (
-        <div class="bg-sombra/90 border border-white/10 rounded-2xl p-5 sm:p-7 space-y-4">
-          <h3 class="font-heading text-xl text-hueso tracking-wide m-0 border-b border-white/10 pb-3">
-            Detalles de tu Solicitud
-          </h3>
-          <div class="space-y-2 text-sm">
-            <div class="flex justify-between text-ceniza">
-              <span>Producto:</span>
-              <span class="text-hueso font-medium">{data.productoNombre}</span>
+        <div class="bg-sombra/95 border border-white/10 rounded-2xl p-5 sm:p-7 space-y-6 shadow-xl">
+          <div class="border-b border-white/10 pb-3 flex items-center justify-between">
+            <h3 class="font-heading text-2xl text-hueso tracking-wide m-0">
+              Resumen Completo del Pedido
+            </h3>
+            <span class="text-xs uppercase tracking-wider font-semibold px-2.5 py-1 rounded-md bg-calabaza/15 text-calabaza border border-calabaza/30">
+              Contraentrega
+            </span>
+          </div>
+
+          {/* Bloque 1: Producto y Paquete */}
+          <div class="space-y-3">
+            <div class="text-xs uppercase tracking-wider text-calabaza font-bold flex items-center gap-1.5">
+              <span>📦</span>
+              <span>Detalle del Producto</span>
             </div>
-            <div class="flex justify-between text-ceniza">
-              <span>Paquete:</span>
-              <span class="text-calabaza font-semibold">{data.paquete}</span>
+            <div class="bg-noche/60 rounded-xl p-4 border border-white/5 space-y-2.5 text-sm">
+              <div class="flex justify-between items-baseline gap-2">
+                <span class="text-ceniza">Producto:</span>
+                <span class="text-hueso font-medium text-right">
+                  {producto?.nombre || data.productoNombre}
+                </span>
+              </div>
+
+              <div class="flex justify-between items-baseline gap-2">
+                <span class="text-ceniza">Paquete seleccionado:</span>
+                <span class="text-calabaza font-semibold text-right">
+                  {producto?.paquete || data.paquete} ({producto?.cantidad || 1} {producto?.cantidad === 1 ? 'unidad' : 'unidades'})
+                </span>
+              </div>
+
+              {producto?.variante && (
+                <div class="flex justify-between items-baseline gap-2 pt-1 border-t border-white/5">
+                  <span class="text-ceniza">Variantes:</span>
+                  <span class="text-hueso font-medium text-right max-w-[260px] sm:max-w-xs">
+                    {producto.variante}
+                  </span>
+                </div>
+              )}
+
+              {producto?.extras && producto.extras.length > 0 && (
+                <div class="flex justify-between items-baseline gap-2 pt-1 border-t border-white/5">
+                  <span class="text-ceniza">Extras incluidos:</span>
+                  <span class="text-emerald-400 font-medium text-right">
+                    {producto.extras.join(', ')}
+                  </span>
+                </div>
+              )}
             </div>
-            <div class="flex justify-between text-ceniza">
-              <span>Destino:</span>
-              <span class="text-hueso font-medium">{data.ciudad}</span>
+          </div>
+
+          {/* Bloque 2: Datos de Envío y Contacto */}
+          <div class="space-y-3">
+            <div class="text-xs uppercase tracking-wider text-calabaza font-bold flex items-center gap-1.5">
+              <span>📍</span>
+              <span>Datos de Entrega y Contacto</span>
             </div>
-            <div class="flex justify-between text-ceniza">
-              <span>Dirección:</span>
-              <span class="text-hueso font-medium text-right max-w-[220px] sm:max-w-xs truncate">
-                {data.direccion}
+            <div class="bg-noche/60 rounded-xl p-4 border border-white/5 space-y-2.5 text-sm">
+              <div class="flex justify-between items-baseline gap-2">
+                <span class="text-ceniza">Destinatario:</span>
+                <span class="text-hueso font-medium text-right">
+                  {cliente?.nombreCompleto || data.nombreCliente}
+                </span>
+              </div>
+
+              {cliente?.celular && (
+                <div class="flex justify-between items-baseline gap-2">
+                  <span class="text-ceniza">Celular / WhatsApp:</span>
+                  <span class="text-hueso font-mono font-medium text-right">
+                    {cliente.celular}
+                  </span>
+                </div>
+              )}
+
+              <div class="flex justify-between items-baseline gap-2">
+                <span class="text-ceniza">Departamento y Ciudad:</span>
+                <span class="text-hueso font-medium text-right">
+                  {cliente?.departamento ? `${cliente.departamento}, ` : ''}{cliente?.ciudad || data.ciudad}
+                </span>
+              </div>
+
+              <div class="flex justify-between items-baseline gap-2">
+                <span class="text-ceniza">Dirección de entrega:</span>
+                <span class="text-hueso font-medium text-right max-w-[240px] sm:max-w-sm">
+                  {cliente?.direccion || data.direccion}
+                </span>
+              </div>
+
+              {cliente?.indicaciones && (
+                <div class="flex justify-between items-baseline gap-2 pt-1 border-t border-white/5">
+                  <span class="text-ceniza">Indicaciones:</span>
+                  <span class="text-ceniza italic text-right max-w-[240px] sm:max-w-sm">
+                    "{cliente.indicaciones}"
+                  </span>
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* Bloque 3: Totales y Pago */}
+          <div class="pt-2 border-t border-white/10 space-y-2">
+            <div class="flex justify-between text-sm text-ceniza">
+              <span>Costo de envío:</span>
+              <span class="text-emerald-400 font-semibold uppercase tracking-wider text-xs bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/20">
+                ¡Envío Gratis!
               </span>
             </div>
-            <div class="flex justify-between text-base pt-3 border-t border-white/10 font-bold">
-              <span class="text-hueso">Total a pagar al recibir:</span>
-              <span class="text-calabaza font-heading text-2xl tabular-nums">
+            <div class="flex justify-between text-sm text-ceniza">
+              <span>Método de pago:</span>
+              <span class="text-hueso font-medium">Efectivo o Transferencia al recibir</span>
+            </div>
+            <div class="flex justify-between items-baseline pt-3 border-t border-white/10">
+              <span class="text-hueso font-bold text-base sm:text-lg">
+                Total a pagar al recibir:
+              </span>
+              <span class="text-calabaza font-heading text-3xl sm:text-4xl tabular-nums font-bold">
                 {formatCOP(data.total)}
               </span>
             </div>

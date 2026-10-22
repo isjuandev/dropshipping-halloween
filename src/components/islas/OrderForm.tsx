@@ -321,19 +321,36 @@ export default function OrderForm() {
       const data: PedidoResponse = await res.json().catch(() => ({ ok: false }));
 
       if (res.ok && data.ok) {
-        // Limpiar borrador de localStorage
+        // Limpiar borrador de localStorage y guardar resumen completo para la página /gracias
         try {
           localStorage.removeItem('draft_pedido_contraentrega');
           sessionStorage.setItem(
             'ultimo_pedido_resumen',
             JSON.stringify({
               pedidoId: payload.pedidoId,
+              fecha: payload.fecha,
               nombreCliente: payload.cliente.nombreCompleto,
               total: payload.producto.total,
               productoNombre: payload.producto.nombre,
               paquete: payload.producto.paquete,
               ciudad: payload.cliente.ciudad,
               direccion: payload.cliente.direccion,
+              cliente: {
+                nombreCompleto: payload.cliente.nombreCompleto,
+                celular: payload.cliente.celular,
+                departamento: payload.cliente.departamento,
+                ciudad: payload.cliente.ciudad,
+                direccion: payload.cliente.direccion,
+                indicaciones: payload.cliente.indicaciones,
+              },
+              producto: {
+                nombre: payload.producto.nombre,
+                variante: payload.producto.variante,
+                paquete: payload.producto.paquete,
+                cantidad: payload.producto.cantidad,
+                extras: payload.producto.extras,
+                total: payload.producto.total,
+              },
               items: [
                 {
                   nombre: `${payload.producto.nombre} - ${payload.producto.paquete}`,
