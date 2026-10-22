@@ -1,0 +1,204 @@
+---
+import '../styles/global.css';
+import { tiendaConfig } from '../config/tienda';
+import HalloweenCountdown from '../components/islas/HalloweenCountdown';
+import Header from '../components/ui/Header.astro';
+import Footer from '../components/ui/Footer.astro';
+import StickyBar from '../components/islas/StickyBar';
+
+interface Props {
+  title?: string;
+  description?: string;
+  image?: string;
+  jsonLd?: Record<string, any>[];
+}
+
+const {
+  title = `Máscara de terror con capucha para Halloween | ${tiendaConfig.nombreTienda}`,
+  description = 'Máscara Fantasma del Grito con capucha negra integrada. El disfraz más fácil y aterrador de Halloween 2026. Talla adulto y niño. Pago contra entrega en toda Colombia.',
+  image = '/images/hero-grupo.jpg',
+  jsonLd = [],
+} = Astro.props;
+
+const canonicalUrl = new URL(Astro.url.pathname, Astro.site || 'https://mascaradelgrito.co').toString();
+const ogImageUrl = new URL(image, Astro.site || 'https://mascaradelgrito.co').toString();
+
+// Schema.org Organización por defecto
+const orgSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Organization',
+  name: tiendaConfig.nombreTienda,
+  legalName: tiendaConfig.razonSocial,
+  taxID: tiendaConfig.nit,
+  url: Astro.site ? Astro.site.toString() : 'https://mascaradelgrito.co',
+  telephone: `+${tiendaConfig.whatsapp}`,
+  contactPoint: {
+    '@type': 'ContactPoint',
+    telephone: `+${tiendaConfig.whatsapp}`,
+    contactType: 'customer support',
+    areaServed: 'CO',
+    availableLanguage: 'Spanish',
+  },
+};
+
+const allSchemas = [orgSchema, ...jsonLd];
+---
+
+<!doctype html>
+<html lang="es-CO" class="dark scroll-smooth">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonicalUrl} />
+    <meta name="robots" content="index, follow" />
+    <meta name="theme-color" content="#0A0A0B" />
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="product" />
+    <meta property="og:url" content={canonicalUrl} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content={ogImageUrl} />
+    <meta property="og:locale" content="es_CO" />
+    <meta property="og:site_name" content={tiendaConfig.nombreTienda} />
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:url" content={canonicalUrl} />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImageUrl} />
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E🎃%3C/text%3E%3C/svg%3E" />
+
+    <!-- Preload Fonts -->
+    <link
+      rel="preload"
+      href="/fonts/bebas-neue.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin="anonymous"
+    />
+    <link
+      rel="preload"
+      href="/fonts/creepster.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin="anonymous"
+    />
+
+    <!-- Schema.org JSON-LD -->
+    {
+      allSchemas.map((schema) => (
+        <script type="application/ld+json" set:html={JSON.stringify(schema)} />
+      ))
+    }
+
+    <!-- GTM & Meta Pixel Analytics (solo si hay IDs configurados) -->
+    {
+      tiendaConfig.gtmId && (
+        <script is:inline define:vars={{ gtmId: tiendaConfig.gtmId }}>
+          (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+          new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+          j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+          'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+          })(window,document,'script','dataLayer',gtmId);
+        </script>
+      )
+    }
+
+    {
+      tiendaConfig.pixelId && (
+        <script is:inline define:vars={{ pixelId: tiendaConfig.pixelId }}>
+          !function(f,b,e,v,n,t,s)
+          {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+          n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+          if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+          n.queue=[];t=b.createElement(e);t.async=!0;
+          t.src=v;s=b.getElementsByTagName(e)[0];
+          s.parentNode.insertBefore(t,s)}(window, document,'script',
+          'https://connect.facebook.net/en_US/fbevents.js');
+          fbq('init', pixelId);
+          fbq('track', 'PageView');
+        </script>
+      )
+    }
+  </head>
+  <body class="bg-noche text-hueso antialiased selection:bg-calabaza selection:text-noche relative">
+    <!-- Capa de grano sutil (4%) -->
+    <div class="fixed inset-0 bg-grain pointer-events-none z-30" aria-hidden="true"></div>
+
+    <!-- Viñeta oscura periférica -->
+    <div class="fixed inset-0 pointer-events-none z-20 shadow-[inset_0_0_120px_rgba(0,0,0,0.85)]" aria-hidden="true"></div>
+
+    <!-- 1. Barra de urgencia (Isla HalloweenCountdown) -->
+    <HalloweenCountdown client:visible />
+
+    <!-- 2. Header mínimo -->
+    <Header />
+
+    <!-- Contenido principal -->
+    <main id="main-content" class="relative z-10">
+      <slot />
+    </main>
+
+    <!-- 16. Footer -->
+    <Footer />
+
+    <!-- Barra fija inferior móvil + Botón WhatsApp desktop (Isla Preact client:idle) -->
+    <StickyBar client:idle />
+
+    <!-- Script de Microinteracciones: Linterna sobre el hero y susto controlado 150ms -->
+    <script is:inline>
+      (function() {
+        // Respetar preferencias de reducción de movimiento
+        const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        if (prefersReducedMotion) return;
+
+        // Flash de susto controlado de 150ms al tocar la foto principal del hero (máximo una vez por sesión)
+        const mainPhoto = document.getElementById('hero-main-photo');
+        if (mainPhoto) {
+          mainPhoto.addEventListener('click', function() {
+            if (sessionStorage.getItem('scare_triggered')) return;
+            sessionStorage.setItem('scare_triggered', 'true');
+
+            const flashOverlay = document.createElement('div');
+            flashOverlay.style.position = 'fixed';
+            flashOverlay.style.inset = '0';
+            flashOverlay.style.backgroundColor = 'rgba(255, 255, 255, 0.9)';
+            flashOverlay.style.zIndex = '9999';
+            flashOverlay.style.pointerEvents = 'none';
+            flashOverlay.style.transition = 'opacity 150ms cubic-bezier(0.4, 0, 0.2, 1)';
+            flashOverlay.style.opacity = '1';
+
+            document.body.appendChild(flashOverlay);
+
+            setTimeout(function() {
+              flashOverlay.style.opacity = '0';
+              setTimeout(function() {
+                if (flashOverlay.parentNode) {
+                  flashOverlay.parentNode.removeChild(flashOverlay);
+                }
+              }, 160);
+            }, 80);
+          });
+        }
+
+        // Haz de linterna interactivo sobre el hero
+        const heroSection = document.getElementById('hero-section');
+        const flashlight = document.getElementById('hero-flashlight');
+        if (heroSection && flashlight) {
+          heroSection.addEventListener('pointermove', function(e) {
+            const rect = heroSection.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            flashlight.style.background = `radial-gradient(circle 320px at ${x}px ${y}px, rgba(255, 106, 0, 0.16), rgba(42, 27, 61, 0.08) 50%, transparent 80%)`;
+          });
+        }
+      })();
+    </script>
+  </body>
+</html>

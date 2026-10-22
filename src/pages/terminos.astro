@@ -1,0 +1,61 @@
+---
+import Base from '../layouts/Base.astro';
+import { tiendaConfig } from '../config/tienda';
+---
+
+<Base
+  title={`Términos y Condiciones del Servicio | ${tiendaConfig.nombreTienda}`}
+  description="Términos del servicio, políticas de contratación electrónica y uso de la plataforma conforme a la legislación de Colombia."
+>
+  <div class="py-12 md:py-20 max-w-4xl mx-auto px-4">
+    <div class="mb-8">
+      <a href="/" class="text-xs uppercase tracking-wider text-calabaza font-bold hover:underline mb-3 inline-block">
+        ← Volver a la página principal
+      </a>
+      <h1 class="font-heading text-4xl sm:text-5xl text-hueso tracking-wide m-0">
+        TÉRMINOS Y CONDICIONES DEL SERVICIO
+      </h1>
+      <p class="text-ceniza text-sm mt-2">
+        Operado por {tiendaConfig.razonSocial} · NIT {tiendaConfig.nit}
+      </p>
+    </div>
+
+    <div class="space-y-8 text-sm sm:text-base text-hueso/90 leading-relaxed bg-sombra border border-white/10 rounded-[14px] p-6 sm:p-10 shadow-xl">
+      <section class="space-y-3">
+        <h2 class="font-heading text-2xl sm:text-3xl text-calabaza tracking-wide m-0">
+          1. Identificación del Vendedor
+        </h2>
+        <p>
+          El presente sitio web es de titularidad y operación comercial de <strong>{tiendaConfig.razonSocial}</strong>, identificada con NIT <strong>{tiendaConfig.nit}</strong>, domiciliada en la República de Colombia. La marca comercial de temporada es <strong>{tiendaConfig.nombreTienda}</strong>.
+        </p>
+      </section>
+
+      <section class="space-y-3">
+        <h2 class="font-heading text-2xl sm:text-3xl text-calabaza tracking-wide m-0">
+          2. Proceso de Pedido y Sin Checkout Web
+        </h2>
+        <p>
+          Este sitio web funciona como un catálogo informativo y optimizador de pedidos. No cuenta con pasarela de pago bancario integrada en la web ni procesa cobros automáticos en línea. Todo acuerdo comercial de compraventa, confirmación de variantes, dirección de entrega y método de cobro se formaliza libre y voluntariamente a través de mensajería instantánea de WhatsApp.
+        </p>
+      </section>
+
+      <section class="space-y-3">
+        <h2 class="font-heading text-2xl sm:text-3xl text-calabaza tracking-wide m-0">
+          3. Precios y Moneda
+        </h2>
+        <p>
+          Todos los precios exhibidos están expresados en pesos colombianos (COP) e incluyen los impuestos aplicables. Los precios corresponden a ofertas temporales vigentes para la temporada festiva de Halloween 2026 y pueden estar sujetos a cambios según existencias disponibles.
+        </p>
+      </section>
+
+      <section class="space-y-3">
+        <h2 class="font-heading text-2xl sm:text-3xl text-calabaza tracking-wide m-0">
+          4. Propiedad Intelectual y Carácter Genérico
+        </h2>
+        <p>
+          Los productos comercializados son máscaras plásticas de terror de carácter genérico para disfraces festivos. No se encuentran asociados, licenciados ni patrocinados por ningún estudio de cine, titular de marcas comerciales registradas ni franquicias de entretenimiento.
+        </p>
+      </section>
+    </div>
+  </div>
+</Base>

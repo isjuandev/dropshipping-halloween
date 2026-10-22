@@ -1,0 +1,81 @@
+---
+import Base from '../layouts/Base.astro';
+import { tiendaConfig } from '../config/tienda';
+import { buildWhatsAppUrl } from '../lib/whatsapp';
+
+const whatsappUrl = buildWhatsAppUrl({ origen: 'politica_devoluciones' });
+---
+
+<Base
+  title={`Garantías y Devoluciones | ${tiendaConfig.nombreTienda}`}
+  description="Políticas de cambio por daño de fábrica y derecho de retracto conforme a la Ley 1480 de 2011 del Estatuto del Consumidor en Colombia."
+>
+  <div class="py-12 md:py-20 max-w-4xl mx-auto px-4">
+    <div class="mb-8">
+      <a href="/" class="text-xs uppercase tracking-wider text-calabaza font-bold hover:underline mb-3 inline-block">
+        ← Volver a la página principal
+      </a>
+      <h1 class="font-heading text-4xl sm:text-5xl text-hueso tracking-wide m-0">
+        GARANTÍA, CAMBIOS Y DERECHO DE RETRACTO
+      </h1>
+      <p class="text-ceniza text-sm mt-2">
+        Conforme a la Ley 1480 de 2011 (Estatuto del Consumidor de la República de Colombia)
+      </p>
+    </div>
+
+    <div class="space-y-8 text-sm sm:text-base text-hueso/90 leading-relaxed bg-sombra border border-white/10 rounded-[14px] p-6 sm:p-10 shadow-xl">
+      <section class="space-y-3">
+        <h2 class="font-heading text-2xl sm:text-3xl text-calabaza tracking-wide m-0">
+          1. Garantía por Daño de Fábrica o Transporte
+        </h2>
+        <p>
+          En <strong>{tiendaConfig.nombreTienda}</strong> garantizamos que tu máscara llegará en óptimas condiciones. Si al abrir el paquete el producto presenta alguna fisura plástica, desprendimiento de costura en la capucha o daño evidente ocasionado por la transportadora:
+        </p>
+        <ul class="list-disc pl-5 space-y-1 text-ceniza">
+          <li>Notifícanos dentro de las primeras 24 horas tras la entrega a través de nuestra línea de WhatsApp.</li>
+          <li>Adjunta una foto o video corto que demuestre el estado del empaque y del producto.</li>
+          <li>Despachamos inmediatamente un reemplazo nuevo sin costo de flete alguno para ti.</li>
+        </ul>
+      </section>
+
+      <section class="space-y-3">
+        <h2 class="font-heading text-2xl sm:text-3xl text-calabaza tracking-wide m-0">
+          2. Derecho de Retracto (Artículo 47 - Ley 1480 de 2011)
+        </h2>
+        <p>
+          De acuerdo con el Estatuto del Consumidor, para las ventas a distancia y comercio electrónico en Colombia, el consumidor tiene derecho a retractarse de la compra dentro de los <strong>cinco (5) días hábiles</strong> siguientes a la fecha de entrega del producto.
+        </p>
+        <div class="p-4 rounded-xl bg-noche/70 border border-white/10 text-xs sm:text-sm text-ceniza space-y-2">
+          <p class="m-0">
+            <strong>Condiciones para el ejercicio del retracto:</strong>
+          </p>
+          <ul class="list-disc pl-5 space-y-1 m-0">
+            <li>El producto debe conservarse en su estado original, sin señales de uso en fiestas o eventos, con su empaque original sellado o intacto.</li>
+            <li>Por tratarse de un artículo que se coloca sobre el rostro (higiene y bioseguridad), no se admitirá retracto de máscaras que hayan sido desprecintadas y utilizadas.</li>
+            <li>Los costos de transporte por concepto de devolución por retracto son asumidos por el consumidor, conforme a lo estipulado por la ley.</li>
+          </ul>
+        </div>
+      </section>
+
+      <section class="space-y-3">
+        <h2 class="font-heading text-2xl sm:text-3xl text-calabaza tracking-wide m-0">
+          3. Canales de Atención para Solicitudes
+        </h2>
+        <p>
+          Cualquier reclamación, solicitud de garantía o trámite se gestiona de forma rápida a través de nuestro canal centralizado de WhatsApp al número <strong>+{tiendaConfig.whatsapp}</strong> o al correo legal de {tiendaConfig.razonSocial}.
+        </p>
+        <div class="pt-2">
+          <a
+            href={whatsappUrl}
+            target="_blank"
+            rel="noopener"
+            class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-whatsapp text-white font-bold text-sm hover:bg-[#20ba59] transition-colors"
+          >
+            <span>Iniciar solicitud por WhatsApp</span>
+            <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d="M12.04 2c-5.46 0-9.91 4.45-9.91 9.91 0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38c1.45.79 3.08 1.21 4.74 1.21 5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.816 9.816 0 0012.04 2zm0 18.06c-1.48 0-2.93-.4-4.2-1.15l-.3-.18-3.12.82.83-3.04-.2-.31a8.03 8.03 0 01-1.23-4.29c0-4.47 3.64-8.11 8.12-8.11 2.17 0 4.21.85 5.74 2.38a8.07 8.07 0 012.38 5.73c-.01 4.47-3.65 8.11-8.12 8.11z"/></svg>
+          </a>
+        </div>
+      </section>
+    </div>
+  </div>
+</Base>

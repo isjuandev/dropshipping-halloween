@@ -1,0 +1,71 @@
+---
+const steps = [
+  {
+    step: '01',
+    icon: '👆',
+    title: 'Toca el Botón de WhatsApp',
+    desc: 'Elige tu pack preferido y toca el botón. Se abrirá tu WhatsApp con el mensaje prellenado con tu selección.',
+  },
+  {
+    step: '02',
+    icon: '💬',
+    title: 'Confirma tu Dirección',
+    desc: 'Uno de nuestros asesores te responderá en menos de 3 minutos para tomar tus datos de despacho y ciudad.',
+  },
+  {
+    step: '03',
+    icon: '📦',
+    title: 'Paga Cuando te Llegue',
+    desc: 'El repartidor entrega el paquete sellado en la puerta de tu casa u oficina y pagas en efectivo o transferencia.',
+  },
+];
+---
+
+<section class="py-12 md:py-20 bg-sombra relative">
+  <div class="max-w-6xl mx-auto px-4">
+    
+    <div class="text-center max-w-2xl mx-auto mb-10 sm:mb-14">
+      <span class="text-xs uppercase tracking-widest text-calabaza font-bold px-3 py-1 rounded-full bg-calabaza/10 border border-calabaza/20 inline-block mb-3">
+        Sin Fricción Ni Registro
+      </span>
+      <h2 class="font-heading text-4xl sm:text-5xl md:text-6xl text-hueso tracking-wide m-0">
+        ¿CÓMO PEDIR EN 3 PASOS?
+      </h2>
+      <p class="text-ceniza text-sm sm:text-base mt-3 m-0">
+        Sin tarjetas de crédito previas, sin formularios extensos. Fácil, rápido y 100% seguro.
+      </p>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 relative">
+      {steps.map((s, idx) => (
+        <div class="bg-noche/80 border border-white/10 rounded-[14px] p-6 sm:p-7 relative flex flex-col justify-between shadow-xl">
+          <div>
+            <div class="flex items-center justify-between mb-4">
+              <span class="font-heading text-4xl text-calabaza/80 font-bold tabular-nums">
+                {s.step}
+              </span>
+              <span class="text-3xl p-2 rounded-xl bg-sombra border border-white/10">
+                {s.icon}
+              </span>
+            </div>
+
+            <h3 class="font-heading text-2xl text-hueso tracking-wide mb-2 m-0">
+              {s.title}
+            </h3>
+
+            <p class="text-ceniza text-sm leading-relaxed m-0">
+              {s.desc}
+            </p>
+          </div>
+
+          <div class="mt-6 pt-3 border-t border-white/5 text-[11px] font-semibold text-emerald-400">
+            {idx === 0 && '⚡ Sin registros previos'}
+            {idx === 1 && '🤝 Asesoría personalizada'}
+            {idx === 2 && '🔒 Pago 100% contra entrega'}
+          </div>
+        </div>
+      ))}
+    </div>
+
+  </div>
+</section>

@@ -1,0 +1,27 @@
+---
+import PackSelector from '../islas/PackSelector';
+---
+
+<section id="seccion-packs" class="py-14 md:py-24 bg-bruma relative border-y border-white/10 overflow-hidden">
+  {/* Gradiente ambiental */}
+  <div class="absolute -top-32 left-1/2 -translate-x-1/2 w-[800px] h-64 bg-calabaza/10 rounded-full blur-3xl pointer-events-none"></div>
+
+  <div class="max-w-6xl mx-auto px-4 relative z-10">
+    
+    <div class="text-center max-w-2xl mx-auto mb-10 sm:mb-14">
+      <span class="text-xs uppercase tracking-widest text-calabaza font-bold px-3 py-1 rounded-full bg-calabaza/15 border border-calabaza/30 inline-block mb-3">
+        Combos y Ahorro
+      </span>
+      <h2 class="font-heading text-4xl sm:text-5xl md:text-6xl text-hueso tracking-wide m-0">
+        ELIGE TU PACK DE TERROR
+      </h2>
+      <p class="text-ceniza text-sm sm:text-base mt-3 m-0">
+        Compra individual, en pareja o para tu grupo de amigos con precios especiales de temporada y envío incluido.
+      </p>
+    </div>
+
+    {/* Isla Preact PackSelector */}
+    <PackSelector client:visible />
+
+  </div>
+</section>

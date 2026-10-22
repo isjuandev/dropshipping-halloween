@@ -1,0 +1,88 @@
+---
+import Base from '../layouts/Base.astro';
+import { tiendaConfig } from '../config/tienda';
+import { formatCOP } from '../lib/whatsapp';
+---
+
+<Base
+  title={`Políticas de Envío y Tiempos de Entrega | ${tiendaConfig.nombreTienda}`}
+  description="Conoce los tiempos de entrega por ciudad, despacho express y cobertura en toda Colombia para la temporada de Halloween."
+>
+  <div class="py-12 md:py-20 max-w-4xl mx-auto px-4">
+    <div class="mb-8">
+      <a href="/" class="text-xs uppercase tracking-wider text-calabaza font-bold hover:underline mb-3 inline-block">
+        ← Volver a la página principal
+      </a>
+      <h1 class="font-heading text-4xl sm:text-5xl text-hueso tracking-wide m-0">
+        POLÍTICAS Y TIEMPOS DE ENVÍO
+      </h1>
+      <p class="text-ceniza text-sm mt-2">
+        Última actualización: Temporada Halloween 2026 · Colombia
+      </p>
+    </div>
+
+    <div class="space-y-8 text-sm sm:text-base text-hueso/90 leading-relaxed bg-sombra border border-white/10 rounded-[14px] p-6 sm:p-10 shadow-xl">
+      <section class="space-y-3">
+        <h2 class="font-heading text-2xl sm:text-3xl text-calabaza tracking-wide m-0">
+          1. Cobertura y Transportadoras Aliadas
+        </h2>
+        <p>
+          En <strong>{tiendaConfig.nombreTienda}</strong> realizamos envíos a todos los municipios y ciudades principales de Colombia a través de las transportadoras líderes: <strong>Interrapidísimo, Envía y Coordinadora</strong>. Todos los pedidos viajan amparados por guía con número de rastreo.
+        </p>
+      </section>
+
+      <section class="space-y-3">
+        <h2 class="font-heading text-2xl sm:text-3xl text-calabaza tracking-wide m-0">
+          2. Tiempos Estimados de Entrega
+        </h2>
+        <p>
+          Los despachos se realizan de lunes a sábado a las 2:00 PM (hora de Bogotá). Si tu pedido se confirma antes de esa hora, sale de bodega el mismo día.
+        </p>
+
+        <div class="overflow-x-auto my-4">
+          <table class="w-full text-left text-xs sm:text-sm border border-white/10 rounded-xl overflow-hidden">
+            <thead class="bg-noche text-hueso uppercase font-heading text-base tracking-wider">
+              <tr>
+                <th class="p-3 border-b border-white/10">Ciudad / Destino</th>
+                <th class="p-3 border-b border-white/10">Tiempo Habitual</th>
+                <th class="p-3 border-b border-white/10">Envío Express</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-white/5 bg-noche/40 text-ceniza">
+              {tiendaConfig.ciudades.map((c) => (
+                <tr>
+                  <td class="p-3 font-medium text-hueso">{c.nombre}</td>
+                  <td class="p-3">{c.diasEnvio} {c.diasEnvio === 1 ? 'día hábil (24 h)' : 'días hábiles'}</td>
+                  <td class="p-3 text-calabaza font-semibold">{c.express ? 'Disponible' : 'Estándar'}</td>
+                </tr>
+              ))}
+              <tr>
+                <td class="p-3 font-medium text-hueso">Otros municipios y cabeceras</td>
+                <td class="p-3">{tiendaConfig.diasEnvioOtras} a 5 días hábiles</td>
+                <td class="p-3 text-ceniza">Sujeto a cobertura</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="space-y-3">
+        <h2 class="font-heading text-2xl sm:text-3xl text-calabaza tracking-wide m-0">
+          3. Envío Express de Temporada
+        </h2>
+        <p>
+          Para fechas cercanas al 31 de octubre, disponemos de mensajería motorizada express en Bogotá, Medellín, Cali y Barranquilla con entrega en el mismo día o 24 horas garantizadas (recargo de {formatCOP(tiendaConfig.envioExpress.recargo)}). Consúltalo directamente a través de nuestra línea de WhatsApp.
+        </p>
+      </section>
+
+      <section class="space-y-3">
+        <h2 class="font-heading text-2xl sm:text-3xl text-calabaza tracking-wide m-0">
+          4. Modalidad Pago Contra Entrega
+        </h2>
+        <p>
+          No requerimos anticipos bancarios obligatorios. El domiciliario o transportador te entregará el paquete en mano y podrás abonar el valor total en efectivo o transferencia.
+        </p>
+      </section>
+    </div>
+  </div>
+</Base>

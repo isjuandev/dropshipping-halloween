@@ -1,0 +1,113 @@
+@import "tailwindcss";
+@import "@fontsource/creepster";
+@import "@fontsource/bebas-neue";
+@import "@fontsource-variable/inter";
+
+@theme {
+  --color-noche: #0A0A0B;
+  --color-sombra: #16141A;
+  --color-hueso: #F2EFE9;
+  --color-calabaza: #FF6A00;
+  --color-calabaza-hover: #E85F00;
+  --color-sangre: #B3001B;
+  --color-bruma: #2A1B3D;
+  --color-ceniza: #9A96A0;
+  --color-whatsapp: #25D366;
+
+  --font-display: "Creepster", cursive, system-ui;
+  --font-heading: "Bebas Neue", sans-serif;
+  --font-sans: "Inter Variable", "Inter", sans-serif;
+
+  --radius-card: 14px;
+}
+
+:root {
+  color-scheme: dark;
+}
+
+html {
+  background-color: var(--color-noche);
+  color: var(--color-hueso);
+  font-family: var(--font-sans);
+  scroll-behavior: smooth;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+  overflow-x: hidden;
+  background-color: var(--color-noche);
+  color: var(--color-hueso);
+  font-size: 16px;
+  line-height: 1.625;
+}
+
+/* Custom grain overlay */
+.bg-grain {
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.04'/%3E%3C/svg%3E");
+}
+
+/* Niebla animada lenta (40s) */
+@keyframes fogMove {
+  0% {
+    transform: translate3d(-5%, 0, 0);
+  }
+  50% {
+    transform: translate3d(5%, -2%, 0);
+  }
+  100% {
+    transform: translate3d(-5%, 0, 0);
+  }
+}
+
+.animate-fog {
+  animation: fogMove 40s ease-in-out infinite alternate;
+  will-change: transform;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-fog {
+    animation: none !important;
+  }
+  html {
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Tabular nums for prices and counters */
+.tabular-nums {
+  font-variant-numeric: tabular-nums;
+}
+
+/* Accessibility focus ring */
+:focus-visible {
+  outline: 2px solid var(--color-calabaza);
+  outline-offset: 3px;
+}
+
+/* Glow button */
+.btn-glow {
+  box-shadow: 0 0 28px rgba(255, 106, 0, 0.35);
+  transition: transform 0.15s ease, box-shadow 0.15s ease, background-color 0.15s ease;
+}
+
+.btn-glow:hover {
+  box-shadow: 0 0 35px rgba(255, 106, 0, 0.55);
+  transform: translateY(-1px);
+}
+
+.btn-glow:active {
+  transform: translateY(1px);
+}
+
+/* Hide scrollbar for gallery snap */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}

@@ -1,0 +1,101 @@
+---
+import { tiendaConfig } from '../../config/tienda';
+---
+
+<footer class="w-full bg-sombra border-t border-white/10 text-ceniza text-xs py-12 px-4">
+  <div class="max-w-6xl mx-auto">
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
+      {/* Columna 1: Marca & Razón Social */}
+      <div class="md:col-span-2 space-y-2">
+        <div class="flex items-center gap-2 mb-2">
+          <span class="w-7 h-7 rounded-lg bg-calabaza text-noche font-heading text-xl font-bold flex items-center justify-center">
+            G
+          </span>
+          <span class="font-heading text-2xl text-hueso tracking-wider">
+            {tiendaConfig.nombreTienda}
+          </span>
+        </div>
+        <p class="text-sm text-hueso/80 max-w-md">
+          Especialistas en disfraces y accesorios de temporada para Halloween en Colombia. Despachos rápidos y pago contra entrega en todo el territorio nacional.
+        </p>
+        <p class="text-xs text-ceniza">
+          <strong>Razón Social:</strong> {tiendaConfig.razonSocial}<br />
+          <strong>NIT:</strong> {tiendaConfig.nit}<br />
+          <strong>Horario de atención:</strong> {tiendaConfig.horarioAtencion}
+        </p>
+      </div>
+
+      {/* Columna 2: Enlaces Legales requeridos */}
+      <div class="space-y-2">
+        <h5 class="text-xs uppercase tracking-wider font-bold text-hueso mb-3">
+          Información Legal
+        </h5>
+        <ul class="space-y-2 list-none p-0 m-0">
+          <li>
+            <a href="/envios" class="hover:text-calabaza transition-colors underline-offset-4 hover:underline">
+              Tiempos y políticas de envío
+            </a>
+          </li>
+          <li>
+            <a href="/devoluciones" class="hover:text-calabaza transition-colors underline-offset-4 hover:underline">
+              Garantía y devoluciones (Ley 1480)
+            </a>
+          </li>
+          <li>
+            <a href="/terminos" class="hover:text-calabaza transition-colors underline-offset-4 hover:underline">
+              Términos del servicio
+            </a>
+          </li>
+          <li>
+            <a href="/privacidad" class="hover:text-calabaza transition-colors underline-offset-4 hover:underline">
+              Política de privacidad (Ley 1581)
+            </a>
+          </li>
+        </ul>
+      </div>
+
+      {/* Columna 3: Redes y Medios de Pago */}
+      <div class="space-y-2">
+        <h5 class="text-xs uppercase tracking-wider font-bold text-hueso mb-3">
+          Canales & Redes
+        </h5>
+        <ul class="space-y-2 list-none p-0 m-0 mb-4">
+          {tiendaConfig.redes.instagram && (
+            <li>
+              <a href={tiendaConfig.redes.instagram} target="_blank" rel="noopener noreferrer" class="hover:text-calabaza transition-colors">
+                Instagram Oficial
+              </a>
+            </li>
+          )}
+          {tiendaConfig.redes.tiktok && (
+            <li>
+              <a href={tiendaConfig.redes.tiktok} target="_blank" rel="noopener noreferrer" class="hover:text-calabaza transition-colors">
+                TikTok Oficial
+              </a>
+            </li>
+          )}
+        </ul>
+
+        <div class="pt-2 border-t border-white/5">
+          <span class="text-[11px] text-ceniza block mb-1 font-semibold">Métodos aceptados:</span>
+          <div class="flex flex-wrap gap-1.5 text-[11px] text-hueso/70">
+            <span class="px-2 py-0.5 rounded bg-white/5 border border-white/5">Efectivo contra entrega</span>
+            <span class="px-2 py-0.5 rounded bg-white/5 border border-white/5">Bancolombia</span>
+            <span class="px-2 py-0.5 rounded bg-white/5 border border-white/5">Nequi</span>
+            <span class="px-2 py-0.5 rounded bg-white/5 border border-white/5">Daviplata</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    {/* Copyright y Descargo sin marcas */}
+    <div class="pt-6 border-t border-white/10 flex flex-col sm:flex-row items-center justify-between gap-3 text-[11px] text-ceniza/80">
+      <p class="m-0 text-center sm:text-left">
+        © 2026 {tiendaConfig.nombreTienda}. Todos los derechos reservados.
+      </p>
+      <p class="m-0 text-center sm:text-right max-w-md">
+        Máscara de terror genérica para disfraces festivos. No afiliada ni patrocinada por ninguna franquicia cinematográfica o marca registrada.
+      </p>
+    </div>
+  </div>
+</footer>

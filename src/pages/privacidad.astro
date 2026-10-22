@@ -1,0 +1,69 @@
+---
+import Base from '../layouts/Base.astro';
+import { tiendaConfig } from '../config/tienda';
+---
+
+<Base
+  title={`Política de Tratamiento de Datos Personales | ${tiendaConfig.nombreTienda}`}
+  description="Política de tratamiento y privacidad de datos personales en cumplimiento de la Ley 1581 de 2012 y el Decreto 1377 de 2013 de Colombia."
+>
+  <div class="py-12 md:py-20 max-w-4xl mx-auto px-4">
+    <div class="mb-8">
+      <a href="/" class="text-xs uppercase tracking-wider text-calabaza font-bold hover:underline mb-3 inline-block">
+        ← Volver a la página principal
+      </a>
+      <h1 class="font-heading text-4xl sm:text-5xl text-hueso tracking-wide m-0">
+        POLÍTICA DE PRIVACIDAD Y PROTECCIÓN DE DATOS
+      </h1>
+      <p class="text-ceniza text-sm mt-2">
+        En estricto cumplimiento de la Ley Estatutaria 1581 de 2012 y el Decreto Reglamentario 1377 de 2013 (Habeas Data)
+      </p>
+    </div>
+
+    <div class="space-y-8 text-sm sm:text-base text-hueso/90 leading-relaxed bg-sombra border border-white/10 rounded-[14px] p-6 sm:p-10 shadow-xl">
+      <section class="space-y-3">
+        <h2 class="font-heading text-2xl sm:text-3xl text-calabaza tracking-wide m-0">
+          1. Responsable del Tratamiento
+        </h2>
+        <p>
+          El responsable del tratamiento de sus datos personales es <strong>{tiendaConfig.razonSocial}</strong>, sociedad legalmente constituida en Colombia, con NIT <strong>{tiendaConfig.nit}</strong>.
+        </p>
+      </section>
+
+      <section class="space-y-3">
+        <h2 class="font-heading text-2xl sm:text-3xl text-calabaza tracking-wide m-0">
+          2. Finalidad de la Recolección
+        </h2>
+        <p>
+          Los datos personales solicitados voluntariamente a través del canal de WhatsApp (nombre completo, número telefónico, departamento, ciudad y dirección de correspondencia) serán utilizados única y exclusivamente para:
+        </p>
+        <ul class="list-disc pl-5 space-y-1 text-ceniza">
+          <li>Gestionar el despacho logístico, generación de guía y entrega de los paquetes adquiridos.</li>
+          <li>Coordinar el recaudo en la modalidad de pago contra entrega.</li>
+          <li>Proveer soporte postventa, atención de garantías y seguimiento al estado de su envío.</li>
+        </ul>
+        <p>
+          Bajo ninguna circunstancia venderemos, cederemos ni transferiremos sus datos personales a terceros con fines publicitarios o comerciales no autorizados.
+        </p>
+      </section>
+
+      <section class="space-y-3">
+        <h2 class="font-heading text-2xl sm:text-3xl text-calabaza tracking-wide m-0">
+          3. Derechos de los Titulares (Habeas Data)
+        </h2>
+        <p>
+          Como titular de sus datos personales, la ley colombiana le otorga los derechos a conocer, actualizar, rectificar y solicitar la supresión de sus datos de nuestras bases comerciales en cualquier momento, enviando una comunicación al canal oficial de WhatsApp o correo corporativo.
+        </p>
+      </section>
+
+      <section class="space-y-3">
+        <h2 class="font-heading text-2xl sm:text-3xl text-calabaza tracking-wide m-0">
+          4. Seguridad de la Información
+        </h2>
+        <p>
+          Adoptamos medidas técnicas, humanas y administrativas necesarias para garantizar la seguridad de los registros, evitando su adulteración, pérdida, consulta o acceso no autorizado.
+        </p>
+      </section>
+    </div>
+  </div>
+</Base>

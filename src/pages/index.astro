@@ -1,0 +1,127 @@
+---
+import Base from '../layouts/Base.astro';
+import { getCollection, getEntry } from 'astro:content';
+import { tiendaConfig } from '../config/tienda';
+
+// Secciones en el orden exacto especificado
+import Hero from '../components/secciones/Hero.astro';
+import ArrivalChecker from '../components/islas/ArrivalChecker';
+import TrustBar from '../components/secciones/TrustBar.astro';
+import WhyThisMask from '../components/secciones/WhyThisMask.astro';
+import Details from '../components/secciones/Details.astro';
+import UgcGallery from '../components/secciones/UgcGallery.astro';
+import PacksSection from '../components/secciones/PacksSection.astro';
+import CostumeIdeas from '../components/secciones/CostumeIdeas.astro';
+import Testimonials from '../components/secciones/Testimonials.astro';
+import SafetyAndKids from '../components/secciones/SafetyAndKids.astro';
+import HowToOrder from '../components/secciones/HowToOrder.astro';
+import FaqSection from '../components/secciones/FaqSection.astro';
+import FinalCta from '../components/secciones/FinalCta.astro';
+
+// Cargar datos de Content Collections
+const productoEntry = await getEntry('producto', 'grito');
+const testimoniosEntries = await getCollection('testimonios');
+const faqsEntries = await getCollection('faqs');
+const ideasEntries = await getCollection('ideasDisfraz');
+
+if (!productoEntry) {
+  throw new Error('No se encontró el producto grito en content/producto');
+}
+
+const producto = productoEntry.data;
+const testimonios = testimoniosEntries.map((e) => e.data);
+const faqs = faqsEntries.map((e) => e.data);
+const ideas = ideasEntries.map((e) => e.data);
+
+// Schemas JSON-LD para SEO y rich snippets
+const productSchema = {
+  '@context': 'https://schema.org/',
+  '@type': 'Product',
+  name: producto.nombre,
+  image: producto.imagenes.map((img) => new URL(img, Astro.site || 'https://mascaradelgrito.co').toString()),
+  description: 'Máscara blanca de terror fantasma con capucha de tela negra. Disfraz de Halloween para adultos y niños.',
+  sku: 'GRITO-HALLOWEEN-2026',
+  brand: {
+    '@type': 'Brand',
+    name: tiendaConfig.nombreTienda,
+  },
+  aggregateRating: {
+    '@type': 'AggregateRating',
+    ratingValue: producto.rating.toString(),
+    reviewCount: producto.numResenas.toString(),
+  },
+  offers: {
+    '@type': 'Offer',
+    url: Astro.site ? Astro.site.toString() : 'https://mascaradelgrito.co',
+    priceCurrency: tiendaConfig.moneda,
+    price: producto.precio.toString(),
+    priceValidUntil: tiendaConfig.fechaHalloween,
+    itemCondition: 'https://schema.org/NewCondition',
+    availability: 'https://schema.org/InStock',
+    seller: {
+      '@type': 'Organization',
+      name: tiendaConfig.nombreTienda,
+    },
+  },
+};
+
+const faqSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqs.map((f) => ({
+    '@type': 'Question',
+    name: f.pregunta,
+    acceptedAnswer: {
+      '@type': 'Answer',
+      text: f.respuesta,
+    },
+  })),
+};
+---
+
+<Base
+  title={`Máscara de terror con capucha para Halloween | ${tiendaConfig.nombreTienda}`}
+  description="Máscara Fantasma del Grito con capucha negra integrada. El disfraz más fácil y aterrador de Halloween 2026. Talla adulto y niño. Pago contra entrega en Colombia."
+  jsonLd={[productSchema, faqSchema]}
+>
+  {/* 3. Hero con video, galería de 5 fotos, H1 con Creepster, VariantSelector y CTA */}
+  <Hero producto={producto} />
+
+  {/* 4. ¿Llega antes de Halloween? (isla Preact ArrivalChecker) */}
+  <div class="max-w-6xl mx-auto px-4 -mt-3 mb-6 relative z-30">
+    <ArrivalChecker client:visible />
+  </div>
+
+  {/* 5. Franja de confianza */}
+  <TrustBar />
+
+  {/* 6. Por qué esta máscara: 3 tarjetas */}
+  <WhyThisMask />
+
+  {/* 7. Detalles técnicos, medidas, materiales y qué incluye */}
+  <Details producto={producto} />
+
+  {/* 8. Cómo se ve puesta: galería de 6 fotos UGC de clientes con ciudad */}
+  <UgcGallery testimonios={testimonios} />
+
+  {/* 9. Packs: isla PackSelector sobre fondo bruma */}
+  <PacksSection />
+
+  {/* 10. Ideas de disfraz: 3 tarjetas que enlazan a los packs */}
+  <CostumeIdeas ideas={ideas} />
+
+  {/* 11. Testimonios: resumen 4,7 con barras y 6 reseñas */}
+  <Testimonials testimonios={testimonios} />
+
+  {/* 12. Seguridad y niños */}
+  <SafetyAndKids />
+
+  {/* 13. Cómo pedir en 3 pasos */}
+  <HowToOrder />
+
+  {/* 14. FAQ con <details> sin JS */}
+  <FaqSection faqs={faqs} />
+
+  {/* 15. CTA final con "31 OCT" gigante en Creepster */}
+  <FinalCta />
+</Base>

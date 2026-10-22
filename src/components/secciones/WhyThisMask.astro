@@ -1,0 +1,70 @@
+---
+const reasons = [
+  {
+    icon: '⚡',
+    badge: '10 Segundos',
+    title: 'Disfraz Instantáneo Sin Maquillaje',
+    desc: 'Olvida gastar horas con pinturas incómodas que manchan la ropa y pican la cara. Te pones la máscara, ajustas la capucha negra y tienes un disfraz aterrador completo en solo 10 segundos.',
+  },
+  {
+    icon: '📸',
+    badge: 'Todo Escenario',
+    title: 'Funciona en Fiesta, Calle y Foto',
+    desc: 'El blanco mate de la máscara resalta de inmediato en la noche, con luces de discoteca o con flash de celular. Es fresca para bailar, caminar pidiendo dulces o asustar a tus amigos en cualquier plan.',
+  },
+  {
+    icon: '🎟️',
+    badge: 'Ultra Económico',
+    title: 'Precio de una Salida a Cine',
+    desc: 'Por menos de $30.000 COP tienes tu disfraz resuelto para este Halloween y los próximos años. Sin alquileres costosos ni disfraces desechables que no vuelves a usar.',
+  },
+];
+---
+
+<section class="py-12 md:py-20 bg-noche relative">
+  <div class="max-w-6xl mx-auto px-4">
+    
+    <div class="text-center max-w-2xl mx-auto mb-10 sm:mb-14">
+      <span class="text-xs uppercase tracking-widest text-calabaza font-bold px-3 py-1 rounded-full bg-calabaza/10 border border-calabaza/20 inline-block mb-3">
+        La Solución Definitiva
+      </span>
+      <h2 class="font-heading text-4xl sm:text-5xl md:text-6xl text-hueso tracking-wide m-0">
+        ¿POR QUÉ ESTA MÁSCARA Y NO OTRA?
+      </h2>
+      <p class="text-ceniza text-sm sm:text-base mt-3 m-0">
+        Diseñada para quienes quieren causar impacto real sin complicarse la vida.
+      </p>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+      {reasons.map((r) => (
+        <div class="bg-sombra border border-white/10 rounded-[14px] p-6 sm:p-7 relative flex flex-col justify-between hover:border-calabaza/40 transition-all hover:-translate-y-1 shadow-lg">
+          <div>
+            <div class="flex items-center justify-between mb-4">
+              <span class="text-3xl p-2.5 rounded-xl bg-noche border border-white/10">
+                {r.icon}
+              </span>
+              <span class="text-[11px] font-bold uppercase tracking-wider text-calabaza px-2.5 py-1 rounded-md bg-calabaza/15 border border-calabaza/30">
+                {r.badge}
+              </span>
+            </div>
+
+            <h3 class="font-heading text-2xl text-hueso tracking-wide mb-3 leading-snug">
+              {r.title}
+            </h3>
+
+            <p class="text-ceniza text-sm leading-relaxed m-0">
+              {r.desc}
+            </p>
+          </div>
+
+          <div class="mt-6 pt-4 border-t border-white/5 flex items-center gap-2 text-xs text-hueso/70 font-semibold">
+            <span class="text-emerald-400">✓</span>
+            <span>Garantizado al 100%</span>
+          </div>
+        </div>
+      ))}
+    </div>
+
+  </div>
+</section>

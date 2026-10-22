@@ -1,0 +1,169 @@
+---
+interface Props {
+  producto: {
+    medidas: {
+      alto: string;
+      ancho: string;
+      profundidad: string;
+      capucha: string;
+    };
+    material: {
+      mascara: string;
+      capucha: string;
+      peso: string;
+      cuidado: string;
+    };
+    incluye: string[];
+  };
+}
+
+const { producto } = Astro.props;
+---
+
+<section class="py-12 md:py-20 bg-sombra border-y border-white/10 relative">
+  <div class="max-w-6xl mx-auto px-4">
+    
+    <div class="text-center max-w-2xl mx-auto mb-10 sm:mb-14">
+      <span class="text-xs uppercase tracking-widest text-calabaza font-bold px-3 py-1 rounded-full bg-calabaza/10 border border-calabaza/20 inline-block mb-3">
+        Ficha Técnica
+      </span>
+      <h2 class="font-heading text-4xl sm:text-5xl md:text-6xl text-hueso tracking-wide m-0">
+        ESPECIFICACIONES Y MATERIALES
+      </h2>
+      <p class="text-ceniza text-sm sm:text-base mt-3 m-0">
+        Cada detalle construido para máxima comodidad y durabilidad durante toda la noche.
+      </p>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
+      
+      {/* Columna 1: Medidas y Materiales */}
+      <div class="space-y-6">
+        <div class="bg-noche/80 border border-white/10 rounded-[14px] p-6 space-y-4 shadow-lg">
+          <h3 class="font-heading text-2xl text-hueso tracking-wide m-0 flex items-center gap-2">
+            <span>📏</span>
+            <span>Dimensiones Exactas</span>
+          </h3>
+          
+          <div class="grid grid-cols-2 sm:grid-cols-3 gap-3 text-sm">
+            <div class="p-3 rounded-xl bg-sombra border border-white/5">
+              <span class="text-ceniza text-xs block">Alto:</span>
+              <strong class="text-hueso text-base">{producto.medidas.alto}</strong>
+            </div>
+            <div class="p-3 rounded-xl bg-sombra border border-white/5">
+              <span class="text-ceniza text-xs block">Ancho:</span>
+              <strong class="text-hueso text-base">{producto.medidas.ancho}</strong>
+            </div>
+            <div class="p-3 rounded-xl bg-sombra border border-white/5">
+              <span class="text-ceniza text-xs block">Profundidad:</span>
+              <strong class="text-hueso text-base">{producto.medidas.profundidad}</strong>
+            </div>
+          </div>
+
+          <p class="text-xs text-ceniza leading-relaxed bg-sombra/60 p-3 rounded-xl border border-white/5 m-0">
+            <strong>Capucha integrada:</strong> {producto.medidas.capucha}.
+          </p>
+        </div>
+
+        <div class="bg-noche/80 border border-white/10 rounded-[14px] p-6 space-y-4 shadow-lg">
+          <h3 class="font-heading text-2xl text-hueso tracking-wide m-0 flex items-center gap-2">
+            <span>🛡️</span>
+            <span>Materiales y Confort</span>
+          </h3>
+
+          <ul class="space-y-3 text-sm text-ceniza list-none p-0 m-0">
+            <li class="flex items-start gap-3">
+              <span class="text-calabaza font-bold mt-0.5">•</span>
+              <div>
+                <strong class="text-hueso block">Máscara rígida:</strong>
+                {producto.material.mascara}
+              </div>
+            </li>
+            <li class="flex items-start gap-3">
+              <span class="text-calabaza font-bold mt-0.5">•</span>
+              <div>
+                <strong class="text-hueso block">Capucha:</strong>
+                {producto.material.capucha}
+              </div>
+            </li>
+            <li class="flex items-start gap-3">
+              <span class="text-calabaza font-bold mt-0.5">•</span>
+              <div>
+                <strong class="text-hueso block">Peso ultra liviano:</strong>
+                {producto.material.peso}
+              </div>
+            </li>
+            <li class="flex items-start gap-3">
+              <span class="text-calabaza font-bold mt-0.5">•</span>
+              <div>
+                <strong class="text-hueso block">Cuidado y limpieza:</strong>
+                {producto.material.cuidado}
+              </div>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      {/* Columna 2: Visión, Respiración y Qué Incluye */}
+      <div class="space-y-6">
+        
+        {/* Tarjeta Visión & Respiración */}
+        <div class="bg-noche/80 border border-white/10 rounded-[14px] p-6 space-y-4 shadow-lg">
+          <h3 class="font-heading text-2xl text-hueso tracking-wide m-0 flex items-center gap-2">
+            <span>👁️</span>
+            <span>Visión Panorámica y Respiración</span>
+          </h3>
+
+          <div class="space-y-3 text-sm text-ceniza">
+            <div class="flex items-start gap-3 p-3 rounded-xl bg-sombra border border-white/5">
+              <span class="text-xl">👀</span>
+              <div>
+                <strong class="text-hueso block mb-0.5">Malla microperforada invisible:</strong>
+                Tú ves con total claridad hacia el exterior con amplio campo visual, mientras tus ojos quedan completamente ocultos en la sombra para quien te mira.
+              </div>
+            </div>
+
+            <div class="flex items-start gap-3 p-3 rounded-xl bg-sombra border border-white/5">
+              <span class="text-xl">🌬️</span>
+              <div>
+                <strong class="text-hueso block mb-0.5">Doble flujo de ventilación:</strong>
+                Aperturas sutiles en la nariz y zona bucal que evitan que el aire caliente se condense o se empañen los ojos, manteniéndote fresco toda la noche.
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Tarjeta Qué Incluye */}
+        <div class="bg-gradient-to-br from-noche via-noche to-bruma/30 border border-calabaza/30 rounded-[14px] p-6 space-y-4 shadow-lg">
+          <div class="flex items-center justify-between">
+            <h3 class="font-heading text-2xl text-hueso tracking-wide m-0 flex items-center gap-2">
+              <span>📦</span>
+              <span>¿Qué Viene en tu Paquete?</span>
+            </h3>
+            <span class="text-xs uppercase font-bold px-2 py-0.5 rounded bg-calabaza/20 text-calabaza">
+              Sellado
+            </span>
+          </div>
+
+          <div class="space-y-2.5">
+            {producto.incluye.map((item, idx) => (
+              <div class="flex items-center gap-3 p-3 rounded-xl bg-noche/70 border border-white/10 text-sm">
+                <span class="w-6 h-6 rounded-full bg-calabaza text-noche font-bold text-xs flex items-center justify-center flex-shrink-0">
+                  {idx + 1}
+                </span>
+                <span class="text-hueso font-medium">{item}</span>
+              </div>
+            ))}
+          </div>
+
+          <p class="text-xs text-ceniza text-center pt-2 m-0">
+            Despachado en caja sellada con embalaje protector contra golpes.
+          </p>
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+</section>
