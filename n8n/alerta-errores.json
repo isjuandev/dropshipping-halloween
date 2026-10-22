@@ -15,7 +15,7 @@
     {
       "parameters": {
         "chatId": "={{ $vars.TELEGRAM_CHAT_ID || '-1001234567890' }}",
-        "text": "=⚠️ <b>FALLÓ EL FLUJO DE PEDIDOS</b>\n\n<b>Flujo:</b> {{ $json.workflow.name }}\n<b>ID de ejecución:</b> <code>{{ $json.execution.id }}</code>\n<b>Error:</b> <code>{{ $json.execution.error.message || 'Error desconocido' }}</code>\n\n🔗 <a href=\"{{ $json.execution.url }}\">Abrir ejecución en n8n</a>",
+        "text": "=\u26a0\ufe0f <b>FALL\u00d3 EL FLUJO DE PEDIDOS</b>\n\n<b>Flujo:</b> {{ $json.workflow.name }}\n<b>ID de ejecuci\u00f3n:</b> <code>{{ $json.execution.id }}</code>\n<b>Error:</b> <code>{{ $json.execution.error.message || 'Error desconocido' }}</code>\n\n\ud83d\udd17 <a href=\"{{ $json.execution.url }}\">Abrir ejecuci\u00f3n en n8n</a>",
         "additionalFields": {
           "parse_mode": "HTML",
           "disable_web_page_preview": true
@@ -31,8 +31,8 @@
       ],
       "credentials": {
         "telegramApi": {
-          "id": "TELEGRAM_CREDENTIAL_ID",
-          "name": "Telegram Bot Dropi"
+          "id": "hIhVO9mtzRITeULp",
+          "name": "Telegram account"
         }
       }
     }
