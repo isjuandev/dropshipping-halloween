@@ -20,6 +20,7 @@ let dir = 'Dirección no provista';
 let total = 29900;
 let quantity = 1;
 let notes = '';
+let selectedCarrierId = null;
 let chatId = '-1003981686470';
 let threadId = 46;
 let replyToId = null;
@@ -40,6 +41,7 @@ if (cb && cb.data) {
   else action = code || '';
 
   if (parts[2]) orderId = parts[2];
+  if (parts[3] && !isNaN(Number(parts[3]))) selectedCarrierId = Number(parts[3]);
 
   const msgText = cb.message?.text || '';
   
@@ -87,6 +89,7 @@ if (cb && cb.data) {
   total = Number(p.total) || 29900;
   quantity = Number(p.quantity) || 1;
   notes = p.notes || '';
+  if (p.carrier_id) selectedCarrierId = Number(p.carrier_id);
 }
 
 if (!action) {
@@ -101,7 +104,7 @@ if (!action) {
 }
 
 const productId = 2289560;
-const token = "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJjbGllbnRfaWQiOiJtY3AtY2xpLXByb3h5LTg0ODc0NTc4IiwiY291bnRyeV9jb2RlIjoiQ08iLCJwZXJtaXNzaW9ucyI6InJlYWQ6aW52ZW50b3J5LHdyaXRlOmludmVudG9yeSxyZWFkOm9yZGVycyx3cml0ZTpvcmRlcnMscmVhZDpiaWxsaW5nLHJlYWQ6cmVwb3J0cyIsIndoaXRlX2JyYW5kX2lkIjoxLCJ1c2VyX3R5cGUiOiJEUk9QU0hJUFBFUiIsInVzZXJfbmFtZSI6Ikp1YW4iLCJpc3MiOiJodHRwOi8vYXBpLWNvcmUucHJvZC5pbnRlcm5hbCIsInN1YiI6Ijg1Mzk2MyIsImF1ZCI6WyJodHRwczovL21jcC5kcm9waS5jby9tY3AiXSwiZXhwIjoxNzkyNzMxNTIwLCJuYmYiOjE3OTI3Mjc5MjAsImlhdCI6MTc5MjcyNzkyMCwianRpIjoiRlZEenJ1dUg4QnJfNVRJRkc4NDE0QSJ9.nt-YbSFBo_7I-MbJV37SSxEtlyV5yCIULT4cx5sz1hrCi_iSnJlncBHVlVB-4T7zBGwx0_CcDI-cj13GkNR6WWMRW6usE26es6DVmQRWyqFk_D43HkDm_qwh59vWQxxbn8H2adVSrqVF2kiaIaD8DQ0L5SuNmEmiHPJxioMLdv3wF5ZuGnJE41uqZO4QgEaD49T1ACcVLDURYEvX_D78_o6EKNAhsKjKFadB7WVA7f5G2seAZBsih2UeZMx7hUrcvqs4TxGC1NVh0S6a-QYdF3PzJp7La6w2_1ZkzxZ7UovNoAMHHpu098NuNr9NH6J4GiEkrq1_UD4SlI065zydpQ";
+const token = "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJjbGllbnRfaWQiOiJtY3AtY2xpLXByb3h5LTg0ODc0NTc4IiwiY291bnRyeV9jb2RlIjoiQ08iLCJwZXJtaXNzaW9ucyI6InJlYWQ6aW52ZW50b3J5LHdyaXRlOmludmVudG9yeSxyZWFkOm9yZGVycyx3cml0ZTpvcmRlcnMscmVhZDpiaWxsaW5nLHJlYWQ6cmVwb3J0cyIsIndoaXRlX2JyYW5kX2lkIjoxLCJ1c2VyX3R5cGUiOiJEUk9QU0hJUFBFUiIsInVzZXJfbmFtZSI6Ikp1YW4iLCJpc3MiOiJodHRwOi8vYXBpLWNvcmUucHJvZC5pbnRlcm5hbCIsInN1YiI6Ijg1Mzk2MyIsImF1ZCI6WyJodHRwczovL21jcC5kcm9waS5jby9tY3AiXSwiZXhwIjoxNzkyNzc3NDM0LCJuYmYiOjE3OTI3NzM4MzQsImlhdCI6MTc5Mjc3MzgzNCwianRpIjoiUFRZM21xUE82V2RUaTdhRFdyUkRuUSJ9.k4iKu1uip3PiRzjs0pfLJgV4yfqnDcrvVx5Ccvgff8jIsP5MSw1n6QmvFbDlybzKi1ICJR24XIo4xHSoyzy6_IwZVsrYjnrAAkPTRbtG8bgM_7uo262vs5jqBpD9gmuB2peZLjlX2_nmBVtHLFZxWRjbGxY-bQSP7DByCUio00ykNebWUC0j9ZGy-PO2QddHJYrx9gjL7t9LcEKKnya07k-ccRUH24vgTsZRmKc8R1-dyuM-Gx47lcmfOal7b7uZe6o8YmUOBtpLMBn4au0TZoz4GoW7Ivl7gb6UtzmVqAdICFxbH94dZfX3fEK5APbLbbu8BfOGKO8t8kMVwbMf9g";
 
 const httpRequest = this.helpers.httpRequest.bind(this.helpers);
 
@@ -284,13 +287,57 @@ ${best ? `💡 <i>Transportadora más económica: <b>${best.name} (${best.format
 // 3. ACCIÓN: CREAR ORDEN / CREATE_ORDER
 } else if (action === 'create_order' || action === 'crear') {
   const unitPrice = Math.round(total / quantity);
-  const mcpRes = await callMcp('create_order', {
+  
+  // Si no se especificó transportadora manualmente, cotizar y seleccionar la más económica automáticamente
+  let carrierId = selectedCarrierId || null;
+  let carrierName = '';
+  const carrierMap = { 'VELOCES': 6, 'ENVIA': 2, 'TCC': 10, 'DOMINA': 4, 'COORDINADORA': 5, 'INTERRAPIDISIMO': 3, '99MINUTOS': 7 };
+
+  if (!carrierId) {
+    try {
+      const cityRes = await callMcp('search_cities', { name: city });
+      const cityText = cityRes?.content?.[0]?.text || '';
+      const lines = cityText.split('\n').filter(l => l.trim().match(/^\d+,/));
+      if (lines.length > 0) {
+        const parts = lines[0].split(',').map(s => s.replace(/"/g, '').trim());
+        const quoteRes = await callMcp('quote_shipping', {
+          cash_on_delivery: true,
+          destination_city: { id: Number(parts[0]), dane_code: parts[3], zip_code: parts[4] || '050001' },
+          products: [{ id: productId, type: 'SIMPLE', quantity, price: total }]
+        });
+        const qText = quoteRes?.content?.[0]?.text || '';
+        const found = [];
+        for (const [cName, cId] of Object.entries(carrierMap)) {
+          const m = qText.match(new RegExp(`${cName},normal,([0-9.]+)`));
+          if (m && Number(m[1]) > 0) found.push({ id: cId, name: cName, cost: Number(m[1]) });
+        }
+        found.sort((a,b) => a.cost - b.cost);
+        if (found.length > 0) {
+          carrierId = found[0].id;
+          carrierName = found[0].name;
+        }
+      }
+    } catch (_) {}
+  } else {
+    for (const [cName, cId] of Object.entries(carrierMap)) {
+      if (cId === carrierId) carrierName = cName;
+    }
+  }
+
+  const orderPayload = {
     name, surname: surname || 'Cliente', dir, state, city, phone,
     rate_type: 'CON RECAUDO',
     notes: notes || `Pedido ${orderId}`,
     shop_order_id: orderId,
     products: [{ id: productId, price: unitPrice, quantity }]
-  });
+  };
+
+  if (carrierId) {
+    orderPayload.distribution_company_id = carrierId;
+  }
+
+  const mcpRes = await callMcp('create_order', orderPayload);
+  const resultText = mcpRes?.content?.[0]?.text || '';
 
   telegramText = `🎉 <b>¡ORDEN CREADA EN DROPI CON ÉXITO!</b>
 ━━━━━━━━━━━━━━━━━━━━
@@ -299,8 +346,9 @@ ${best ? `💡 <i>Transportadora más económica: <b>${best.name} (${best.format
 📍 <b>Destino:</b> ${city}, ${state} — <code>${dir}</code>
 📦 <b>Producto:</b> Máscara Scream (#${productId}) × ${quantity} un.
 💰 <b>Total a Recaudar:</b> <code>${totalFormateado}</code>
+${carrierName ? `🚚 <b>Transportadora seleccionada:</b> <b>${carrierName}</b> (Opción más económica)` : '🚚 <b>Transportadora:</b> Asignación inteligente Dropi'}
 
-🚚 <i>El proveedor ya fue notificado y la transportadora preparará la guía.</i>`;
+<i>El proveedor ya fue notificado y la transportadora preparará la guía.</i>`;
 
 // 4. ACCIÓN: CONSULTAR ORDEN / GET_ORDER
 } else if (action === 'get_order' || action === 'consultar') {
