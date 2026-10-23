@@ -10,6 +10,46 @@ const workflowPayload = {
   nodes: [
     {
       parameters: {
+        updates: ['callback_query'],
+        additionalFields: {}
+      },
+      id: 'node-telegram-trigger',
+      name: 'Telegram Callback Trigger',
+      type: 'n8n-nodes-base.telegramTrigger',
+      typeVersion: 1.2,
+      position: [100, 160],
+      webhookId: 'dropi-tg-trigger-0001',
+      credentials: {
+        telegramApi: {
+          id: 'jd9tP3LVEuDaEf6l',
+          name: 'Telegram ViralyShop'
+        }
+      }
+    },
+    {
+      parameters: {
+        resource: 'callback',
+        operation: 'answerQuery',
+        queryId: '={{ $json.callback_query.id }}',
+        additionalFields: {
+          text: '⚡ Consultando Dropi...',
+          showAlert: false
+        }
+      },
+      id: 'node-answer-callback',
+      name: 'Responder Callback Telegram',
+      type: 'n8n-nodes-base.telegram',
+      typeVersion: 1.2,
+      position: [320, 160],
+      credentials: {
+        telegramApi: {
+          id: 'jd9tP3LVEuDaEf6l',
+          name: 'Telegram ViralyShop'
+        }
+      }
+    },
+    {
+      parameters: {
         httpMethod: 'GET',
         path: 'dropi-hub',
         responseMode: 'responseNode',
@@ -21,7 +61,7 @@ const workflowPayload = {
       name: 'Webhook Dropi Hub',
       type: 'n8n-nodes-base.webhook',
       typeVersion: 2,
-      position: [200, 200],
+      position: [100, 340],
       webhookId: 'e8d1a3f0-45bc-4e12-8901-dropihub0001'
     },
     {
@@ -37,7 +77,7 @@ const workflowPayload = {
       name: 'Webhook Crear Legacy',
       type: 'n8n-nodes-base.webhook',
       typeVersion: 2,
-      position: [200, 400],
+      position: [100, 500],
       webhookId: 'e8d1a3f0-45bc-4e12-8901-crearlegacy01'
     },
     {
@@ -48,16 +88,17 @@ const workflowPayload = {
       name: 'Dropi Hub Router',
       type: 'n8n-nodes-base.code',
       typeVersion: 2,
-      position: [460, 300]
+      position: [560, 300]
     },
     {
       parameters: {
-        chatId: '-1003981686470',
+        chatId: '={{ $json.chatId || "-1003981686470" }}',
         text: '={{ $json.telegramText }}',
         additionalFields: {
           disable_web_page_preview: true,
           parse_mode: 'HTML',
-          message_thread_id: 46,
+          message_thread_id: '={{ $json.threadId || 46 }}',
+          reply_to_message_id: '={{ $json.replyToId }}',
           appendAttribution: false
         }
       },
@@ -65,7 +106,7 @@ const workflowPayload = {
       name: 'Notificar a Telegram',
       type: 'n8n-nodes-base.telegram',
       typeVersion: 1.2,
-      position: [740, 200],
+      position: [820, 200],
       credentials: {
         telegramApi: {
           id: 'jd9tP3LVEuDaEf6l',
@@ -93,10 +134,32 @@ const workflowPayload = {
       name: 'Responder HTML al Navegador',
       type: 'n8n-nodes-base.respondToWebhook',
       typeVersion: 1.1,
-      position: [740, 400]
+      position: [820, 400]
     }
   ],
   connections: {
+    'Telegram Callback Trigger': {
+      main: [
+        [
+          {
+            node: 'Responder Callback Telegram',
+            type: 'main',
+            index: 0
+          }
+        ]
+      ]
+    },
+    'Responder Callback Telegram': {
+      main: [
+        [
+          {
+            node: 'Dropi Hub Router',
+            type: 'main',
+            index: 0
+          }
+        ]
+      ]
+    },
     'Webhook Dropi Hub': {
       main: [
         [
@@ -155,13 +218,10 @@ async function updateWorkflow() {
   if (!res.ok) {
     throw new Error(`Error actualizando: ${JSON.stringify(json)}`);
   }
-  console.log('Workflow ViralyShop - Dropi Hub actualizado con éxito! ID:', json.id, 'Active:', json.active);
+  console.log('Workflow ViralyShop - Dropi Hub actualizado con éxito! ID:', json.id);
 
-  // Asegurar que esté activo
-  const actRes = await fetch(`${N8N_URL}/api/v1/workflows/mScV5OoZ5s9N89aO/activate`, {
-    method: 'POST',
-    headers: { 'X-N8N-API-KEY': N8N_KEY }
-  });
+  await fetch(`${N8N_URL}/api/v1/workflows/mScV5OoZ5s9N89aO/deactivate`, { method: 'POST', headers: { 'X-N8N-API-KEY': N8N_KEY } });
+  const actRes = await fetch(`${N8N_URL}/api/v1/workflows/mScV5OoZ5s9N89aO/activate`, { method: 'POST', headers: { 'X-N8N-API-KEY': N8N_KEY } });
   console.log('Activado status:', actRes.status);
 }
 

@@ -11,92 +11,7 @@ async function updatePedidoBot() {
   const data = await getRes.json();
   const wf = data.data || data;
 
-  // 1. Actualizar nodo Validar y normalizar
-  const nodeNormalizar = wf.nodes.find((n) => n.id === 'node-validar-normalizar');
-  if (nodeNormalizar) {
-    nodeNormalizar.parameters.jsCode = `const item = $input.item.json.body || $input.item.json;
-
-function escapeHtml(str) {
-  if (!str) return '';
-  return String(str)
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;');
-}
-
-const hasPedidoId = Boolean(item.pedidoId);
-const hasProducto = Boolean(item.producto && item.producto.nombre && typeof item.producto.total === 'number');
-const cliente = item.cliente || {};
-const hasCliente = Boolean(cliente.nombreCompleto && cliente.celular && cliente.departamento && cliente.ciudad && cliente.direccion);
-const hasConsentimiento = item.consentimiento === true;
-
-const antispam = item.antispam || {};
-const isSpam = Boolean(antispam.empresa && antispam.empresa.trim().length > 0) || (typeof antispam.segundos === 'number' && antispam.segundos < 4);
-
-const partesNombre = (cliente.nombreCompleto || '').trim().split(/\\s+/);
-const primerNombre = partesNombre.length > 0 ? partesNombre[0] : '';
-const apellidos = partesNombre.length > 1 ? partesNombre.slice(1).join(' ') : '';
-
-const celularLimpio = String(cliente.celular || '').replace(/\\D/g, '').slice(-10);
-
-const totalNum = item.producto?.total || 0;
-const totalFormateado = '$' + totalNum.toLocaleString('es-CO');
-
-let fechaTexto = '';
-try {
-  const d = item.fecha ? new Date(item.fecha) : new Date();
-  fechaTexto = d.toLocaleString('es-CO', { timeZone: 'America/Bogota', dateStyle: 'short', timeStyle: 'short' });
-} catch (e) {
-  fechaTexto = new Date().toISOString();
-}
-
-const msgWa = \`Hola \${cliente.nombreCompleto}, confirmamos tu pedido de \${item.producto?.nombre} (\${item.producto?.paquete}) por valor de \${totalFormateado} para entregar en \${cliente.direccion}, \${cliente.ciudad}. ¿Nos confirmas para proceder con el despacho?\`;
-const waUrlEncoded = encodeURIComponent(msgWa);
-
-const isValid = hasPedidoId && hasProducto && hasCliente && hasConsentimiento;
-
-const hubBase = 'https://n8n.nexobite.com/webhook/dropi-hub';
-const commonParams = \`id=\${encodeURIComponent(item.pedidoId || '')}&name=\${encodeURIComponent(primerNombre)}&surname=\${encodeURIComponent(apellidos)}&phone=\${celularLimpio}&state=\${encodeURIComponent(cliente.departamento || '')}&city=\${encodeURIComponent(cliente.ciudad || '')}&dir=\${encodeURIComponent(cliente.direccion || '')}&total=\${totalNum}&quantity=\${item.producto?.cantidad || 1}&notes=\${encodeURIComponent(cliente.indicaciones || '')}\`;
-
-return {
-  pedidoId: item.pedidoId || 'SIN-ID',
-  isValid,
-  isSpam,
-  fechaTexto,
-  tienda: escapeHtml(item.tienda || 'Tienda'),
-  landing: item.landing || {},
-  producto: {
-    nombre: escapeHtml(item.producto?.nombre || ''),
-    variante: escapeHtml(item.producto?.variante || ''),
-    paquete: escapeHtml(item.producto?.paquete || ''),
-    cantidad: item.producto?.cantidad || 1,
-    extras: (item.producto?.extras || []).map(escapeHtml),
-    precioUnitario: item.producto?.precioUnitario || 0,
-    total: totalNum,
-    totalFormateado
-  },
-  cliente: {
-    nombreCompleto: escapeHtml(cliente.nombreCompleto || ''),
-    primerNombre: escapeHtml(primerNombre),
-    apellidos: escapeHtml(apellidos),
-    celular: celularLimpio,
-    departamento: escapeHtml(cliente.departamento || ''),
-    ciudad: escapeHtml(cliente.ciudad || ''),
-    codigoDane: cliente.codigoDane || '',
-    direccion: escapeHtml(cliente.direccion || ''),
-    indicaciones: escapeHtml(cliente.indicaciones || '')
-  },
-  origen: item.origen || {},
-  whatsappConfirmUrl: \`https://wa.me/57\${celularLimpio}?text=\${waUrlEncoded}\`,
-  huellaDropiUrl: \`\${hubBase}?action=fingerprint&\${commonParams}\`,
-  cotizarFletesUrl: \`\${hubBase}?action=quote&\${commonParams}\`,
-  crearDropiUrl: \`\${hubBase}?action=create_order&\${commonParams}\`,
-  consultarOrdenUrl: \`\${hubBase}?action=get_order&\${commonParams}\`,
-  ultimasOrdenesUrl: \`\${hubBase}?action=list_orders\`
-};`;
-  }
-
-  // 2. Actualizar nodo Telegram con los nuevos botones
+  // 1. Actualizar nodo Telegram con botones NATIVOS callback_data
   const nodeTelegram = wf.nodes.find((n) => n.id === 'node-enviar-telegram');
   if (nodeTelegram) {
     nodeTelegram.parameters.replyMarkup = 'inlineKeyboard';
@@ -114,7 +29,7 @@ return {
               {
                 text: '🛡️ Huella Cliente',
                 additionalFields: {
-                  url: '={{ $json.huellaDropiUrl }}'
+                  callback_data: '={{ "act:fp:" + $json.pedidoId }}'
                 }
               }
             ]
@@ -126,13 +41,13 @@ return {
               {
                 text: '🚚 Cotizar Fletes',
                 additionalFields: {
-                  url: '={{ $json.cotizarFletesUrl }}'
+                  callback_data: '={{ "act:qt:" + $json.pedidoId }}'
                 }
               },
               {
                 text: '=⚡ Crear en Dropi ({{ $json.producto.totalFormateado }})',
                 additionalFields: {
-                  url: '={{ $json.crearDropiUrl }}'
+                  callback_data: '={{ "act:cr:" + $json.pedidoId }}'
                 }
               }
             ]
@@ -144,13 +59,13 @@ return {
               {
                 text: '🔍 Consultar Orden',
                 additionalFields: {
-                  url: '={{ $json.consultarOrdenUrl }}'
+                  callback_data: '={{ "act:gt:" + $json.pedidoId }}'
                 }
               },
               {
                 text: '📦 Últimas Órdenes',
                 additionalFields: {
-                  url: '={{ $json.ultimasOrdenesUrl }}'
+                  callback_data: 'act:ls'
                 }
               }
             ]
@@ -179,7 +94,7 @@ return {
     throw new Error(`Error en PUT: ${errText}`);
   }
 
-  console.log('Workflow Pedido - Bot actualizado con éxito!');
+  console.log('Workflow Pedido - Bot actualizado con botones nativos callback_data!');
 
   await fetch(`${N8N_URL}/api/v1/workflows/${WORKFLOW_ID}/deactivate`, {
     method: 'POST',
