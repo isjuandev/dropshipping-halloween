@@ -97,7 +97,7 @@ return {
   }
 
   // 2. Actualizar nodo Telegram con los nuevos botones
-  const nodeTelegram = wf.nodes.find((n) => n.id === 'node-notificar-telegram');
+  const nodeTelegram = wf.nodes.find((n) => n.id === 'node-enviar-telegram');
   if (nodeTelegram) {
     nodeTelegram.parameters.replyMarkup = 'inlineKeyboard';
     nodeTelegram.parameters.inlineKeyboard = {
