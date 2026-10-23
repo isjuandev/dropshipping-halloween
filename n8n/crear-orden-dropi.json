@@ -1,0 +1,131 @@
+{
+  "name": "ViralyShop - Crear en Dropi",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "GET",
+        "path": "crear-orden-dropi",
+        "responseMode": "responseNode",
+        "options": {
+          "allowedOrigins": "*"
+        }
+      },
+      "id": "node-webhook-crear-dropi",
+      "name": "Webhook crear orden en Dropi",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        200,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "\nconst q = $input.item.json.query || {};\nconst body = $input.item.json.body || {};\nconst p = { ...body, ...q };\n\nconst orderId = p.id || 'PED-DESCONOCIDO';\nconst name = p.name || 'Cliente';\nconst surname = p.surname || 'Cliente';\nconst phone = String(p.phone || '').replace(/\\D/g, '').slice(-10);\nconst state = (p.state || 'ANTIOQUIA').toUpperCase();\nconst city = (p.city || 'MEDELLIN').toUpperCase();\nconst dir = p.dir || 'Direccion no provista';\nconst total = Number(p.total) || 29900;\nconst quantity = Number(p.quantity) || 1;\nconst notes = p.notes || '';\nconst productId = 2289560;\n\nconst token = \"eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJjbGllbnRfaWQiOiJtY3AtY2xpLXByb3h5LWZlMWY4YzdmIiwiY291bnRyeV9jb2RlIjoiQ08iLCJwZXJtaXNzaW9ucyI6InJlYWQ6aW52ZW50b3J5LHdyaXRlOmludmVudG9yeSxyZWFkOm9yZGVycyx3cml0ZTpvcmRlcnMscmVhZDpiaWxsaW5nLHJlYWQ6cmVwb3J0cyIsIndoaXRlX2JyYW5kX2lkIjoxLCJ1c2VyX3R5cGUiOiJEUk9QU0hJUFBFUiIsInVzZXJfbmFtZSI6Ikp1YW4iLCJpc3MiOiJodHRwOi8vYXBpLWNvcmUucHJvZC5pbnRlcm5hbCIsInN1YiI6Ijg1Mzk2MyIsImF1ZCI6WyJodHRwczovL21jcC5kcm9waS5jby9tY3AiXSwiZXhwIjoxNzkyNzI4NDYwLCJuYmYiOjE3OTI3MjQ4NjAsImlhdCI6MTc5MjcyNDg2MCwianRpIjoiV3l6cEY4NUVDOENtTGNXclpaVVd0ZyJ9.LkZwEaP3vQA7KenxkXaT8VMms1jNZMoeHIUno7FGr1lFqcsCRsqDtjgptw4CDHoa6Kfhd8EkqVuRoSyKh8OohCGvoORbrDunpm_f-Rq642QNJC_PqoXFKaxuj1P2S0pJ5i4avqpbxokKeD13nL6pqzxJ9R1FfShEQaLGfDhDKGVeivmFxnxdp-fEsTMI7D6pDxxRcJykxF6HxgDNKqgbSZLYqNRpJc9aTUwNlCeK1sGoEI0Ht5AWGLyoo9w_1p1KYYIL1w8SSVeeAisXvaZ4vL_yix461aOgKMqz4SX1v0ZFKahldktsddYT-59ZUqwnxWE2vX19KZg4WZ7exXjWXA\";\n\n// 1. Iniciar sesión MCP\nconst initRes = await fetch(\"https://mcp.dropi.co/mcp\", {\n  method: \"POST\",\n  headers: { \"Authorization\": \"Bearer \" + token, \"Content-Type\": \"application/json\" },\n  body: JSON.stringify({\n    jsonrpc: \"2.0\", id: 1, method: \"initialize\",\n    params: { protocolVersion: \"2024-11-05\", capabilities: {}, clientInfo: { name: \"n8n\", version: \"1.0\" } }\n  })\n});\nconst sessionId = initRes.headers.get(\"mcp-session-id\");\n\nawait fetch(\"https://mcp.dropi.co/mcp\", {\n  method: \"POST\",\n  headers: { \"Authorization\": \"Bearer \" + token, \"Content-Type\": \"application/json\", ...(sessionId ? { \"mcp-session-id\": sessionId } : {}) },\n  body: JSON.stringify({ jsonrpc: \"2.0\", method: \"notifications/initialized\" })\n});\n\n// 2. Crear Orden\nconst unitPrice = Math.round(total / quantity);\nconst toolRes = await fetch(\"https://mcp.dropi.co/mcp\", {\n  method: \"POST\",\n  headers: { \"Authorization\": \"Bearer \" + token, \"Content-Type\": \"application/json\", ...(sessionId ? { \"mcp-session-id\": sessionId } : {}) },\n  body: JSON.stringify({\n    jsonrpc: \"2.0\", id: 2, method: \"tools/call\",\n    params: {\n      name: \"create_order\",\n      arguments: {\n        name, surname, dir, state, city, phone,\n        rate_type: \"CON RECAUDO\",\n        notes, shop_order_id: orderId,\n        products: [{ id: productId, price: unitPrice, quantity }]\n      }\n    }\n  })\n});\n\nconst rawText = await toolRes.text();\nlet dropiResult = {};\nfor (const line of rawText.split(\"\\n\")) {\n  if (line.startsWith(\"data: \")) {\n    try {\n      const parsed = JSON.parse(line.slice(6));\n      dropiResult = parsed.result || parsed.error || {};\n    } catch (_) {}\n    break;\n  }\n}\n\nreturn {\n  orderId,\n  customerName: name + \" \" + surname,\n  phone,\n  state,\n  city,\n  dir,\n  total,\n  quantity,\n  totalFormateado: \"$\" + total.toLocaleString(\"es-CO\"),\n  dropiResult,\n  rawText\n};\n"
+      },
+      "id": "node-crear-dropi-code",
+      "name": "Crear Orden en Dropi",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        420,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "chatId": "-1003981686470",
+        "text": "=🎉 <b>¡ORDEN CREADA EN DROPI CON ÉXITO!</b>\n━━━━━━━━━━━━━━━━━━━━\n🆔 <b>Pedido Tienda:</b> <code>#{{ $json.orderId }}</code>\n👤 <b>Cliente:</b> {{ $json.customerName }} (<code>{{ $json.phone }}</code>)\n📍 <b>Destino:</b> {{ $json.city }}, {{ $json.state }} — <code>{{ $json.dir }}</code>\n📦 <b>Producto:</b> Máscara Scream (#2289560) × {{ $json.quantity }} un.\n💰 <b>Total a Recaudar:</b> <code>{{ $json.totalFormateado }}</code>\n\n🚚 <i>El proveedor ya fue notificado y la transportadora preparará la guía.</i>",
+        "additionalFields": {
+          "disable_web_page_preview": true,
+          "parse_mode": "HTML",
+          "message_thread_id": 46,
+          "appendAttribution": false,
+          "reply_markup": {
+            "inline_keyboard": [
+              [
+                {
+                  "text": "📋 Abrir Mis Pedidos en Dropi",
+                  "url": "https://app.dropi.co/orders"
+                }
+              ]
+            ]
+          }
+        }
+      },
+      "id": "node-notificar-telegram",
+      "name": "Notificar a Telegram",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        680,
+        200
+      ],
+      "credentials": {
+        "telegramApi": {
+          "id": "jd9tP3LVEuDaEf6l",
+          "name": "Telegram ViralyShop"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "respondWith": "text",
+        "responseBody": "<!DOCTYPE html>\n<html lang=\"es\">\n<head>\n  <meta charset=\"utf-8\">\n  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n  <title>Orden Creada en Dropi</title>\n  <style>\n    body { margin: 0; font-family: system-ui, -apple-system, sans-serif; background: #0A0A0B; color: #F2EFE9; display: flex; align-items: center; justify-content: center; min-height: 100vh; padding: 20px; box-sizing: border-box; }\n    .card { background: #16141A; border: 1px solid rgba(255,106,0,0.4); max-width: 460px; width: 100%; border-radius: 20px; padding: 32px 24px; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }\n    .icon { width: 64px; height: 64px; background: rgba(16,185,129,0.15); border: 2px solid #10B981; color: #10B981; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 32px; margin: 0 auto 16px; }\n    h1 { margin: 0 0 8px; font-size: 24px; color: #FF6A00; }\n    p { margin: 0 0 20px; color: #9A96A0; font-size: 14px; line-height: 1.5; }\n    .info { background: #0A0A0B; border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; padding: 14px; text-align: left; font-size: 13px; margin-bottom: 24px; line-height: 1.6; }\n    .btn { display: inline-block; width: 100%; box-sizing: border-box; background: #FF6A00; color: #0A0A0B; font-weight: bold; text-decoration: none; padding: 14px; border-radius: 12px; text-transform: uppercase; font-size: 14px; letter-spacing: 0.5px; }\n  </style>\n</head>\n<body>\n  <div class=\"card\">\n    <div class=\"icon\">✓</div>\n    <h1>¡Orden Registrada en Dropi!</h1>\n    <p>El pedido para <strong>{{ $json.customerName }}</strong> fue creado con éxito en Dropi bajo la modalidad de Pago Contraentrega.</p>\n    <div class=\"info\">\n      <div><strong>Pedido Tienda:</strong> {{ $json.orderId }}</div>\n      <div><strong>Destino:</strong> {{ $json.city }}, {{ $json.state }}</div>\n      <div><strong>Dirección:</strong> {{ $json.dir }}</div>\n      <div><strong>Cobrar al entregar:</strong> {{ $json.totalFormateado }}</div>\n    </div>\n    <a href=\"https://app.dropi.co/orders\" class=\"btn\" target=\"_blank\">Ver Pedido en Dropi</a>\n  </div>\n</body>\n</html>",
+        "options": {
+          "responseCode": 200,
+          "responseHeaders": {
+            "entries": [
+              {
+                "name": "Content-Type",
+                "value": "text/html; charset=utf-8"
+              }
+            ]
+          }
+        }
+      },
+      "id": "node-responder-html",
+      "name": "Responder HTML al Navegador",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [
+        680,
+        400
+      ]
+    }
+  ],
+  "connections": {
+    "Webhook crear orden en Dropi": {
+      "main": [
+        [
+          {
+            "node": "Crear Orden en Dropi",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Crear Orden en Dropi": {
+      "main": [
+        [
+          {
+            "node": "Notificar a Telegram",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Responder HTML al Navegador",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "callerPolicy": "workflowsFromSameOwner",
+    "availableInMCP": false
+  }
+}
