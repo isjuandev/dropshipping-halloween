@@ -1,7 +1,13 @@
 // Dropi Hub Router para n8n Code Node
 // Soporta Callback Queries nativas de Telegram Y Webhooks HTTP
 
-const cb = $input.item.json.callback_query;
+let cb = null;
+try {
+  cb = $input.item.json.callback_query || $('Telegram Callback Trigger').first()?.json?.callback_query;
+} catch (_) {
+  cb = $input.item.json.callback_query;
+}
+
 let action = '';
 let orderId = 'PED-DESCONOCIDO';
 let name = 'Cliente';
@@ -18,7 +24,7 @@ let chatId = '-1003981686470';
 let threadId = 46;
 let replyToId = null;
 
-if (cb) {
+if (cb && cb.data) {
   chatId = String(cb.message?.chat?.id || chatId);
   threadId = Number(cb.message?.message_thread_id || threadId);
   replyToId = cb.message?.message_id || null;
@@ -31,7 +37,7 @@ if (cb) {
   else if (code === 'cr') action = 'create_order';
   else if (code === 'gt') action = 'get_order';
   else if (code === 'ls') action = 'list_orders';
-  else action = code || 'fingerprint';
+  else action = code || '';
 
   if (parts[2]) orderId = parts[2];
 
@@ -42,8 +48,8 @@ if (cb) {
     if (oMatch) orderId = oMatch[1].trim();
   }
 
-  const pMatch = msgText.match(/Celular:\s*([0-9]+)/i);
-  if (pMatch) phone = pMatch[1].trim();
+  const pMatch = msgText.match(/Celular:\s*([0-9+]+)/i);
+  if (pMatch) phone = pMatch[1].replace(/\D/g, '').slice(-10);
 
   const cMatch = msgText.match(/Ciudad:\s*([^\n\r]+)/i);
   if (cMatch) city = cMatch[1].trim();
@@ -69,7 +75,7 @@ if (cb) {
   const b = $input.item.json.body || {};
   const p = { ...b, ...q };
 
-  action = (p.action || 'create_order').toLowerCase();
+  action = (p.action || '').toLowerCase();
   orderId = p.id || 'PED-DESCONOCIDO';
   name = p.name || 'Cliente';
   surname = p.surname || '';
@@ -81,6 +87,17 @@ if (cb) {
   total = Number(p.total) || 29900;
   quantity = Number(p.quantity) || 1;
   notes = p.notes || '';
+}
+
+if (!action) {
+  return {
+    action: 'none',
+    telegramText: '⚠️ No se reconoció la acción solicitada para Dropi.',
+    htmlResponse: 'Acción no reconocida',
+    chatId,
+    threadId,
+    replyToId
+  };
 }
 
 const productId = 2289560;
@@ -153,7 +170,6 @@ async function callMcp(toolName, args = {}) {
 }
 
 let telegramText = '';
-let htmlResponse = '';
 const totalFormateado = '$' + total.toLocaleString('es-CO');
 
 // 1. ACCIÓN: HUELLA / RISK PROFILE

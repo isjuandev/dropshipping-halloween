@@ -40,7 +40,7 @@ const workflowPayload = {
       name: 'Responder Callback Telegram',
       type: 'n8n-nodes-base.telegram',
       typeVersion: 1.2,
-      position: [320, 160],
+      position: [400, 100],
       credentials: {
         telegramApi: {
           id: 'jd9tP3LVEuDaEf6l',
@@ -88,7 +88,7 @@ const workflowPayload = {
       name: 'Dropi Hub Router',
       type: 'n8n-nodes-base.code',
       typeVersion: 2,
-      position: [560, 300]
+      position: [460, 300]
     },
     {
       parameters: {
@@ -98,7 +98,7 @@ const workflowPayload = {
           disable_web_page_preview: true,
           parse_mode: 'HTML',
           message_thread_id: '={{ $json.threadId || 46 }}',
-          reply_to_message_id: '={{ $json.replyToId }}',
+          reply_to_message_id: '={{ $json.replyToId ? $json.replyToId : undefined }}',
           appendAttribution: false
         }
       },
@@ -106,7 +106,7 @@ const workflowPayload = {
       name: 'Notificar a Telegram',
       type: 'n8n-nodes-base.telegram',
       typeVersion: 1.2,
-      position: [820, 200],
+      position: [740, 200],
       credentials: {
         telegramApi: {
           id: 'jd9tP3LVEuDaEf6l',
@@ -134,7 +134,7 @@ const workflowPayload = {
       name: 'Responder HTML al Navegador',
       type: 'n8n-nodes-base.respondToWebhook',
       typeVersion: 1.1,
-      position: [820, 400]
+      position: [740, 400]
     }
   ],
   connections: {
@@ -145,13 +145,7 @@ const workflowPayload = {
             node: 'Responder Callback Telegram',
             type: 'main',
             index: 0
-          }
-        ]
-      ]
-    },
-    'Responder Callback Telegram': {
-      main: [
-        [
+          },
           {
             node: 'Dropi Hub Router',
             type: 'main',
