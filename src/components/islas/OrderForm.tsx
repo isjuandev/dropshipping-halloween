@@ -39,6 +39,7 @@ export default function OrderForm() {
   const [codigoDane, setCodigoDane] = useState('');
   const [direccion, setDireccion] = useState('');
   const [indicaciones, setIndicaciones] = useState('');
+  const [tipoEntrega, setTipoEntrega] = useState<'domicilio' | 'oficina'>('domicilio');
   const [consentimiento, setConsentimiento] = useState(false);
   const [empresaHoneypot, setEmpresaHoneypot] = useState('');
 
@@ -78,6 +79,7 @@ export default function OrderForm() {
         if (parsed.codigoDane) setCodigoDane(parsed.codigoDane);
         if (parsed.direccion) setDireccion(parsed.direccion);
         if (parsed.indicaciones) setIndicaciones(parsed.indicaciones);
+        if (parsed.tipoEntrega) setTipoEntrega(parsed.tipoEntrega);
       }
     } catch (e) {
       // Ignorar fallos de localStorage en modo incógnito estricto
@@ -109,10 +111,11 @@ export default function OrderForm() {
         codigoDane,
         direccion,
         indicaciones,
+        tipoEntrega,
       };
       localStorage.setItem('draft_pedido_contraentrega', JSON.stringify(draft));
     } catch (e) {}
-  }, [nombreCompleto, celular, departamento, ciudad, codigoDane, direccion, indicaciones]);
+  }, [nombreCompleto, celular, departamento, ciudad, codigoDane, direccion, indicaciones, tipoEntrega]);
 
   // Si cambia el departamento, reiniciar ciudad o cargar sus municipios
   const handleDepartamentoChange = async (newDept: string) => {
@@ -128,6 +131,25 @@ export default function OrderForm() {
       setCiudadSearch('Bogotá D.C.');
       setCodigoDane('11001');
       validateField('ciudad', 'Bogotá D.C.');
+      if (tipoEntrega === 'oficina') {
+        const textOficina = 'Reclamar en oficina principal de transportadora (Bogotá D.C.)';
+        setDireccion(textOficina);
+        validateField('direccion', textOficina);
+      }
+    }
+  };
+
+  const handleTipoEntregaChange = (tipo: 'domicilio' | 'oficina') => {
+    setTipoEntrega(tipo);
+    if (tipo === 'oficina') {
+      const textOficina = `Reclamar en oficina principal de transportadora${ciudad ? ` (${ciudad})` : ''}`;
+      setDireccion(textOficina);
+      validateField('direccion', textOficina);
+    } else {
+      if (direccion.includes('Reclamar en oficina')) {
+        setDireccion('');
+        validateField('direccion', '');
+      }
     }
   };
 
@@ -650,6 +672,11 @@ export default function OrderForm() {
                                 setCiudadSearch(m.nombre);
                                 setCodigoDane(m.codigoDane);
                                 validateField('ciudad', m.nombre);
+                                if (tipoEntrega === 'oficina') {
+                                  const textOficina = `Reclamar en oficina principal de transportadora (${m.nombre})`;
+                                  setDireccion(textOficina);
+                                  validateField('direccion', textOficina);
+                                }
                                 setIsComboboxOpen(false);
                               }}
                               class="w-full text-left px-4 py-2.5 text-sm text-noche hover:bg-calabaza/15 transition-colors flex items-center justify-between"
@@ -671,42 +698,100 @@ export default function OrderForm() {
                 )}
               </div>
 
-              {/* 5. DIRECCIÓN DE ENTREGA */}
-              <div>
-                <label
-                  for="form-direccion"
-                  class="block text-[11px] font-bold uppercase tracking-wider text-noche/80 mb-1.5"
-                >
-                  DIRECCIÓN DE ENTREGA <span class="text-rose-600">*</span>
-                </label>
-                <input
-                  id="form-direccion"
-                  name="direccion"
-                  type="text"
-                  autoComplete="street-address"
-                  placeholder="Calle 45 #12-30, apto 302, barrio Laureles"
-                  required
-                  value={direccion}
-                  onFocus={handleFocusField}
-                  onInput={(e) => {
-                    const val = (e.target as HTMLInputElement).value;
-                    setDireccion(val);
-                    if (touched.direccion) validateField('direccion', val);
-                  }}
-                  onBlur={(e) => handleBlur('direccion', (e.target as HTMLInputElement).value)}
-                  aria-invalid={!!errors.direccion}
-                  aria-describedby={errors.direccion ? 'error-direccion' : undefined}
-                  class={`w-full h-12 px-4 rounded-xl border bg-white text-noche text-base font-medium placeholder:text-noche/40 focus:outline-none focus:ring-2 transition-all ${
-                    errors.direccion && touched.direccion
-                      ? 'border-rose-500 focus:ring-rose-400'
-                      : 'border-black/20 focus:border-calabaza focus:ring-calabaza/30'
-                  }`}
-                />
-                {errors.direccion && touched.direccion && (
-                  <p id="error-direccion" class="text-xs text-rose-600 font-semibold mt-1">
-                    {errors.direccion}
-                  </p>
-                )}
+              {/* 5. MODO DE ENTREGA & DIRECCIÓN */}
+              <div class="space-y-3">
+                {/* Selector Domicilio vs Oficina */}
+                <div>
+                  <label class="block text-[11px] font-bold uppercase tracking-wider text-noche/80 mb-1.5">
+                    MODO DE ENTREGA
+                  </label>
+                  <div class="grid grid-cols-2 gap-2 p-1 bg-black/5 rounded-xl border border-black/10">
+                    <button
+                      type="button"
+                      onClick={() => handleTipoEntregaChange('domicilio')}
+                      class={`flex items-center justify-center gap-1.5 py-2.5 px-3 rounded-lg text-xs font-bold transition-all ${
+                        tipoEntrega === 'domicilio'
+                          ? 'bg-white text-noche shadow-sm border border-black/10'
+                          : 'text-noche/70 hover:text-noche'
+                      }`}
+                    >
+                      <span>🏠</span>
+                      <span>A Domicilio</span>
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => handleTipoEntregaChange('oficina')}
+                      class={`flex items-center justify-center gap-1.5 py-2.5 px-3 rounded-lg text-xs font-bold transition-all ${
+                        tipoEntrega === 'oficina'
+                          ? 'bg-calabaza text-noche shadow-sm font-extrabold'
+                          : 'text-noche/70 hover:text-noche'
+                      }`}
+                    >
+                      <span>🏢</span>
+                      <span>Recoger en Oficina</span>
+                    </button>
+                  </div>
+                </div>
+
+                {/* Campo de Dirección o Punto de Entrega */}
+                <div>
+                  <div class="flex items-center justify-between mb-1.5">
+                    <label
+                      for="form-direccion"
+                      class="block text-[11px] font-bold uppercase tracking-wider text-noche/80"
+                    >
+                      {tipoEntrega === 'domicilio' ? 'DIRECCIÓN DE ENTREGA' : 'PUNTO DE RECOGIDA EN OFICINA'} <span class="text-rose-600">*</span>
+                    </label>
+                    {tipoEntrega === 'domicilio' && (
+                      <span class="text-[11px] text-noche/50">Casa, trabajo, vereda o referencia</span>
+                    )}
+                  </div>
+                  <input
+                    id="form-direccion"
+                    name="direccion"
+                    type="text"
+                    autoComplete="street-address"
+                    placeholder={
+                      tipoEntrega === 'domicilio'
+                        ? 'Ej: Calle 45 #12-30, Barrio Laureles, Vereda...'
+                        : 'Reclamar en oficina principal de transportadora'
+                    }
+                    required
+                    value={direccion}
+                    onFocus={handleFocusField}
+                    onInput={(e) => {
+                      const val = (e.target as HTMLInputElement).value;
+                      setDireccion(val);
+                      if (touched.direccion) validateField('direccion', val);
+                    }}
+                    onBlur={(e) => handleBlur('direccion', (e.target as HTMLInputElement).value)}
+                    aria-invalid={!!errors.direccion}
+                    aria-describedby={errors.direccion ? 'error-direccion' : undefined}
+                    class={`w-full h-12 px-4 rounded-xl border bg-white text-noche text-base font-medium placeholder:text-noche/40 focus:outline-none focus:ring-2 transition-all ${
+                      errors.direccion && touched.direccion
+                        ? 'border-rose-500 focus:ring-rose-400'
+                        : 'border-black/20 focus:border-calabaza focus:ring-calabaza/30'
+                    }`}
+                  />
+                  {errors.direccion && touched.direccion && (
+                    <p id="error-direccion" class="text-xs text-rose-600 font-semibold mt-1">
+                      {errors.direccion}
+                    </p>
+                  )}
+
+                  {/* Aviso informativo cuando se escoge Oficina */}
+                  {tipoEntrega === 'oficina' && (
+                    <div class="mt-2.5 p-3 rounded-xl bg-calabaza/10 border border-calabaza/30 text-xs text-noche/90 flex items-start gap-2.5">
+                      <span class="text-lg leading-none">🏢</span>
+                      <div class="space-y-0.5">
+                        <p class="font-bold text-noche">Pagas en efectivo al retirar tu paquete</p>
+                        <p class="text-[11px] text-noche/70 leading-relaxed">
+                          El paquete llegará a la agencia principal de transportadora (Servientrega, Coordinadora o Envía) en tu ciudad. Te enviaremos la guía por WhatsApp para que lo retires con tu cédula.
+                        </p>
+                      </div>
+                    </div>
+                  )}
+                </div>
               </div>
 
               {/* 6. INDICACIONES ADICIONALES (OPCIONAL) */}

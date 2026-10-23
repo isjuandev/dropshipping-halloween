@@ -31,8 +31,7 @@ export const clienteFormSchema = z.object({
   direccion: z
     .string()
     .trim()
-    .min(8, 'Escribe una dirección detallada (mínimo 8 caracteres)')
-    .refine((val) => /\d/.test(val), 'Incluye el número de casa o calle en la dirección'),
+    .min(3, 'Escribe tu dirección o punto de recogida'),
   indicaciones: z
     .string()
     .max(300, 'Máximo 300 caracteres')
@@ -67,7 +66,7 @@ export const pedidoPayloadSchema = z.object({
     departamento: z.string().min(1),
     ciudad: z.string().min(1),
     codigoDane: z.string().default('00000'),
-    direccion: z.string().min(5),
+    direccion: z.string().min(3),
     indicaciones: z.string().optional().default(''),
   }),
   consentimiento: z.literal(true),
