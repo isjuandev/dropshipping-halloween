@@ -133,7 +133,7 @@ Configurable en `src/config/tienda.ts` o mediante `PUBLIC_PEDIDO_MODO`:
 
 ```typescript
 export const tiendaConfig: TiendaConfig = {
-  nombreTienda: 'TerrorExpress Colombia',
+  nombreTienda: 'ViralyShop Colombia',
   horarioAtencion: 'Lunes a Domingo · 8:00 AM a 10:00 PM',
   moneda: 'COP',
   fechaHalloween: '2026-10-31',

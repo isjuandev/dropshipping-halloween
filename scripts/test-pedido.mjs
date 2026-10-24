@@ -18,7 +18,7 @@ const randomSuffix = Math.random().toString(36).substring(2, 6).toUpperCase();
 const payload = {
   pedidoId: `PED-${new Date().toISOString().slice(0, 10).replace(/-/g, '')}-${randomSuffix}`,
   fecha: new Date().toISOString(),
-  tienda: 'TerrorExpress Colombia',
+  tienda: 'ViralyShop Colombia',
   landing: 'https://mascaradelgrito.co',
   ...(storeSlug ? { storeSlug } : {}),
   producto: {

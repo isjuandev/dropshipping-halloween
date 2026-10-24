@@ -46,8 +46,8 @@ export interface TiendaConfig {
 }
 
 export const tiendaConfig: TiendaConfig = {
-  nombreTienda: 'TerrorExpress Colombia',
-  horarioAtencion: 'Lunes a Domingo · 8:00 AM a 10:00 PM',
+  nombreTienda: 'ViralyShop Colombia',
+  horarioAtencion: 'Lunes a Domingo · 24/7',
   moneda: 'COP',
   fechaHalloween: '2026-10-31',
   fechaLimitePedido: '2026-10-27T23:59:59',
@@ -87,8 +87,8 @@ export const tiendaConfig: TiendaConfig = {
     'Transferencia Bancolombia / Nequi / Daviplata al recibir',
   ],
   redes: {
-    instagram: 'https://instagram.com/terrorexpress.co',
-    tiktok: 'https://tiktok.com/@terrorexpress.co',
+    instagram: 'https://instagram.com/ViralyShop',
+    tiktok: 'https://tiktok.com/@ViralyShop',
   },
   pedido: {
     modo: 'directo',
@@ -103,7 +103,7 @@ export const tiendaConfig: TiendaConfig = {
   turnstileSiteKey: process.env.PUBLIC_TURNSTILE_SITE_KEY || '',
   gtmId: process.env.PUBLIC_GTM_ID || '',
   pixelId: process.env.PUBLIC_PIXEL_ID || '',
-  razonSocial: 'NEXOBITE E-COMMERCE S.A.S.',
+  razonSocial: 'ViralyShop S.A.S.',
   nit: '901.789.432-1',
 };
 
