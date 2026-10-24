@@ -324,8 +324,8 @@ export default function OrderForm() {
       tienda: payload.tienda,
       landing: payload.landing.url,
       fecha: payload.fecha,
-      ...(tiendaConfig.pedido.storeSlug
-        ? { storeSlug: tiendaConfig.pedido.storeSlug }
+      ...(tiendaConfig.pedido.campaignSlug
+        ? { campaignSlug: tiendaConfig.pedido.campaignSlug }
         : {}),
       producto: {
         ...(tiendaConfig.pedido.productId
