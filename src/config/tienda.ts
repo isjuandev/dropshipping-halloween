@@ -34,7 +34,7 @@ export interface TiendaConfig {
     modo: 'directo';
     endpoint: string;
     productId: string;
-    storeSlug: string;
+    campaignSlug: string;
     horarioConfirmacion: string;
     tiempoConfirmacion: string;
   };
@@ -96,7 +96,7 @@ export const tiendaConfig: TiendaConfig = {
       process.env.PUBLIC_NEXOBITE_API_URL ||
       'https://api.nexobite.com/api/v1/public/dropshipping/viralyshop/leads',
     productId: process.env.PUBLIC_NEXOBITE_PRODUCT_ID || '2289560',
-    storeSlug: process.env.PUBLIC_NEXOBITE_STORE_SLUG || '',
+    campaignSlug: process.env.PUBLIC_NEXOBITE_CAMPAIGN_SLUG || 'viralyshop',
     horarioConfirmacion: 'lunes a sábado, 8 a. m. a 6 p. m.',
     tiempoConfirmacion: 'en menos de 2 horas hábiles',
   },

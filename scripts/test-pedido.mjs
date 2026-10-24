@@ -11,7 +11,7 @@ const endpoint =
   'https://api.nexobite.com/api/v1/public/dropshipping/viralyshop/leads';
 
 const productId = process.env.PUBLIC_NEXOBITE_PRODUCT_ID || '';
-const storeSlug = process.env.PUBLIC_NEXOBITE_STORE_SLUG || '';
+const campaignSlug = process.env.PUBLIC_NEXOBITE_CAMPAIGN_SLUG || 'viralyshop';
 
 const randomSuffix = Math.random().toString(36).substring(2, 6).toUpperCase();
 
@@ -20,7 +20,7 @@ const payload = {
   fecha: new Date().toISOString(),
   tienda: 'ViralyShop Colombia',
   landing: 'https://mascaradelgrito.co',
-  ...(storeSlug ? { storeSlug } : {}),
+  ...(campaignSlug ? { campaignSlug } : {}),
   producto: {
     ...(productId ? { providerProductId: productId } : {}),
     nombre: 'Máscara Fantasma del Grito · Pack Pareja',
