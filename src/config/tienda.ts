@@ -89,16 +89,16 @@ export const tiendaConfig: TiendaConfig = {
     tiktok: 'https://tiktok.com/@terrorexpress.co',
   },
   pedido: {
-    modo: (process.env.PUBLIC_PEDIDO_MODO as 'proxy' | 'directo') || 'proxy',
+    modo: (import.meta.env.PUBLIC_PEDIDO_MODO as 'proxy' | 'directo') || 'proxy',
     endpoint:
-      process.env.PUBLIC_PEDIDO_WEBHOOK_URL ||
+      import.meta.env.PUBLIC_PEDIDO_WEBHOOK_URL ||
       'https://n8n.nexobite.com/webhook/pedido-contraentrega',
     horarioConfirmacion: 'lunes a sábado, 8 a. m. a 6 p. m.',
     tiempoConfirmacion: 'en menos de 2 horas hábiles',
   },
-  turnstileSiteKey: process.env.PUBLIC_TURNSTILE_SITE_KEY || '',
-  gtmId: process.env.PUBLIC_GTM_ID || '',
-  pixelId: process.env.PUBLIC_PIXEL_ID || '',
+  turnstileSiteKey: import.meta.env.PUBLIC_TURNSTILE_SITE_KEY || '',
+  gtmId: import.meta.env.PUBLIC_GTM_ID || '',
+  pixelId: import.meta.env.PUBLIC_PIXEL_ID || '',
   razonSocial: 'NEXOBITE E-COMMERCE S.A.S.',
   nit: '901.789.432-1',
 };

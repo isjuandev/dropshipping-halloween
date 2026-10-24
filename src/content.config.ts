@@ -29,6 +29,13 @@ const testimonios = defineCollection({
       ciudad: z.string(),
       // Foto UGC opcional (4:5) desde src/assets/images/resenas
       foto: image().optional(),
+      // Video UGC opcional desde public/videos/resenas (se reproduce sin sonido)
+      video: z
+        .object({
+          src: z.string(),
+          poster: z.string(),
+        })
+        .optional(),
       texto: z.string(),
       estrellas: z.number(),
       packComprado: z.string(),

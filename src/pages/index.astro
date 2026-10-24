@@ -34,7 +34,9 @@ if (!productoEntry) {
 }
 
 const producto = productoEntry.data;
-const testimonios = testimoniosEntries.map((e) => e.data);
+const testimonios = [...testimoniosEntries]
+  .sort((a, b) => a.id.localeCompare(b.id))
+  .map((e) => e.data);
 const faqs = faqsEntries.map((e) => e.data);
 
 const siteUrl = Astro.site || 'https://mascaradelgrito.co';
