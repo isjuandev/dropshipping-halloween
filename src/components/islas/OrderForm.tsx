@@ -18,6 +18,9 @@ interface DepartamentoItem {
   municipios: Array<{ nombre: string; codigoDane: string }>;
 }
 
+// Texto predeterminado (editable) cuando el cliente elige recoger en oficina
+const TEXTO_OFICINA = 'Reclamar en oficina principal';
+
 const DEPARTAMENTOS_LIST = [
   'Amazonas', 'Antioquia', 'Arauca', 'Atlántico', 'Bogotá D.C.', 'Bolívar',
   'Boyacá', 'Caldas', 'Caquetá', 'Casanare', 'Cauca', 'Cesar', 'Chocó',
@@ -130,22 +133,17 @@ export default function OrderForm() {
       setCiudadSearch('Bogotá D.C.');
       setCodigoDane('11001');
       validateField('ciudad', 'Bogotá D.C.');
-      if (tipoEntrega === 'oficina') {
-        const textOficina = 'Reclamar en oficina principal de transportadora (Bogotá D.C.)';
-        setDireccion(textOficina);
-        validateField('direccion', textOficina);
-      }
     }
   };
 
   const handleTipoEntregaChange = (tipo: 'domicilio' | 'oficina') => {
     setTipoEntrega(tipo);
     if (tipo === 'oficina') {
-      const textOficina = `Reclamar en oficina principal de transportadora${ciudad ? ` (${ciudad})` : ''}`;
-      setDireccion(textOficina);
-      validateField('direccion', textOficina);
+      setDireccion(TEXTO_OFICINA);
+      validateField('direccion', TEXTO_OFICINA);
     } else {
-      if (direccion.includes('Reclamar en oficina')) {
+      // Limpiar solo si el cliente no editó el texto predeterminado de oficina
+      if (direccion.startsWith('Reclamar en oficina')) {
         setDireccion('');
         validateField('direccion', '');
       }
@@ -443,7 +441,7 @@ export default function OrderForm() {
   };
 
   return (
-    <section id="pedido" class="py-14 md:py-24 bg-noche relative overflow-hidden">
+    <section id="pedido" data-cta class="py-14 md:py-24 bg-noche relative overflow-hidden">
       {/* Fondo sutil */}
       <div class="absolute inset-0 bg-radial from-calabaza/10 via-transparent to-transparent opacity-40 pointer-events-none" />
 
@@ -717,11 +715,6 @@ export default function OrderForm() {
                                 setCiudadSearch(m.nombre);
                                 setCodigoDane(m.codigoDane);
                                 validateField('ciudad', m.nombre);
-                                if (tipoEntrega === 'oficina') {
-                                  const textOficina = `Reclamar en oficina principal de transportadora (${m.nombre})`;
-                                  setDireccion(textOficina);
-                                  validateField('direccion', textOficina);
-                                }
                                 setIsComboboxOpen(false);
                               }}
                               class="w-full text-left px-4 py-2.5 text-sm text-noche hover:bg-calabaza/15 transition-colors flex items-center justify-between"
@@ -799,7 +792,7 @@ export default function OrderForm() {
                     placeholder={
                       tipoEntrega === 'domicilio'
                         ? 'Ej: Calle 45 #12-30, Barrio Laureles, Vereda...'
-                        : 'Reclamar en oficina principal de transportadora'
+                        : TEXTO_OFICINA
                     }
                     required
                     value={direccion}
@@ -831,7 +824,7 @@ export default function OrderForm() {
                       <div class="space-y-0.5">
                         <p class="font-bold text-noche">Pagas en efectivo al retirar tu paquete</p>
                         <p class="text-[11px] text-noche/70 leading-relaxed">
-                          El paquete llegará a la agencia principal de transportadora (Servientrega, Coordinadora o Envía) en tu ciudad. Te enviaremos la guía por WhatsApp para que lo retires con tu cédula.
+                          El paquete llegará a la agencia principal de transportadora (Interrapidisimo o Coordinadora) en tu ciudad. Te enviaremos la guía por WhatsApp para que lo retires.
                         </p>
                       </div>
                     </div>

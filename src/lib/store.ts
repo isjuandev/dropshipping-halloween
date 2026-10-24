@@ -59,15 +59,15 @@ export const PACKS_DATA: PackItemDef[] = [
   },
 ];
 
-// Señal: pack seleccionado (por defecto 'pack-2' - el MÁS VENDIDO)
-export const selectedPackId = signal<string>('pack-2');
+// Señal: pack seleccionado (por defecto 'pack-1'; el cliente decide si sube la cantidad)
+export const selectedPackId = signal<string>('pack-1');
 
 // Señal: ciudad seleccionada desde el ArrivalChecker o vacío
 export const selectedCity = signal<string>('Bogotá D.C.');
 
 // Computed: pack actual
 export const currentPack = computed(() => {
-  return PACKS_DATA.find((p) => p.id === selectedPackId.value) || PACKS_DATA[1];
+  return PACKS_DATA.find((p) => p.id === selectedPackId.value) || PACKS_DATA[0];
 });
 
 // Cambiar de pack

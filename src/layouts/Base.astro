@@ -24,9 +24,8 @@ const {
   jsonLd = [],
 } = Astro.props;
 
-// Imagen OG y miniatura de la barra fija optimizadas en build
+// Imagen OG optimizada en build
 const ogImage = await getImage({ src: imgHero, width: 1024, format: 'jpg' });
-const miniatura = await getImage({ src: imgHero, width: 96, height: 96, format: 'webp' });
 
 const canonicalUrl = new URL(Astro.url.pathname, Astro.site || 'https://mascaradelgrito.co').toString();
 const ogImageUrl = new URL(image ?? ogImage.src, Astro.site || 'https://mascaradelgrito.co').toString();
@@ -147,8 +146,8 @@ const allSchemas = [orgSchema, ...jsonLd];
     <!-- 16. Footer -->
     <Footer />
 
-    <!-- Barra fija inferior móvil hacia el formulario (Isla Preact client:idle) -->
-    <StickyBar client:idle miniatura={miniatura.src} />
+    <!-- Botón fijo inferior: solo visible cuando no hay otro CTA en pantalla (Isla Preact client:idle) -->
+    <StickyBar client:idle />
 
     <!-- Captura de UTMs en sessionStorage y Microinteracciones -->
     <script is:inline>

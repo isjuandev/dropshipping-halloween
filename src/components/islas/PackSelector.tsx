@@ -46,7 +46,7 @@ export default function PackSelector({ imagenPackDestacado }: Props) {
                 isSelected
                   ? 'bg-noche/90 border-calabaza ring-2 ring-calabaza/30 shadow-2xl'
                   : 'bg-noche/50 border-white/10 hover:border-neon-morado/50 hover:bg-noche/70'
-              } ${esDestacado ? 'order-first lg:order-none' : ''}`}
+              }`}
             >
               {/* Badge superior */}
               {p.badge && (

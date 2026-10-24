@@ -2,7 +2,7 @@
 import { tiendaConfig } from '../../config/tienda';
 ---
 
-<header class="w-full bg-noche/90 border-b border-white/10 sticky top-0 z-40 backdrop-blur-md">
+<header class="w-full bg-noche/90 border-b border-white/10 relative z-40 backdrop-blur-md">
   <div class="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between">
     <!-- Logo sin menú para evitar fugas de conversión -->
     <a href="/" class="flex items-center gap-2.5 text-hueso no-underline group focus-visible:outline-calabaza" aria-label={`Inicio - ${tiendaConfig.nombreTienda}`}>
@@ -22,6 +22,7 @@ import { tiendaConfig } from '../../config/tienda';
     <!-- Botón directo hacia el selector de packs + checkout (lleva a la landing si estamos en otra página) -->
     <a
       href="/#seccion-packs"
+      data-cta
       class="flex items-center gap-2 px-4 py-2 rounded-xl bg-calabaza hover:bg-calabaza-hover text-noche transition-all text-xs sm:text-sm font-bold uppercase tracking-wider focus-visible:outline-calabaza min-h-[44px] shadow-md shadow-calabaza/10"
     >
       <span>PEDIR AHORA</span>
