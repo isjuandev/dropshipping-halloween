@@ -103,6 +103,6 @@ export function scrollToOrderForm(packId?: string) {
     }, 450);
   } else {
     // Si no estamos en la landing (por ejemplo en /gracias), redirigir a la landing al formulario
-    window.location.href = '/#pedido';
+    window.location.href = '/malla-led-rgb-135cm#pedido';
   }
 }

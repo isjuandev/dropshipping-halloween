@@ -41,7 +41,7 @@ export default function StickyBar() {
     if (packs) {
       packs.scrollIntoView({ behavior: 'smooth', block: 'start' });
     } else {
-      window.location.href = '/#seccion-packs';
+      window.location.href = '/malla-led-rgb-135cm#seccion-packs';
     }
   };
 

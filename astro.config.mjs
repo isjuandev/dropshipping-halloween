@@ -10,7 +10,10 @@ const isVercel = Boolean(process.env.VERCEL);
 
 // https://astro.build/config
 export default defineConfig({
-  site: 'https://mascaradelgrito.co',
+  site: 'https://www.shopviraly.shop',
+  redirects: {
+    '/': '/malla-led-rgb-135cm',
+  },
   output: 'static',
   adapter: isVercel ? vercel() : node({ mode: 'standalone' }),
   integrations: [

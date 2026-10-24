@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://mascaradelgrito.co/sitemap-index.xml
+Sitemap: https://www.shopviraly.shop/sitemap-index.xml

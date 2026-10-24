@@ -1,0 +1,136 @@
+---
+import Base from '../layouts/Base.astro';
+import { getCollection, getEntry } from 'astro:content';
+import { getImage } from 'astro:assets';
+import { tiendaConfig } from '../config/tienda';
+import imgHero from '../assets/images/hero/telarana-ventana.png';
+
+// Secciones en el orden de la arquitectura de conversión:
+// demostración, versatilidad, ficha técnica y prueba social ANTES de packs y checkout
+import Hero from '../components/secciones/Hero.astro';
+import ArrivalChecker from '../components/islas/ArrivalChecker';
+import TrustBar from '../components/secciones/TrustBar.astro';
+import DualSeason from '../components/secciones/DualSeason.astro';
+import DualControl from '../components/secciones/DualControl.astro';
+import KeyBenefits from '../components/secciones/KeyBenefits.astro';
+import DecorSpaces from '../components/secciones/DecorSpaces.astro';
+import Installation from '../components/secciones/Installation.astro';
+import Comparison from '../components/secciones/Comparison.astro';
+import TechSpecs from '../components/secciones/TechSpecs.astro';
+import SocialProof from '../components/secciones/SocialProof.astro';
+import PacksSection from '../components/secciones/PacksSection.astro';
+import OrderForm from '../components/islas/OrderForm';
+import HowToOrder from '../components/secciones/HowToOrder.astro';
+import FaqSection from '../components/secciones/FaqSection.astro';
+import FinalCta from '../components/secciones/FinalCta.astro';
+
+// Cargar datos de Content Collections
+const productoEntry = await getEntry('producto', 'malla-led');
+const testimoniosEntries = await getCollection('testimonios');
+const faqsEntries = await getCollection('faqs');
+
+if (!productoEntry) {
+  throw new Error('No se encontró el producto malla-led en content/producto');
+}
+
+const producto = productoEntry.data;
+const testimonios = [...testimoniosEntries]
+  .sort((a, b) => a.id.localeCompare(b.id))
+  .map((e) => e.data);
+const faqs = faqsEntries.map((e) => e.data);
+
+const siteUrl = Astro.site || 'https://www.shopviraly.shop';
+const productPageUrl = new URL('/malla-led-rgb-135cm', siteUrl).toString();
+const heroSchemaImg = await getImage({ src: imgHero, width: 1024, format: 'jpg' });
+
+// Schemas JSON-LD para SEO y rich snippets
+const productSchema = {
+  '@context': 'https://schema.org/',
+  '@type': 'Product',
+  name: producto.nombre,
+  image: [new URL(heroSchemaImg.src, siteUrl).toString()],
+  description: producto.descripcion,
+  sku: producto.sku,
+  brand: {
+    '@type': 'Brand',
+    name: tiendaConfig.nombreTienda,
+  },
+  aggregateRating: {
+    '@type': 'AggregateRating',
+    ratingValue: producto.rating.toString(),
+    reviewCount: producto.numResenas.toString(),
+  },
+  offers: {
+    '@type': 'Offer',
+    url: productPageUrl,
+    priceCurrency: tiendaConfig.moneda,
+    price: producto.precio.toString(),
+    priceValidUntil: '2026-12-31',
+    itemCondition: 'https://schema.org/NewCondition',
+    availability: 'https://schema.org/InStock',
+    seller: {
+      '@type': 'Organization',
+      name: tiendaConfig.nombreTienda,
+    },
+  },
+};
+
+const faqSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqs.map((f) => ({
+    '@type': 'Question',
+    name: f.pregunta,
+    acceptedAnswer: {
+      '@type': 'Answer',
+      text: f.respuesta,
+    },
+  })),
+};
+---
+
+<Base
+  title={`Malla LED RGB Inteligente 135 cm · Halloween y Navidad | ${tiendaConfig.nombreTienda}`}
+  description="Malla LED RGB de 135 cm con 120 luces, App Bluetooth + Control Remoto de 20 botones y ritmo musical. Telaraña neón en Halloween y estrella en Navidad. Pago contra entrega en Colombia."
+  jsonLd={[productSchema, faqSchema]}
+>
+  {/* 02. Hero: galería 1:1 + copy de conversión (sin selectores) */}
+  <Hero producto={producto} />
+
+  {/* 03. Calculador de entrega por ciudad + 4 garantías */}
+  <div class="max-w-6xl mx-auto px-4 -mt-3 mb-6 relative z-30">
+    <ArrivalChecker client:visible />
+  </div>
+  <TrustBar />
+
+  {/* 04. De Halloween a Navidad en 1 clic */}
+  <DualSeason />
+
+  {/* 05. Control dual: App + Control Remoto + Música */}
+  <DualControl />
+
+  {/* 06. 3 beneficios clave */}
+  <KeyBenefits />
+
+  {/* 07. 4 formas de decorar tu casa */}
+  <DecorSpaces />
+
+  {/* 08. Instalación en 3 pasos + seguridad USB */}
+  <Installation />
+
+  {/* 09. Tabla comparativa vs. luces tradicionales */}
+  <Comparison />
+
+  {/* 10. Ficha técnica y contenido de la caja */}
+  <TechSpecs producto={producto} />
+
+  {/* 11. Prueba social: rating + 6 tarjetas UGC */}
+  <SocialProof rating={producto.rating} numResenas={producto.numResenas} testimonios={testimonios} />
+
+  {/* 12. Packs de ahorro + checkout contraentrega + cómo pedir + FAQ + cierre */}
+  <PacksSection />
+  <OrderForm client:visible />
+  <HowToOrder />
+  <FaqSection faqs={faqs} />
+  <FinalCta />
+</Base>

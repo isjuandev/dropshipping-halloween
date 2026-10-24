@@ -27,8 +27,8 @@ const {
 // Imagen OG optimizada en build
 const ogImage = await getImage({ src: imgHero, width: 1024, format: 'jpg' });
 
-const canonicalUrl = new URL(Astro.url.pathname, Astro.site || 'https://mascaradelgrito.co').toString();
-const ogImageUrl = new URL(image ?? ogImage.src, Astro.site || 'https://mascaradelgrito.co').toString();
+const canonicalUrl = new URL(Astro.url.pathname, Astro.site || 'https://www.shopviraly.shop').toString();
+const ogImageUrl = new URL(image ?? ogImage.src, Astro.site || 'https://www.shopviraly.shop').toString();
 
 // Schema.org Organización por defecto
 const orgSchema = {
@@ -37,7 +37,7 @@ const orgSchema = {
   name: tiendaConfig.nombreTienda,
   legalName: tiendaConfig.razonSocial,
   taxID: tiendaConfig.nit,
-  url: Astro.site ? Astro.site.toString() : 'https://mascaradelgrito.co',
+  url: Astro.site ? Astro.site.toString() : 'https://www.shopviraly.shop',
   contactPoint: {
     '@type': 'ContactPoint',
     contactType: 'customer support',

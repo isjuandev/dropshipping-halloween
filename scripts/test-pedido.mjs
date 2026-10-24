@@ -19,7 +19,7 @@ const payload = {
   pedidoId: `PED-${new Date().toISOString().slice(0, 10).replace(/-/g, '')}-${randomSuffix}`,
   fecha: new Date().toISOString(),
   tienda: 'ViralyShop Colombia',
-  landing: 'https://mascaradelgrito.co',
+  landing: 'https://www.shopviraly.shop/malla-led-rgb-135cm',
   ...(campaignSlug ? { campaignSlug } : {}),
   producto: {
     ...(productId ? { providerProductId: productId } : {}),
