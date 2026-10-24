@@ -93,16 +93,16 @@ export const tiendaConfig: TiendaConfig = {
   pedido: {
     modo: 'directo',
     endpoint:
-      process.env.PUBLIC_NEXOBITE_API_URL ||
+      import.meta.env.PUBLIC_NEXOBITE_API_URL ||
       'https://api.nexobite.com/api/v1/public/dropshipping/viralyshop/leads',
-    productId: process.env.PUBLIC_NEXOBITE_PRODUCT_ID || '2289560',
-    campaignSlug: process.env.PUBLIC_NEXOBITE_CAMPAIGN_SLUG || 'viralyshop',
+    productId: import.meta.env.PUBLIC_NEXOBITE_PRODUCT_ID || '2289560',
+    campaignSlug: import.meta.env.PUBLIC_NEXOBITE_CAMPAIGN_SLUG || 'viralyshop',
     horarioConfirmacion: 'lunes a sábado, 8 a. m. a 6 p. m.',
     tiempoConfirmacion: 'en menos de 2 horas hábiles',
   },
-  turnstileSiteKey: process.env.PUBLIC_TURNSTILE_SITE_KEY || '',
-  gtmId: process.env.PUBLIC_GTM_ID || '',
-  pixelId: process.env.PUBLIC_PIXEL_ID || '',
+  turnstileSiteKey: import.meta.env.PUBLIC_TURNSTILE_SITE_KEY || '',
+  gtmId: import.meta.env.PUBLIC_GTM_ID || '',
+  pixelId: import.meta.env.PUBLIC_PIXEL_ID || '',
   razonSocial: 'ViralyShop S.A.S.',
   nit: '901.789.432-1',
 };
