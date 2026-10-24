@@ -7,10 +7,14 @@ import { tiendaConfig } from '../../config/tienda';
     <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
       {/* Columna 1: Marca & Razón Social */}
       <div class="md:col-span-2 space-y-2">
-        <div class="flex items-center gap-2 mb-2">
-          <span class="w-7 h-7 rounded-lg bg-gradient-to-br from-neon-morado via-neon-cian to-calabaza text-white font-heading text-xl font-bold flex items-center justify-center" aria-hidden="true">
-            V
-          </span>
+        <div class="flex items-center gap-2.5 mb-2">
+          <img
+            src="/favicon.svg"
+            alt={`Logo ${tiendaConfig.nombreTienda}`}
+            width="32"
+            height="32"
+            class="w-8 h-8 rounded-lg shadow-sm shadow-calabaza/20 object-cover"
+          />
           <span class="font-heading text-2xl text-hueso tracking-wider">
             {tiendaConfig.nombreTienda}
           </span>

@@ -6,9 +6,13 @@ import { tiendaConfig } from '../../config/tienda';
   <div class="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between">
     <!-- Logo sin menú para evitar fugas de conversión -->
     <a href="/malla-led-rgb-135cm" class="flex items-center gap-2.5 text-hueso no-underline group focus-visible:outline-calabaza" aria-label={`Inicio - ${tiendaConfig.nombreTienda}`}>
-      <span class="w-9 h-9 rounded-xl bg-gradient-to-br from-neon-morado via-neon-cian to-calabaza flex items-center justify-center text-white font-heading text-2xl font-bold shadow-md shadow-neon-morado/30 group-hover:scale-105 transition-transform" aria-hidden="true">
-        V
-      </span>
+      <img
+        src="/favicon.svg"
+        alt={`Logo ${tiendaConfig.nombreTienda}`}
+        width="38"
+        height="38"
+        class="w-9.5 h-9.5 rounded-xl shadow-md shadow-calabaza/25 group-hover:scale-105 transition-transform object-cover"
+      />
       <div class="flex flex-col">
         <span class="font-heading tracking-wider text-xl sm:text-2xl leading-none text-hueso font-bold">
           {tiendaConfig.nombreTienda}
