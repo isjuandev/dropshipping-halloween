@@ -91,7 +91,21 @@ export type PedidoPayload = z.infer<typeof pedidoPayloadSchema>;
 export interface PedidoResponse {
   ok: boolean;
   pedidoId?: string;
+  duplicate?: boolean;
+  status?: string | null;
   error?: string;
+}
+
+/** Respuesta del endpoint público de dropshipping de NexoBite. */
+export interface NexoBiteLeadResponse {
+  data?: {
+    orderId?: string;
+    status?: string;
+    duplicate?: boolean;
+    spam?: boolean;
+    message?: string;
+  };
+  message?: string;
 }
 
 /**

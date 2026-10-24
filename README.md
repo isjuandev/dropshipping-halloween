@@ -1,6 +1,8 @@
 # 🎃 Landing Page CRO "Grito" — Halloween Dropshipping Colombia
 ### Pedido Contraentrega + Automatización n8n + Bot de Telegram (Listo para Dropi)
 
+> **Integración activa (2026):** los pedidos se envían **directo desde el navegador** al endpoint público de dropshipping de NexoBite (`PUBLIC_NEXOBITE_API_URL`). Las secciones de n8n/Telegram de este README se conservan como histórico y ya no están en el camino crítico de los pedidos.
+
 Landing page de producto único de alta conversión (CRO) diseñada para campañas de Halloween en Colombia. Todos los pedidos se gestionan a través de un **formulario directo contraentrega** integrado con un webhook de **n8n**, el cual valida el pedido, detecta spam y envía una notificación formateada a **Telegram** con campos en `<code>` listos para copiar con un toque y cargar en la plataforma de dropshipping (**Dropi**).
 
 ---

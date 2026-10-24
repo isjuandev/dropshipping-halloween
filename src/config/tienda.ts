@@ -31,8 +31,10 @@ export interface TiendaConfig {
     facebook?: string;
   };
   pedido: {
-    modo: 'proxy' | 'directo';
+    modo: 'directo';
     endpoint: string;
+    productId: string;
+    storeSlug: string;
     horarioConfirmacion: string;
     tiempoConfirmacion: string;
   };
@@ -89,10 +91,12 @@ export const tiendaConfig: TiendaConfig = {
     tiktok: 'https://tiktok.com/@terrorexpress.co',
   },
   pedido: {
-    modo: (process.env.PUBLIC_PEDIDO_MODO as 'proxy' | 'directo') || 'proxy',
+    modo: 'directo',
     endpoint:
-      process.env.PUBLIC_PEDIDO_WEBHOOK_URL ||
-      'https://n8n.nexobite.com/webhook/pedido-contraentrega',
+      process.env.PUBLIC_NEXOBITE_API_URL ||
+      'https://api.nexobite.com/api/v1/public/dropshipping/viralyshop/leads',
+    productId: process.env.PUBLIC_NEXOBITE_PRODUCT_ID || '',
+    storeSlug: process.env.PUBLIC_NEXOBITE_STORE_SLUG || '',
     horarioConfirmacion: 'lunes a sábado, 8 a. m. a 6 p. m.',
     tiempoConfirmacion: 'en menos de 2 horas hábiles',
   },

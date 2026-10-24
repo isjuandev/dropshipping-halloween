@@ -1,90 +1,84 @@
 /**
- * Script de prueba de envío de pedido contraentrega
+ * Envía un pedido de prueba directo al endpoint público de dropshipping de NexoBite.
  * Uso: pnpm test:pedido [url_endpoint]
+ *
+ * La llamada es servidor-a-servidor (Node), así que no depende de CORS.
  */
 
-const explicitEndpoint = process.argv[2] || process.env.PUBLIC_PEDIDO_WEBHOOK_URL;
-let endpointsToTry = explicitEndpoint
-  ? [explicitEndpoint]
-  : ['http://localhost:4321/api/pedido', 'http://localhost:4322/api/pedido'];
+const endpoint =
+  process.argv[2] ||
+  process.env.PUBLIC_NEXOBITE_API_URL ||
+  'https://api.nexobite.com/api/v1/public/dropshipping/viralyshop/leads';
+
+const productId = process.env.PUBLIC_NEXOBITE_PRODUCT_ID || '';
+const storeSlug = process.env.PUBLIC_NEXOBITE_STORE_SLUG || '';
 
 const randomSuffix = Math.random().toString(36).substring(2, 6).toUpperCase();
 
-const payloadPrueba = {
+const payload = {
   pedidoId: `PED-${new Date().toISOString().slice(0, 10).replace(/-/g, '')}-${randomSuffix}`,
   fecha: new Date().toISOString(),
-  tienda: "TerrorExpress Colombia",
-  landing: {
-    url: "https://mascaradelgrito.co",
-    plantilla: "grito"
-  },
+  tienda: 'TerrorExpress Colombia',
+  landing: 'https://mascaradelgrito.co',
+  ...(storeSlug ? { storeSlug } : {}),
   producto: {
-    nombre: "Máscara Fantasma del Grito",
-    sku: "GRITO-HALLOWEEN-2026",
-    variante: "1) Clásica blanca (Adulto), 2) Con sangre (Adulto)",
-    paquete: "Pareja",
+    ...(productId ? { providerProductId: productId } : {}),
+    nombre: 'Máscara Fantasma del Grito · Pack Pareja',
+    variante: '1) Clásica blanca (Adulto), 2) Con sangre (Adulto)',
+    paquete: 'Pack Pareja',
     cantidad: 2,
     extras: [],
     precioUnitario: 24950,
-    total: 49900
+    total: 49900,
   },
   cliente: {
-    nombreCompleto: "Ana Restrepo",
-    celular: "+573001234567",
-    departamento: "Antioquia",
-    ciudad: "Medellín",
-    codigoDane: "05001",
-    direccion: "Calle 45 #12-30, apto 302, barrio Laureles",
-    indicaciones: "Entregar después de las 2 p. m."
+    nombreCompleto: 'Ana Restrepo',
+    celular: '+573001234567',
+    departamento: 'Antioquia',
+    ciudad: 'Medellín',
+    direccion: 'Calle 45 #12-30, apto 302, barrio Laureles',
+    indicaciones: 'Entregar después de las 2 p. m.',
   },
   consentimiento: true,
   origen: {
-    utm_source: "test_script",
-    utm_medium: "local",
-    utm_campaign: "qa_verification",
-    utm_content: "unit_test",
-    fbclid: "",
-    referrer: "https://localhost:4321"
+    utm_source: 'test_script',
+    utm_medium: 'local',
+    utm_campaign: 'qa_verification',
+    utm_content: 'unit_test',
+    fbclid: '',
+    referrer: 'https://localhost:4321',
   },
   antispam: {
-    empresa: "",
-    segundos: 18
-  }
+    empresa: '',
+    segundos: 18,
+  },
 };
 
 async function run() {
-  for (const endpoint of endpointsToTry) {
-    try {
-      console.log(`\n🚀 Enviando pedido de prueba contraentrega a: ${endpoint}...`);
-      const response = await fetch(endpoint, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          ...(process.env.N8N_WEBHOOK_SECRET ? { 'X-Webhook-Secret': process.env.N8N_WEBHOOK_SECRET } : {})
-        },
-        body: JSON.stringify(payloadPrueba)
-      });
+  try {
+    console.log(`\n🚀 Enviando pedido de prueba a NexoBite: ${endpoint}`);
+    console.log(`   pedidoId: ${payload.pedidoId}`);
 
-      const status = response.status;
-      const json = await response.json().catch(() => null);
+    const response = await fetch(endpoint, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    });
 
-      console.log(`📡 Respuesta del servidor (Status ${status}):`);
-      console.dir(json, { depth: null, colors: true });
+    const json = await response.json().catch(() => null);
+    console.log(`📡 Respuesta (HTTP ${response.status}):`);
+    console.dir(json, { depth: null, colors: true });
 
-      if (response.ok && json?.ok) {
-        console.log(`\n✅ ¡Prueba exitosa! Pedido ${json.pedidoId} procesado correctamente.\n`);
-        return;
-      } else {
-        console.error(`\n❌ Error en la respuesta del endpoint ${endpoint}:`, json);
-        process.exit(1);
-      }
-    } catch (error) {
-      if (endpoint === endpointsToTry[endpointsToTry.length - 1]) {
-        console.error(`\n❌ Error de conexión al endpoint:`, error.message);
-        console.log(`💡 Tip: Si estás probando localmente, asegúrate de tener el servidor corriendo con "pnpm dev".\n`);
-        process.exit(1);
-      }
+    if (!response.ok) {
+      console.error('\n❌ NexoBite rechazó el pedido. Revisa el detalle de arriba.');
+      process.exit(1);
     }
+
+    console.log(`\n✅ Pedido registrado: ${json?.data?.orderId ?? 'sin id'} (${json?.data?.status ?? 'sin estado'})\n`);
+  } catch (error) {
+    console.error('\n❌ Error de conexión con NexoBite:', error.message);
+    console.log('💡 Verifica PUBLIC_NEXOBITE_API_URL y que api.nexobite.com responda.\n');
+    process.exit(1);
   }
 }
 

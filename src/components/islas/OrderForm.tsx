@@ -8,7 +8,7 @@ import {
   generatePedidoId,
   formatCOP,
   type PedidoPayload,
-  type PedidoResponse,
+  type NexoBiteLeadResponse,
 } from '../../lib/pedido-schema';
 import { trackBeginCheckout } from '../../lib/tracking';
 import { tiendaConfig } from '../../config/tienda';
@@ -318,80 +318,130 @@ export default function OrderForm() {
       },
     };
 
+    // Payload que espera NexoBite (contrato público de dropshipping).
+    const nexoPayload = {
+      pedidoId: payload.pedidoId,
+      tienda: payload.tienda,
+      landing: payload.landing.url,
+      fecha: payload.fecha,
+      ...(tiendaConfig.pedido.storeSlug
+        ? { storeSlug: tiendaConfig.pedido.storeSlug }
+        : {}),
+      producto: {
+        ...(tiendaConfig.pedido.productId
+          ? { providerProductId: tiendaConfig.pedido.productId }
+          : {}),
+        nombre: `${payload.producto.nombre} · ${payload.producto.paquete}`,
+        variante: payload.producto.variante,
+        paquete: payload.producto.paquete,
+        cantidad: payload.producto.cantidad,
+        extras: payload.producto.extras,
+        precioUnitario: payload.producto.precioUnitario,
+        total: payload.producto.total,
+      },
+      cliente: {
+        nombreCompleto: payload.cliente.nombreCompleto,
+        celular: payload.cliente.celular,
+        departamento: payload.cliente.departamento,
+        ciudad: payload.cliente.ciudad,
+        direccion: payload.cliente.direccion,
+        indicaciones: payload.cliente.indicaciones,
+      },
+      consentimiento: true,
+      origen: payload.origen,
+      antispam: payload.antispam,
+    };
+
     setIsSubmitting(true);
 
     try {
-      const targetEndpoint =
-        tiendaConfig.pedido.modo === 'directo'
-          ? tiendaConfig.pedido.endpoint
-          : '/api/pedido';
-
       const controller = new AbortController();
       const timeoutId = setTimeout(() => controller.abort(), 15000);
 
-      const res = await fetch(targetEndpoint, {
+      const res = await fetch(tiendaConfig.pedido.endpoint, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(payload),
+        body: JSON.stringify(nexoPayload),
         signal: controller.signal,
       });
 
       clearTimeout(timeoutId);
 
-      const data: PedidoResponse = await res.json().catch(() => ({ ok: false }));
+      const body = (await res.json().catch(() => null)) as NexoBiteLeadResponse | null;
 
-      if (res.ok && data.ok) {
-        // Limpiar borrador de localStorage y guardar resumen completo para la página /gracias
-        try {
-          localStorage.removeItem('draft_pedido_contraentrega');
-          const resumenJson = JSON.stringify({
-            pedidoId: payload.pedidoId,
-            fecha: payload.fecha,
-            nombreCliente: payload.cliente.nombreCompleto,
-            total: payload.producto.total,
-            productoNombre: payload.producto.nombre,
-            paquete: payload.producto.paquete,
+      if (!res.ok) {
+        if (res.status === 429) {
+          throw new Error('Demasiados intentos. Espera un minuto e inténtalo de nuevo.');
+        }
+        if (res.status === 404 || res.status === 422) {
+          throw new Error(
+            'No pudimos registrar tu pedido. Escríbenos por WhatsApp para completarlo.',
+          );
+        }
+        const apiMessage = typeof body?.message === 'string' ? body.message : '';
+        throw new Error(apiMessage || 'error_servidor');
+      }
+
+      const order = body?.data ?? {};
+
+      if (order.duplicate === true) {
+        setIsSubmitting(false);
+        setSubmitError(
+          'Ya tenemos un pedido activo con este número. Te contactamos pronto por WhatsApp.',
+        );
+        return;
+      }
+
+      // Limpiar borrador de localStorage y guardar resumen completo para la página /gracias
+      try {
+        localStorage.removeItem('draft_pedido_contraentrega');
+        const resumenJson = JSON.stringify({
+          pedidoId: payload.pedidoId,
+          fecha: payload.fecha,
+          nombreCliente: payload.cliente.nombreCompleto,
+          total: payload.producto.total,
+          productoNombre: payload.producto.nombre,
+          paquete: payload.producto.paquete,
+          ciudad: payload.cliente.ciudad,
+          direccion: payload.cliente.direccion,
+          cliente: {
+            nombreCompleto: payload.cliente.nombreCompleto,
+            celular: payload.cliente.celular,
+            departamento: payload.cliente.departamento,
             ciudad: payload.cliente.ciudad,
             direccion: payload.cliente.direccion,
-            cliente: {
-              nombreCompleto: payload.cliente.nombreCompleto,
-              celular: payload.cliente.celular,
-              departamento: payload.cliente.departamento,
-              ciudad: payload.cliente.ciudad,
-              direccion: payload.cliente.direccion,
-              indicaciones: payload.cliente.indicaciones,
-            },
-            producto: {
-              nombre: payload.producto.nombre,
-              variante: payload.producto.variante,
-              paquete: payload.producto.paquete,
+            indicaciones: payload.cliente.indicaciones,
+          },
+          producto: {
+            nombre: payload.producto.nombre,
+            variante: payload.producto.variante,
+            paquete: payload.producto.paquete,
+            cantidad: payload.producto.cantidad,
+            extras: payload.producto.extras,
+            total: payload.producto.total,
+          },
+          items: [
+            {
+              nombre: `${payload.producto.nombre} - ${payload.producto.paquete}`,
               cantidad: payload.producto.cantidad,
-              extras: payload.producto.extras,
-              total: payload.producto.total,
+              precio: payload.producto.total,
             },
-            items: [
-              {
-                nombre: `${payload.producto.nombre} - ${payload.producto.paquete}`,
-                cantidad: payload.producto.cantidad,
-                precio: payload.producto.total,
-              },
-            ],
-          });
-          sessionStorage.setItem('ultimo_pedido_resumen', resumenJson);
-          localStorage.setItem('ultimo_pedido_resumen_backup', resumenJson);
-        } catch (_) {}
+          ],
+        });
+        sessionStorage.setItem('ultimo_pedido_resumen', resumenJson);
+        localStorage.setItem('ultimo_pedido_resumen_backup', resumenJson);
+      } catch (_) {}
 
-        // Redirección limpia a /gracias
-        window.location.href = `/gracias?id=${encodeURIComponent(payload.pedidoId)}`;
-      } else {
-        throw new Error(data.error || 'error_servidor');
-      }
+      // Redirección limpia a /gracias
+      window.location.href = `/gracias?id=${encodeURIComponent(payload.pedidoId)}`;
     } catch (err: any) {
       setIsSubmitting(false);
       setSubmitError(
-        'No pudimos enviar tu pedido. Revisa tu conexión e inténtalo de nuevo.'
+        err instanceof Error && err.message
+          ? err.message
+          : 'No pudimos enviar tu pedido. Revisa tu conexión e inténtalo de nuevo.',
       );
     }
   };
