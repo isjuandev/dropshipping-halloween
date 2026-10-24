@@ -44,7 +44,7 @@ export interface TiendaConfig {
 }
 
 export const tiendaConfig: TiendaConfig = {
-  nombreTienda: 'TerrorExpress Colombia',
+  nombreTienda: 'LumiHogar Colombia',
   horarioAtencion: 'Lunes a Domingo · 8:00 AM a 10:00 PM',
   moneda: 'COP',
   fechaHalloween: '2026-10-31',

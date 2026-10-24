@@ -1,27 +1,38 @@
 ---
+import { getImage } from 'astro:assets';
 import PackSelector from '../islas/PackSelector';
+import imgPack2 from '../../assets/images/packs/pack-2-mallas.png';
+
+// Imagen del pack destacado optimizada en build (1:1) para pasarla a la isla Preact
+const pack2 = await getImage({ src: imgPack2, widths: [480, 800, 1024], format: 'webp' });
+const imagenPackDestacado = {
+  src: pack2.src,
+  srcset: pack2.srcSet.attribute,
+  width: imgPack2.width,
+  height: imgPack2.height,
+};
 ---
 
-<section id="seccion-packs" class="py-14 md:py-24 bg-bruma relative border-y border-white/10 overflow-hidden">
-  {/* Gradiente ambiental */}
-  <div class="absolute -top-32 left-1/2 -translate-x-1/2 w-[800px] h-64 bg-calabaza/10 rounded-full blur-3xl pointer-events-none"></div>
+<section id="seccion-packs" class="py-14 md:py-24 bg-bruma relative border-y border-white/10 overflow-hidden scroll-mt-16">
+  {/* Gradiente ambiental neón */}
+  <div class="absolute -top-32 left-1/2 -translate-x-1/2 w-[800px] h-64 bg-neon-morado/15 rounded-full blur-3xl pointer-events-none"></div>
 
   <div class="max-w-6xl mx-auto px-4 relative z-10">
-    
-    <div class="text-center max-w-2xl mx-auto mb-10 sm:mb-14">
-      <span class="text-xs uppercase tracking-widest text-calabaza font-bold px-3 py-1 rounded-full bg-calabaza/15 border border-calabaza/30 inline-block mb-3">
-        Combos y Ahorro
+
+    <div class="text-center max-w-2xl mx-auto mb-12 sm:mb-14">
+      <span class="badge-rgb text-xs uppercase tracking-widest text-hueso font-bold px-3 py-1 rounded-full inline-block mb-3">
+        Packs de Ahorro
       </span>
       <h2 class="font-heading text-4xl sm:text-5xl md:text-6xl text-hueso tracking-wide m-0">
-        ELIGE TU PACK DE TERROR
+        ELIGE CUÁNTOS ESPACIOS QUIERES ILUMINAR
       </h2>
       <p class="text-ceniza text-sm sm:text-base mt-3 m-0">
-        Compra individual, en pareja o para tu grupo de amigos con precios especiales de temporada y envío incluido.
+        Entre más mallas, menor precio por unidad. Todas se controlan y sincronizan desde la misma App.
       </p>
     </div>
 
     {/* Isla Preact PackSelector */}
-    <PackSelector client:visible />
+    <PackSelector client:visible imagenPackDestacado={imagenPackDestacado} />
 
   </div>
 </section>

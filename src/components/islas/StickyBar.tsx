@@ -1,9 +1,14 @@
 import { useState, useEffect } from 'preact/hooks';
-import { currentPack, scrollToOrderForm } from '../../lib/store';
+import { currentPack, scrollToOrderForm, PRODUCTO } from '../../lib/store';
 import { formatCOP } from '../../lib/pedido-schema';
 import { tiendaConfig, getTemporadaActiva } from '../../config/tienda';
 
-export default function StickyBar() {
+interface Props {
+  // Miniatura optimizada en build (astro:assets)
+  miniatura: string;
+}
+
+export default function StickyBar({ miniatura }: Props) {
   const [visible, setVisible] = useState(false);
   const [inOrderSection, setInOrderSection] = useState(false);
   const [timeLeft, setTimeLeft] = useState({ dias: 0, horas: 0, minutos: 0 });
@@ -89,15 +94,15 @@ export default function StickyBar() {
         {/* Miniatura y Precio */}
         <div class="flex items-center gap-2.5 sm:gap-4 min-w-0">
           <img
-            src="/images/hero-frente.jpg"
-            alt="Miniatura máscara del grito"
+            src={miniatura}
+            alt={PRODUCTO.nombreCorto}
             width="44"
             height="44"
             class="w-11 h-11 sm:w-12 sm:h-12 object-cover rounded-lg border border-white/20 bg-sombra flex-shrink-0"
           />
           <div class="min-w-0">
             <div class="text-[11px] sm:text-xs text-ceniza uppercase tracking-wider truncate font-semibold">
-              Pack {pack.nombre} ({pack.unidades} {pack.unidades === 1 ? 'unidad' : 'unidades'})
+              {pack.nombre} ({pack.unidades} {pack.unidades === 1 ? 'malla' : 'mallas'})
             </div>
             <div class="flex items-baseline gap-2">
               <span class="font-heading text-xl sm:text-2xl text-hueso tabular-nums leading-none font-bold">
@@ -108,10 +113,10 @@ export default function StickyBar() {
               </span>
             </div>
             {temporada !== 'liquidacion' && (
-              <div class="text-[10px] text-calabaza font-semibold flex items-center gap-1 mt-0.5">
-                <span>⏳</span>
+              <div class="text-[10px] text-neon-cian font-semibold flex items-center gap-1 mt-0.5">
+                <span>🎃</span>
                 <span class="tabular-nums font-heading tracking-wide">
-                  Faltan {timeLeft.dias}d {timeLeft.horas}h
+                  Halloween en {timeLeft.dias}d {timeLeft.horas}h
                 </span>
               </div>
             )}

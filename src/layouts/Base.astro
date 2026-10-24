@@ -1,5 +1,7 @@
 ---
 import '../styles/global.css';
+import { getImage } from 'astro:assets';
+import imgHero from '../assets/images/hero/telarana-ventana.png';
 import { tiendaConfig } from '../config/tienda';
 import HalloweenCountdown from '../components/islas/HalloweenCountdown';
 import Header from '../components/ui/Header.astro';
@@ -15,15 +17,19 @@ interface Props {
 }
 
 const {
-  title = `Máscara de terror con capucha para Halloween | ${tiendaConfig.nombreTienda}`,
-  description = 'Máscara Fantasma del Grito con capucha negra integrada. El disfraz más fácil y aterrador de Halloween 2026. Talla adulto y niño. Pago contra entrega en toda Colombia.',
-  image = '/images/hero-grupo.jpg',
+  title = `Malla LED RGB Inteligente 135 cm para Halloween y Navidad | ${tiendaConfig.nombreTienda}`,
+  description = 'Malla LED RGB de 135 cm con 120 luces, App Bluetooth + Control Remoto y ritmo musical. Telaraña neón en Halloween y estrella en Navidad. Pago contra entrega en toda Colombia.',
+  image,
   robots = 'index, follow',
   jsonLd = [],
 } = Astro.props;
 
+// Imagen OG y miniatura de la barra fija optimizadas en build
+const ogImage = await getImage({ src: imgHero, width: 1024, format: 'jpg' });
+const miniatura = await getImage({ src: imgHero, width: 96, height: 96, format: 'webp' });
+
 const canonicalUrl = new URL(Astro.url.pathname, Astro.site || 'https://mascaradelgrito.co').toString();
-const ogImageUrl = new URL(image, Astro.site || 'https://mascaradelgrito.co').toString();
+const ogImageUrl = new URL(image ?? ogImage.src, Astro.site || 'https://mascaradelgrito.co').toString();
 
 // Schema.org Organización por defecto
 const orgSchema = {
@@ -53,7 +59,7 @@ const allSchemas = [orgSchema, ...jsonLd];
     <meta name="description" content={description} />
     <link rel="canonical" href={canonicalUrl} />
     <meta name="robots" content={robots} />
-    <meta name="theme-color" content="#0A0A0B" />
+    <meta name="theme-color" content="#09090b" />
 
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="product" />
@@ -72,19 +78,12 @@ const allSchemas = [orgSchema, ...jsonLd];
     <meta name="twitter:image" content={ogImageUrl} />
 
     <!-- Favicon -->
-    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E🎃%3C/text%3E%3C/svg%3E" />
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E🕸️%3C/text%3E%3C/svg%3E" />
 
     <!-- Preload Fonts -->
     <link
       rel="preload"
       href="/fonts/bebas-neue.woff2"
-      as="font"
-      type="font/woff2"
-      crossorigin="anonymous"
-    />
-    <link
-      rel="preload"
-      href="/fonts/creepster.woff2"
       as="font"
       type="font/woff2"
       crossorigin="anonymous"
@@ -134,7 +133,7 @@ const allSchemas = [orgSchema, ...jsonLd];
     <!-- Viñeta oscura periférica -->
     <div class="fixed inset-0 pointer-events-none z-20 shadow-[inset_0_0_120px_rgba(0,0,0,0.85)]" aria-hidden="true"></div>
 
-    <!-- 1. Barra de urgencia (Isla HalloweenCountdown) -->
+    <!-- 1. Barra de anuncio superior (Isla HalloweenCountdown) -->
     <HalloweenCountdown client:visible />
 
     <!-- 2. Header mínimo -->
@@ -149,7 +148,7 @@ const allSchemas = [orgSchema, ...jsonLd];
     <Footer />
 
     <!-- Barra fija inferior móvil hacia el formulario (Isla Preact client:idle) -->
-    <StickyBar client:idle />
+    <StickyBar client:idle miniatura={miniatura.src} />
 
     <!-- Captura de UTMs en sessionStorage y Microinteracciones -->
     <script is:inline>
@@ -178,36 +177,7 @@ const allSchemas = [orgSchema, ...jsonLd];
         const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
         if (prefersReducedMotion) return;
 
-        // Flash de susto controlado de 150ms al tocar la foto principal del hero (máximo una vez por sesión)
-        const mainPhoto = document.getElementById('hero-main-photo');
-        if (mainPhoto) {
-          mainPhoto.addEventListener('click', function() {
-            if (sessionStorage.getItem('scare_triggered')) return;
-            sessionStorage.setItem('scare_triggered', 'true');
-
-            const flashOverlay = document.createElement('div');
-            flashOverlay.style.position = 'fixed';
-            flashOverlay.style.inset = '0';
-            flashOverlay.style.backgroundColor = 'rgba(255, 255, 255, 0.9)';
-            flashOverlay.style.zIndex = '9999';
-            flashOverlay.style.pointerEvents = 'none';
-            flashOverlay.style.transition = 'opacity 150ms cubic-bezier(0.4, 0, 0.2, 1)';
-            flashOverlay.style.opacity = '1';
-
-            document.body.appendChild(flashOverlay);
-
-            setTimeout(function() {
-              flashOverlay.style.opacity = '0';
-              setTimeout(function() {
-                if (flashOverlay.parentNode) {
-                  flashOverlay.parentNode.removeChild(flashOverlay);
-                }
-              }, 160);
-            }, 80);
-          });
-        }
-
-        // Haz de linterna interactivo sobre el hero
+        // Resplandor neón interactivo sobre el hero
         const heroSection = document.getElementById('hero-section');
         const flashlight = document.getElementById('hero-flashlight');
         if (heroSection && flashlight) {
@@ -215,7 +185,7 @@ const allSchemas = [orgSchema, ...jsonLd];
             const rect = heroSection.getBoundingClientRect();
             const x = e.clientX - rect.left;
             const y = e.clientY - rect.top;
-            flashlight.style.background = `radial-gradient(circle 320px at ${x}px ${y}px, rgba(255, 106, 0, 0.16), rgba(42, 27, 61, 0.08) 50%, transparent 80%)`;
+            flashlight.style.background = `radial-gradient(circle 320px at ${x}px ${y}px, rgba(168, 85, 247, 0.16), rgba(6, 182, 212, 0.06) 50%, transparent 80%)`;
           });
         }
       })();

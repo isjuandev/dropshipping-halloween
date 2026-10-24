@@ -6,25 +6,25 @@ import { tiendaConfig } from '../../config/tienda';
   <div class="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between">
     <!-- Logo sin menú para evitar fugas de conversión -->
     <a href="/" class="flex items-center gap-2.5 text-hueso no-underline group focus-visible:outline-calabaza" aria-label={`Inicio - ${tiendaConfig.nombreTienda}`}>
-      <span class="w-9 h-9 rounded-xl bg-gradient-to-br from-calabaza to-sangre flex items-center justify-center text-noche font-heading text-2xl font-bold shadow-md shadow-calabaza/20 group-hover:scale-105 transition-transform">
-        G
+      <span class="w-9 h-9 rounded-xl bg-gradient-to-br from-neon-morado via-neon-cian to-calabaza flex items-center justify-center text-white font-heading text-2xl font-bold shadow-md shadow-neon-morado/30 group-hover:scale-105 transition-transform" aria-hidden="true">
+        L
       </span>
       <div class="flex flex-col">
         <span class="font-heading tracking-wider text-xl sm:text-2xl leading-none text-hueso font-bold">
           {tiendaConfig.nombreTienda}
         </span>
-        <span class="text-[10px] uppercase tracking-widest text-calabaza font-semibold leading-none mt-0.5">
-          Halloween 2026
+        <span class="text-[10px] uppercase tracking-widest text-neon-cian font-semibold leading-none mt-0.5">
+          Decoración LED Inteligente
         </span>
       </div>
     </a>
 
-    <!-- Botón directo hacia el formulario de pedido contraentrega (lleva a la landing si estamos en otra página) -->
+    <!-- Botón directo hacia el selector de packs + checkout (lleva a la landing si estamos en otra página) -->
     <a
-      href="/#pedido"
+      href="/#seccion-packs"
       class="flex items-center gap-2 px-4 py-2 rounded-xl bg-calabaza hover:bg-calabaza-hover text-noche transition-all text-xs sm:text-sm font-bold uppercase tracking-wider focus-visible:outline-calabaza min-h-[44px] shadow-md shadow-calabaza/10"
     >
-      <span>Pedir ahora</span>
+      <span>PEDIR AHORA</span>
       <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
         <path d="M12 5v14M19 12l-7 7-7-7"/>
       </svg>

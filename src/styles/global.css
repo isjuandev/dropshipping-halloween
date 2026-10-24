@@ -1,19 +1,21 @@
 @import "tailwindcss";
-@import "@fontsource/creepster";
 @import "@fontsource/bebas-neue";
 @import "@fontsource-variable/inter";
 
 @theme {
-  --color-noche: #0A0A0B;
-  --color-sombra: #16141A;
+  --color-noche: #09090b;
+  --color-sombra: #0f0f14;
   --color-hueso: #F2EFE9;
-  --color-calabaza: #FF6A00;
-  --color-calabaza-hover: #E85F00;
+  /* CTA de alta conversión (ámbar / naranja) */
+  --color-calabaza: #f97316;
+  --color-calabaza-hover: #ea580c;
   --color-sangre: #B3001B;
-  --color-bruma: #2A1B3D;
+  --color-bruma: #1a1226;
   --color-ceniza: #9A96A0;
+  /* Acentos neón RGB */
+  --color-neon-morado: #a855f7;
+  --color-neon-cian: #06b6d4;
 
-  --font-display: "Creepster", cursive, system-ui;
   --font-heading: "Bebas Neue", sans-serif;
   --font-sans: "Inter Variable", "Inter", sans-serif;
 
@@ -81,6 +83,28 @@ body {
   font-variant-numeric: tabular-nums;
 }
 
+/* Texto con gradiente RGB neón */
+.texto-rgb {
+  background: linear-gradient(90deg, var(--color-neon-morado), var(--color-neon-cian), var(--color-calabaza));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* Borde con gradiente RGB sutil sobre fondo sombra */
+.borde-rgb {
+  border: 1px solid transparent;
+  background:
+    linear-gradient(var(--color-sombra), var(--color-sombra)) padding-box,
+    linear-gradient(135deg, rgba(168, 85, 247, 0.6), rgba(6, 182, 212, 0.45), rgba(249, 115, 22, 0.55)) border-box;
+}
+
+/* Etiqueta con gradiente neón */
+.badge-rgb {
+  background: linear-gradient(90deg, rgba(168, 85, 247, 0.18), rgba(6, 182, 212, 0.18));
+  border: 1px solid rgba(168, 85, 247, 0.4);
+}
+
 /* Accessibility focus ring */
 :focus-visible {
   outline: 2px solid var(--color-calabaza);
@@ -89,12 +113,12 @@ body {
 
 /* Glow button */
 .btn-glow {
-  box-shadow: 0 0 28px rgba(255, 106, 0, 0.35);
+  box-shadow: 0 0 28px rgba(249, 115, 22, 0.35);
   transition: transform 0.15s ease, box-shadow 0.15s ease, background-color 0.15s ease;
 }
 
 .btn-glow:hover {
-  box-shadow: 0 0 35px rgba(255, 106, 0, 0.55);
+  box-shadow: 0 0 35px rgba(249, 115, 22, 0.55);
   transform: translateY(-1px);
 }
 

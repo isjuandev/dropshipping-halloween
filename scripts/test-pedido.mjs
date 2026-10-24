@@ -13,20 +13,20 @@ const randomSuffix = Math.random().toString(36).substring(2, 6).toUpperCase();
 const payloadPrueba = {
   pedidoId: `PED-${new Date().toISOString().slice(0, 10).replace(/-/g, '')}-${randomSuffix}`,
   fecha: new Date().toISOString(),
-  tienda: "TerrorExpress Colombia",
+  tienda: "LumiHogar Colombia",
   landing: {
     url: "https://mascaradelgrito.co",
-    plantilla: "grito"
+    plantilla: "malla-led"
   },
   producto: {
-    nombre: "Máscara Fantasma del Grito",
-    sku: "GRITO-HALLOWEEN-2026",
-    variante: "1) Clásica blanca (Adulto), 2) Con sangre (Adulto)",
-    paquete: "Pareja",
+    nombre: "Malla LED RGB Inteligente 135 cm",
+    sku: "MALLA-LED-RGB-135",
+    variante: "Multicolor RGB · 135 cm · 120 LEDs",
+    paquete: "Pack 2 Mallas",
     cantidad: 2,
-    extras: [],
-    precioUnitario: 24950,
-    total: 49900
+    extras: ["2x Control remoto 20 botones"],
+    precioUnitario: 79950,
+    total: 159900
   },
   cliente: {
     nombreCompleto: "Ana Restrepo",

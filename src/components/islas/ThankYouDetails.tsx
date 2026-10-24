@@ -163,7 +163,7 @@ export default function ThankYouDetails() {
               <div class="flex justify-between items-baseline gap-2">
                 <span class="text-ceniza">Producto:</span>
                 <span class="text-hueso font-medium text-right">
-                  {producto?.nombre || data.productoNombre || 'Máscara Fantasma del Grito'}
+                  {producto?.nombre || data.productoNombre || 'Malla LED RGB Inteligente 135 cm'}
                 </span>
               </div>
 

@@ -1,0 +1,64 @@
+---
+import { Picture } from 'astro:assets';
+import imgDual from '../../assets/images/bloques/halloween-vs-navidad.png';
+---
+
+<section class="py-14 md:py-24 bg-noche relative overflow-hidden">
+  <div class="absolute top-1/3 -right-32 w-96 h-96 bg-neon-cian/10 rounded-full blur-3xl pointer-events-none" aria-hidden="true"></div>
+
+  <div class="max-w-6xl mx-auto px-4 relative z-10">
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-14 items-center">
+
+      {/* Copy */}
+      <div class="text-center lg:text-left lg:order-2">
+        <span class="badge-rgb text-xs uppercase tracking-widest text-hueso font-bold px-3 py-1 rounded-full inline-block mb-3">
+          Compra Inteligente 2 en 1
+        </span>
+        <h2 class="font-heading text-4xl sm:text-5xl md:text-6xl text-hueso tracking-wide m-0 leading-[0.95]">
+          NO COMPRES DECORACIÓN PARA <span class="texto-rgb">UN SOLO DÍA</span>
+        </h2>
+        <p class="text-ceniza text-base sm:text-lg mt-4 m-0 leading-relaxed">
+          En octubre luce como una telaraña neón hipnótica; en noviembre y diciembre cámbiala desde la App a tonos cálidos, rojos, verdes o multicolores para Navidad.
+        </p>
+
+        <div class="grid grid-cols-2 gap-3 mt-6 text-left">
+          <div class="rounded-2xl p-4 bg-sombra border border-neon-morado/30">
+            <div class="text-2xl mb-1" aria-hidden="true">🎃</div>
+            <div class="font-heading text-xl text-hueso tracking-wide">Octubre</div>
+            <p class="text-xs text-ceniza m-0 mt-1">Telaraña morada, cian y naranja con efectos dinámicos.</p>
+          </div>
+          <div class="rounded-2xl p-4 bg-sombra border border-emerald-500/30">
+            <div class="text-2xl mb-1" aria-hidden="true">🎄</div>
+            <div class="font-heading text-xl text-hueso tracking-wide">Diciembre</div>
+            <p class="text-xs text-ceniza m-0 mt-1">Estrella dorada, roja y verde o multicolor para la novena.</p>
+          </div>
+        </div>
+      </div>
+
+      {/* Imagen comparativa (mitad superior: Halloween / mitad inferior: Navidad) */}
+      <div class="relative max-w-md mx-auto w-full lg:order-1">
+        <div class="relative aspect-[4/5] rounded-2xl overflow-hidden borde-rgb shadow-2xl shadow-neon-morado/10">
+          <Picture
+            pictureAttributes={{ class: 'block w-full h-full' }}
+            src={imgDual}
+            formats={['avif']}
+            fallbackFormat="webp"
+            widths={[480, 768, 1024]}
+            sizes="(min-width: 1024px) 448px, 92vw"
+            alt="La misma malla LED en modo Halloween (morado y cian) y en modo Navidad (rojo, verde y dorado)"
+            loading="lazy"
+            decoding="async"
+            class="w-full h-full object-cover rounded-2xl"
+          />
+          <span class="absolute top-3 left-3 right-3 sm:right-auto px-3 py-1.5 rounded-lg bg-noche/85 backdrop-blur border border-neon-morado/50 text-[11px] sm:text-xs font-bold text-hueso uppercase tracking-wide">
+            🎃 Modo Halloween <span class="font-normal normal-case text-ceniza">(Morado / Cian / Naranja)</span>
+          </span>
+          <span class="absolute top-[calc(50%+0.75rem)] left-3 right-3 sm:right-auto px-3 py-1.5 rounded-lg bg-noche/85 backdrop-blur border border-emerald-500/50 text-[11px] sm:text-xs font-bold text-hueso uppercase tracking-wide">
+            🎄 Modo Navidad y Fiestas <span class="font-normal normal-case text-ceniza">(Dorado / Rojo / Verde / Multicolor)</span>
+          </span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
