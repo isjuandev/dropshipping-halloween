@@ -8,15 +8,15 @@ import { tiendaConfig } from '../../config/tienda';
       {/* Columna 1: Marca & Razón Social */}
       <div class="md:col-span-2 space-y-2">
         <div class="flex items-center gap-2 mb-2">
-          <span class="w-7 h-7 rounded-lg bg-calabaza text-noche font-heading text-xl font-bold flex items-center justify-center">
-            G
+          <span class="w-7 h-7 rounded-lg bg-gradient-to-br from-neon-morado via-neon-cian to-calabaza text-white font-heading text-xl font-bold flex items-center justify-center" aria-hidden="true">
+            V
           </span>
           <span class="font-heading text-2xl text-hueso tracking-wider">
             {tiendaConfig.nombreTienda}
           </span>
         </div>
         <p class="text-sm text-hueso/80 max-w-md">
-          Especialistas en disfraces y accesorios de temporada para Halloween en Colombia. Despachos rápidos y pago contra entrega en todo el territorio nacional.
+          Decoración LED inteligente para Halloween, Navidad y todas tus fiestas en Colombia. Despachos rápidos y pago contra entrega en todo el territorio nacional.
         </p>
         <p class="text-xs text-ceniza">
           <strong>Razón Social:</strong> {tiendaConfig.razonSocial}<br />
@@ -88,13 +88,10 @@ import { tiendaConfig } from '../../config/tienda';
       </div>
     </div>
 
-    {/* Copyright y Descargo sin marcas */}
-    <div class="pt-6 border-t border-white/10 flex flex-col sm:flex-row items-center justify-between gap-3 text-[11px] text-ceniza/80">
+    {/* Copyright */}
+    <div class="pt-6 border-t border-white/10 text-[11px] text-ceniza/80">
       <p class="m-0 text-center sm:text-left">
         © 2026 {tiendaConfig.nombreTienda}. Todos los derechos reservados.
-      </p>
-      <p class="m-0 text-center sm:text-right max-w-md">
-        Máscara de terror genérica para disfraces festivos. No afiliada ni patrocinada por ninguna franquicia cinematográfica o marca registrada.
       </p>
     </div>
   </div>

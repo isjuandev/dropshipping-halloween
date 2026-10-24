@@ -1,10 +1,10 @@
 {
   "id": "t2",
-  "nombre": "Valentina Restrepo",
+  "nombre": "Valentina Ospina",
   "ciudad": "Medellín",
-  "foto": "/images/ugc-medellin.jpg",
-  "texto": "Pedí el pack pareja para mi novio y para mí. Lo mejor es que la tela cubre el cuello por completo y no se nota la piel. Respiramos súper bien en la discoteca de Provenza.",
+  "foto": "../../assets/images/resenas/medellin-navidad-balcon.png",
+  "texto": "La compré para Halloween pero ya la probé en modo Navidad con rojo, verde y dorado desde la App y queda divina en el balcón. Se queda instalada hasta enero, ¡fue la mejor compra de la temporada!",
   "estrellas": 5,
-  "packComprado": "Pack Pareja",
+  "packComprado": "Pack 2 Mallas",
   "fecha": "Hace 4 días"
 }

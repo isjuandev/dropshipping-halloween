@@ -1,0 +1,5 @@
+{
+  "pregunta": "¿Cómo se conecta a la corriente? ¿Necesito enchufe especial?",
+  "respuesta": "No necesitas nada especial. La malla funciona con conexión USB 5V: la conectas al cargador de tu celular (marranito), a un puerto USB del televisor, a una regleta con USB o a una batería portátil (powerbank). Es de bajo consumo y no se recalienta, así que puedes dejarla encendida toda la noche.",
+  "orden": 3
+}

@@ -1,0 +1,71 @@
+---
+import { Picture } from 'astro:assets';
+import imgLeds from '../../assets/images/beneficios/120-leds-alto-brillo.png';
+import imgMoldeable from '../../assets/images/beneficios/estructura-moldeable.png';
+import imgUsb from '../../assets/images/beneficios/conexion-usb-5v.png';
+
+const beneficios = [
+  {
+    img: imgLeds,
+    alt: 'Malla LED de 120 luces RGB de alto brillo encendida sobre una pared',
+    titulo: '120 LEDs de Alto Brillo y 135 cm',
+    texto: 'Diodos recubiertos en resina epóxica de alto destello que resaltan desde la calle.',
+  },
+  {
+    img: imgMoldeable,
+    alt: 'Amigos en una fiesta con la malla LED extendida como telaraña en la pared',
+    titulo: 'Estructura Moldeable',
+    texto: 'Úsala extendida como telaraña/rosetón o dale formas tridimensionales en techos y esquinas.',
+  },
+  {
+    img: imgUsb,
+    alt: 'Malla LED conectada por USB a una batería portátil junto a una ventana',
+    titulo: 'Conexión USB 5V Segura',
+    texto: 'Conéctala a cualquier marranito de celular, televisor o powerbank sin recalentamientos.',
+  },
+];
+---
+
+<section class="py-14 md:py-24 bg-noche relative">
+  <div class="max-w-6xl mx-auto px-4">
+
+    <div class="text-center max-w-2xl mx-auto mb-10 sm:mb-14">
+      <span class="badge-rgb text-xs uppercase tracking-widest text-hueso font-bold px-3 py-1 rounded-full inline-block mb-3">
+        Beneficios Clave
+      </span>
+      <h2 class="font-heading text-4xl sm:text-5xl md:text-6xl text-hueso tracking-wide m-0">
+        ¿POR QUÉ ESTA MALLA LED Y NO OTRA?
+      </h2>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+      {beneficios.map((b) => (
+        <article class="borde-rgb rounded-2xl overflow-hidden flex flex-col shadow-xl">
+          <div class="aspect-square overflow-hidden">
+            <Picture
+              pictureAttributes={{ class: 'block w-full h-full' }}
+              src={b.img}
+              formats={['avif']}
+              fallbackFormat="webp"
+              widths={[400, 640, 1024]}
+              sizes="(min-width: 768px) 360px, 92vw"
+              alt={b.alt}
+              loading="lazy"
+              decoding="async"
+              class="w-full h-full object-cover rounded-2xl"
+            />
+          </div>
+          <div class="p-5 sm:p-6">
+            <h3 class="font-heading text-2xl text-hueso tracking-wide m-0 leading-tight">
+              {b.titulo}
+            </h3>
+            <p class="text-sm text-ceniza leading-relaxed m-0 mt-2">
+              {b.texto}
+            </p>
+          </div>
+        </article>
+      ))}
+    </div>
+
+  </div>
+</section>

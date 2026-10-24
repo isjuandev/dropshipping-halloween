@@ -1,0 +1,21 @@
+{
+  "nombre": "Malla LED RGB Inteligente 135 cm",
+  "sku": "MALLA-LED-RGB-135",
+  "descripcion": "Malla LED RGB de 135 cm con 120 luces direccionables, App Bluetooth + Control Remoto de 20 botones y sincronización con música. Telaraña neón en Halloween y estrella luminosa en Navidad.",
+  "precio": 89900,
+  "precioAnterior": 149900,
+  "especificaciones": {
+    "diametro": "135 cm",
+    "leds": 120,
+    "alimentacion": "USB 5V de bajo consumo",
+    "control": ["App Bluetooth Hello Fairy (iOS / Android)", "Control remoto infrarrojo de 20 botones"]
+  },
+  "incluye": [
+    "1x Malla LED RGB 135 cm (120 LEDs)",
+    "1x Control Remoto de 20 botones",
+    "Cable USB integrado",
+    "Manual de conexión rápida"
+  ],
+  "rating": 4.8,
+  "numResenas": 1140
+}

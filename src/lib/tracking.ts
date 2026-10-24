@@ -22,7 +22,7 @@ export function trackBeginCheckout(params: {
       value: params.valor,
       items: [
         {
-          item_name: `Máscara Fantasma del Grito - Pack ${params.pack}`,
+          item_name: `Malla LED RGB 135 cm - ${params.pack}`,
           price: params.valor,
           quantity: 1,
         },
@@ -58,7 +58,7 @@ export function trackGenerateLead(params: {
     currency: 'COP',
     items: [
       {
-        item_name: `Máscara Fantasma del Grito - Pack ${params.pack}`,
+        item_name: `Malla LED RGB 135 cm - ${params.pack}`,
         price: params.valor,
         quantity: 1,
       },

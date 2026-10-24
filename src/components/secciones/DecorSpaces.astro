@@ -1,0 +1,81 @@
+---
+import { Picture } from 'astro:assets';
+import imgVentanal from '../../assets/images/espacios/ventanales-balcones.png';
+import imgPuerta from '../../assets/images/espacios/puerta-principal.png';
+import imgSala from '../../assets/images/espacios/pared-sala.png';
+import imgTecho from '../../assets/images/espacios/techo-dosel.png';
+
+const espacios = [
+  {
+    img: imgVentanal,
+    alt: 'Malla LED morada y naranja en el ventanal de un apartamento vista desde la calle',
+    titulo: 'Ventanales y Balcones',
+    texto: 'Impacto visual inmediato hacia el exterior.',
+  },
+  {
+    img: imgPuerta,
+    alt: 'Malla LED multicolor en la pared junto a la puerta principal de una casa',
+    titulo: 'Puerta Principal o Garaje',
+    texto: 'Recibe a tus invitados o niños pidiendo dulces con efectos dinámicos.',
+  },
+  {
+    img: imgSala,
+    alt: 'Malla LED morada y cian sobre el sofá de una sala',
+    titulo: 'Pared de Sala o Set de TV',
+    texto: 'Ambiente envolvente para reuniones, cenas navideñas y fiestas.',
+  },
+  {
+    img: imgTecho,
+    alt: 'Malla LED arcoíris instalada en el techo de una terraza',
+    titulo: 'Techo o Dosel Creativo',
+    texto: 'Moldea la malla como un cielo estrellado en terrazas cubiertas o habitaciones.',
+  },
+];
+---
+
+<section class="py-14 md:py-24 bg-sombra border-y border-white/10 relative">
+  <div class="max-w-6xl mx-auto px-4">
+
+    <div class="text-center max-w-2xl mx-auto mb-10 sm:mb-14">
+      <span class="badge-rgb text-xs uppercase tracking-widest text-hueso font-bold px-3 py-1 rounded-full inline-block mb-3">
+        Ideas de Decoración
+      </span>
+      <h2 class="font-heading text-4xl sm:text-5xl md:text-6xl text-hueso tracking-wide m-0">
+        4 FORMAS DE DECORAR TU CASA CON 135 CM
+      </h2>
+    </div>
+
+    {/* Carrusel con scroll-snap en móvil, grid 2x2 en desktop */}
+    <div class="flex md:grid md:grid-cols-2 gap-4 sm:gap-6 overflow-x-auto md:overflow-visible snap-x snap-mandatory no-scrollbar -mx-4 px-4 md:mx-0 md:px-0 pb-2">
+      {espacios.map((e, idx) => (
+        <article class="relative aspect-[4/5] w-[82%] sm:w-[60%] md:w-auto flex-shrink-0 snap-center rounded-2xl overflow-hidden border border-white/10 shadow-xl group">
+          <Picture
+            pictureAttributes={{ class: 'block w-full h-full' }}
+            src={e.img}
+            formats={['avif']}
+            fallbackFormat="webp"
+            widths={[480, 768, 1024]}
+            sizes="(min-width: 768px) 560px, 82vw"
+            alt={e.alt}
+            loading="lazy"
+            decoding="async"
+            class="w-full h-full object-cover rounded-2xl transition-transform duration-500 group-hover:scale-105"
+          />
+          <div class="absolute inset-0 bg-gradient-to-t from-noche via-noche/20 to-transparent pointer-events-none"></div>
+          <div class="absolute bottom-0 inset-x-0 p-5 sm:p-6">
+            <span class="badge-rgb inline-block text-[11px] font-bold uppercase tracking-wider text-hueso px-2 py-0.5 rounded-full mb-2">
+              Espacio {idx + 1}
+            </span>
+            <h3 class="font-heading text-2xl sm:text-3xl text-hueso tracking-wide m-0 leading-tight">
+              {e.titulo}
+            </h3>
+            <p class="text-sm text-hueso/80 m-0 mt-1">
+              {e.texto}
+            </p>
+          </div>
+        </article>
+      ))}
+    </div>
+
+  </div>
+</section>

@@ -1,0 +1,87 @@
+---
+import { Picture } from 'astro:assets';
+import imgInstalacion from '../../assets/images/bloques/instalacion-ventosas.png';
+
+const pasos = [
+  {
+    paso: '01',
+    icon: '🪝',
+    titulo: 'Despliega y Fija',
+    texto: 'Despliega desde el anillo central y fija las puntas con ganchos adhesivos o ventosas (sin taladros).',
+  },
+  {
+    paso: '02',
+    icon: '🔌',
+    titulo: 'Conecta por USB',
+    texto: 'Conecta el cable USB a cualquier adaptador de celular o batería portátil.',
+  },
+  {
+    paso: '03',
+    icon: '✨',
+    titulo: 'Elige tu Modo',
+    texto: 'Selecciona el modo Halloween, Navidad o Música desde el control remoto o la App.',
+  },
+];
+---
+
+<section class="py-14 md:py-24 bg-noche relative overflow-hidden">
+  <div class="absolute top-0 right-1/4 w-96 h-96 bg-neon-cian/10 rounded-full blur-3xl pointer-events-none" aria-hidden="true"></div>
+
+  <div class="max-w-6xl mx-auto px-4 relative z-10">
+
+    <div class="text-center max-w-2xl mx-auto mb-10 sm:mb-14">
+      <span class="badge-rgb text-xs uppercase tracking-widest text-hueso font-bold px-3 py-1 rounded-full inline-block mb-3">
+        Instalación en 2 Minutos
+      </span>
+      <h2 class="font-heading text-4xl sm:text-5xl md:text-6xl text-hueso tracking-wide m-0">
+        LISTA EN 3 PASOS, SIN HERRAMIENTAS
+      </h2>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-center">
+      {/* Imagen demostrativa de la instalación */}
+      <div class="aspect-[4/5] rounded-2xl overflow-hidden borde-rgb shadow-2xl max-w-md mx-auto w-full">
+        <Picture
+          pictureAttributes={{ class: 'block w-full h-full' }}
+          src={imgInstalacion}
+          formats={['avif']}
+          fallbackFormat="webp"
+          widths={[480, 768, 1024]}
+          sizes="(min-width: 1024px) 448px, 92vw"
+          alt="Persona fijando la malla LED a la ventana con una ventosa transparente"
+          loading="lazy"
+          decoding="async"
+          class="w-full h-full object-cover rounded-2xl"
+        />
+      </div>
+
+      {/* 3 pasos */}
+      <ol class="list-none p-0 m-0 grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-1 gap-4">
+        {pasos.map((p) => (
+          <li class="borde-rgb rounded-2xl p-5 sm:p-6 flex lg:items-center gap-4 flex-col lg:flex-row">
+            <div class="flex items-center gap-3 lg:flex-col lg:gap-1 flex-shrink-0">
+              <span class="font-heading text-4xl texto-rgb font-bold tabular-nums leading-none">{p.paso}</span>
+              <span class="text-2xl" aria-hidden="true">{p.icon}</span>
+            </div>
+            <div>
+              <h3 class="font-heading text-2xl text-hueso tracking-wide m-0 leading-tight">
+                Paso {Number(p.paso)}: {p.titulo}
+              </h3>
+              <p class="text-sm text-ceniza leading-relaxed m-0 mt-1">
+                {p.texto}
+              </p>
+            </div>
+          </li>
+        ))}
+      </ol>
+    </div>
+
+    {/* Banner de seguridad eléctrica */}
+    <div class="mt-10 rounded-2xl p-5 sm:p-6 bg-gradient-to-r from-neon-morado/15 via-neon-cian/10 to-calabaza/15 border border-neon-cian/30 text-center">
+      <p class="m-0 text-sm sm:text-base text-hueso font-semibold leading-relaxed">
+        ⚡ Tecnología USB 5V Fría al Tacto: <span class="font-normal text-hueso/80">Bajo consumo energético, segura para niños, mascotas y cortinas.</span>
+      </p>
+    </div>
+
+  </div>
+</section>

@@ -29,10 +29,6 @@ export default function ArrivalChecker() {
     });
   };
 
-  if (temporada === 'liquidacion') {
-    return null; // Oculto en liquidación
-  }
-
   const handlePedirExpress = () => {
     scrollToOrderForm();
   };
@@ -49,7 +45,7 @@ export default function ArrivalChecker() {
               🚚
             </span>
             <h3 class="font-heading text-2xl sm:text-3xl text-hueso tracking-wide m-0">
-              ¿LLEGA ANTES DE HALLOWEEN?
+              {temporada === 'liquidacion' ? '¿CUÁNDO LLEGA A TU CIUDAD?' : '¿LLEGA ANTES DE HALLOWEEN?'}
             </h3>
           </div>
           <p class="text-ceniza text-sm m-0">
@@ -97,25 +93,32 @@ export default function ArrivalChecker() {
 
         {/* Mensaje de estado */}
         <div>
-          {resultado.estado === 'a-tiempo' && (
+          {temporada === 'liquidacion' && (
+            <div class="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl bg-emerald-950/80 border border-emerald-500/30 text-emerald-300 font-semibold text-sm">
+              <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse"></span>
+              <span>Llega a tiempo para decorar en Navidad</span>
+            </div>
+          )}
+
+          {temporada !== 'liquidacion' && resultado.estado === 'a-tiempo' && (
             <div class="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl bg-emerald-950/80 border border-emerald-500/30 text-emerald-300 font-semibold text-sm">
               <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse"></span>
               <span>Llega a tiempo si pides hoy</span>
             </div>
           )}
 
-          {resultado.estado === 'justa' && (
+          {temporada !== 'liquidacion' && resultado.estado === 'justa' && (
             <div class="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl bg-calabaza/20 border border-calabaza/40 text-calabaza font-semibold text-sm">
               <span class="w-2.5 h-2.5 rounded-full bg-calabaza animate-ping"></span>
               <span>Pide hoy: entrega justa</span>
             </div>
           )}
 
-          {resultado.estado === 'tarde' && (
+          {temporada !== 'liquidacion' && resultado.estado === 'tarde' && (
             <div class="flex flex-col sm:flex-row items-start sm:items-center gap-3">
               <div class="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl bg-sangre/20 border border-sangre/40 text-rose-300 font-semibold text-sm">
                 <span>⚠️</span>
-                <span>Puede no llegar antes del 31</span>
+                <span>Puede no llegar antes del 31 (llega para Navidad)</span>
               </div>
               <button
                 type="button"

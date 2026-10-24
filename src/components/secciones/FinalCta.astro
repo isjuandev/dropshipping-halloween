@@ -1,20 +1,25 @@
 ---
 import { formatCOP } from '../../lib/pedido-schema';
+import { PACKS_DATA } from '../../lib/store';
+
+const packDestacado = PACKS_DATA.find((p) => p.id === 'pack-2') ?? PACKS_DATA[0];
 ---
 
 <section id="cta-final" class="py-16 md:py-28 bg-noche relative border-t border-white/10 overflow-hidden">
-  {/* Gradiente de fondo con efecto misterioso */}
-  <div class="absolute inset-0 bg-radial from-calabaza/10 via-transparent to-transparent opacity-50 pointer-events-none"></div>
+  {/* Halo RGB de fondo */}
+  <div class="absolute inset-0 pointer-events-none" aria-hidden="true">
+    <div class="absolute top-10 left-1/4 w-72 h-72 bg-neon-morado/20 rounded-full blur-3xl"></div>
+    <div class="absolute bottom-10 right-1/4 w-72 h-72 bg-neon-cian/15 rounded-full blur-3xl"></div>
+  </div>
 
   <div class="max-w-4xl mx-auto px-4 text-center relative z-10">
-    
-    {/* "31 OCT" gigante en Creepster */}
+
     <div class="mb-4">
-      <span class="font-display text-6xl sm:text-8xl md:text-9xl text-calabaza tracking-widest drop-shadow-[0_0_35px_rgba(255,106,0,0.6)] select-none">
-        31 OCT
+      <span class="font-heading text-5xl sm:text-7xl md:text-8xl texto-rgb tracking-wider select-none leading-none">
+        1 MALLA · 2 TEMPORADAS
       </span>
-      <span class="block text-xs sm:text-sm uppercase tracking-widest text-ceniza font-bold mt-1">
-        NO TE QUEDES SIN TU DISFRAZ ESTE HALLOWEEN
+      <span class="block text-xs sm:text-sm uppercase tracking-widest text-ceniza font-bold mt-2">
+        🎃 Halloween + 🎄 Navidad + 🎉 Fin de Año
       </span>
     </div>
 
@@ -23,32 +28,31 @@ import { formatCOP } from '../../lib/pedido-schema';
     </h2>
 
     <p class="text-ceniza text-base sm:text-lg max-w-xl mx-auto mb-8 leading-relaxed">
-      Asegura tu máscara antes de que se agote el stock de temporada o se venza la fecha límite de despacho a tu ciudad.
+      Instálala esta semana para Halloween y déjala lista para la novena: solo cambias el modo desde la App o el control remoto.
     </p>
 
-    {/* Tarjeta de Oferta Pack Más Vendido */}
-    <div class="bg-sombra border-2 border-calabaza/50 rounded-[14px] p-6 sm:p-8 max-w-md mx-auto mb-8 shadow-2xl relative">
-      <div class="absolute -top-3.5 left-1/2 -translate-x-1/2 px-4 py-1 rounded-full bg-sangre text-hueso text-xs font-bold uppercase tracking-wider shadow">
-        PACK MÁS VENDIDO · PAREJA
+    {/* Tarjeta de oferta del pack más vendido */}
+    <div class="borde-rgb rounded-2xl p-6 sm:p-8 max-w-md mx-auto mb-8 shadow-2xl relative">
+      <div class="absolute -top-3.5 left-1/2 -translate-x-1/2 whitespace-nowrap px-4 py-1 rounded-full bg-gradient-to-r from-neon-morado to-neon-cian text-white text-xs font-bold uppercase tracking-wider shadow">
+        MÁS VENDIDO · {packDestacado.nombre}
       </div>
 
       <div class="flex items-center justify-center gap-3 mt-2 mb-3">
         <span class="font-heading text-5xl sm:text-6xl text-hueso tabular-nums font-bold">
-          {formatCOP(49900)}
+          {formatCOP(packDestacado.precio)}
         </span>
         <span class="text-base text-ceniza line-through tabular-nums">
-          {formatCOP(99800)}
+          {formatCOP(packDestacado.precioAntes)}
         </span>
       </div>
 
       <p class="text-xs text-calabaza font-semibold mb-4">
-        Incluye 2 máscaras completas con capucha · Ahorras {formatCOP(49900)}
+        {packDestacado.unidades} mallas LED RGB + {packDestacado.unidades} controles remotos · Ahorras {formatCOP(packDestacado.ahorro)}
       </p>
 
-      {/* Botón Grande CTA: Scroll suave a #pedido */}
       <a
-        href="#pedido"
-        class="btn-glow w-full h-14 bg-calabaza hover:bg-calabaza-hover text-noche font-heading text-2xl tracking-wide uppercase rounded-xl flex items-center justify-center gap-3 transition-all min-h-[56px] px-6 text-center shadow-2xl"
+        href="#seccion-packs"
+        class="btn-glow w-full h-14 bg-calabaza hover:bg-calabaza-hover text-noche font-heading text-xl sm:text-2xl tracking-wide uppercase rounded-xl flex items-center justify-center gap-3 transition-all min-h-[56px] px-6 text-center shadow-2xl"
       >
         <span>Pedir ahora — pago contraentrega</span>
         <svg class="w-5 h-5 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
@@ -59,7 +63,7 @@ import { formatCOP } from '../../lib/pedido-schema';
       <div class="mt-3 text-[11px] text-ceniza flex items-center justify-center gap-2">
         <span>🔒 Pago contra entrega</span>
         <span>·</span>
-        <span>🚚 Envío rápido garantizado</span>
+        <span>🔄 Garantía de funcionamiento</span>
       </div>
     </div>
 

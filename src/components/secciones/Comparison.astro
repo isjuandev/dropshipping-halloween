@@ -1,0 +1,91 @@
+---
+const filas = [
+  {
+    criterio: 'Temporadas de uso',
+    malla: 'Todo el año (Halloween + Navidad + Fiestas)',
+    tradicional: 'Solo 1 época del año',
+  },
+  {
+    criterio: 'Colores y efectos',
+    malla: 'Miles de colores RGB + App + Control Remoto',
+    tradicional: 'Color fijo o botón manual incómodo',
+  },
+  {
+    criterio: 'Sincronización musical',
+    malla: 'Sí, baila al ritmo de la música',
+    tradicional: 'No disponible',
+  },
+  {
+    criterio: 'Instalación y energía',
+    malla: '2 minutos + USB 5V seguro',
+    tradicional: 'Cables que se enredan y enchufe 110V que se calienta',
+  },
+];
+---
+
+<section class="py-14 md:py-24 bg-sombra border-y border-white/10 relative">
+  <div class="max-w-4xl mx-auto px-4">
+
+    <div class="text-center max-w-2xl mx-auto mb-10 sm:mb-14">
+      <span class="badge-rgb text-xs uppercase tracking-widest text-hueso font-bold px-3 py-1 rounded-full inline-block mb-3">
+        Comparativa
+      </span>
+      <h2 class="font-heading text-4xl sm:text-5xl md:text-6xl text-hueso tracking-wide m-0">
+        MALLA LED RGB 135 CM VS. LUCES TRADICIONALES
+      </h2>
+    </div>
+
+    <div class="rounded-2xl overflow-hidden border border-white/10 shadow-xl">
+      <table class="w-full text-left border-collapse text-sm sm:text-base">
+        <caption class="sr-only">Comparación entre la Malla LED RGB 135 cm y las luces tradicionales</caption>
+        <thead>
+          <tr class="bg-noche">
+            <th scope="col" class="hidden sm:table-cell p-4 text-xs uppercase tracking-wider text-ceniza font-semibold w-1/4">Característica</th>
+            <th scope="col" class="p-4 font-heading text-lg sm:text-2xl tracking-wide text-hueso bg-neon-morado/15 border-x border-neon-morado/30">
+              ✨ Malla LED RGB 135 cm
+            </th>
+            <th scope="col" class="p-4 font-heading text-lg sm:text-2xl tracking-wide text-ceniza">
+              Luces Tradicionales
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          {filas.map((f) => (
+            <>
+              {/* En móvil el criterio va como fila de encabezado para mantener 2 columnas legibles */}
+              <tr class="sm:hidden bg-noche/60 border-t border-white/10">
+                <th scope="colgroup" colspan="2" class="px-4 pt-3 pb-1 text-[11px] uppercase tracking-wider text-ceniza font-semibold">
+                  {f.criterio}
+                </th>
+              </tr>
+              <tr class="bg-noche/40 sm:border-t border-white/10">
+                <th scope="row" class="hidden sm:table-cell p-4 text-ceniza font-semibold align-top">
+                  {f.criterio}
+                </th>
+                <td class="p-4 align-top text-hueso font-semibold bg-neon-morado/10 border-x border-neon-morado/30">
+                  <span class="text-emerald-400 mr-1" aria-hidden="true">✓</span>{f.malla}
+                </td>
+                <td class="p-4 align-top text-ceniza">
+                  <span class="text-rose-400 mr-1" aria-hidden="true">✕</span>{f.tradicional}
+                </td>
+              </tr>
+            </>
+          ))}
+        </tbody>
+      </table>
+    </div>
+
+    <div class="text-center mt-8">
+      <a
+        href="#seccion-packs"
+        class="btn-glow inline-flex h-14 bg-calabaza hover:bg-calabaza-hover text-noche font-heading text-xl sm:text-2xl tracking-wide uppercase rounded-xl items-center justify-center gap-3 px-8 shadow-lg"
+      >
+        <span>Quiero mi malla LED</span>
+        <svg class="w-5 h-5 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+          <path d="M12 5v14M19 12l-7 7-7-7"/>
+        </svg>
+      </a>
+    </div>
+
+  </div>
+</section>

@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'preact/hooks';
-import { currentPack, selectedPackId, unitVariants, selectPack } from '../../lib/store';
+import { currentPack, PRODUCTO } from '../../lib/store';
 import {
   clienteFormSchema,
   formatCelularInput,
@@ -29,7 +29,6 @@ const DEPARTAMENTOS_LIST = [
 
 export default function OrderForm() {
   const pack = currentPack.value;
-  const units = unitVariants.value;
 
   // Estados de los campos
   const [nombreCompleto, setNombreCompleto] = useState('');
@@ -273,25 +272,22 @@ export default function OrderForm() {
       if (savedUtms) utms = JSON.parse(savedUtms);
     } catch (_) {}
 
-    // Resumen de variantes para el payload
-    const varianteDesc = units.map((u, i) => `${i + 1}) ${u.modelo} (${u.talla})`).join(', ');
-
     const payload: PedidoPayload = {
       pedidoId: pedidoIdRef.current,
       fecha: new Date().toISOString(),
       tienda: tiendaConfig.nombreTienda,
       landing: {
         url: window.location.href,
-        plantilla: 'grito',
+        plantilla: 'malla-led',
       },
       producto: {
-        nombre: 'Máscara Fantasma del Grito',
-        sku: 'GRITO-HALLOWEEN-2026',
-        variante: varianteDesc,
+        nombre: PRODUCTO.nombre,
+        sku: PRODUCTO.sku,
+        variante: PRODUCTO.variante,
         paquete: pack.nombre,
         cantidad: pack.unidades,
-        extras: pack.incluyeExtras ? ['Túnica negra larga', 'Guantes negros'] : [],
-        precioUnitario: pack.precioPorMascara,
+        extras: [`${pack.unidades}x Control remoto 20 botones`],
+        precioUnitario: pack.precioPorUnidad,
         total: pack.precio,
       },
       cliente: {
@@ -477,11 +473,10 @@ export default function OrderForm() {
                   Resumen de tu pedido
                 </span>
                 <h4 class="font-heading text-2xl text-noche m-0 leading-tight">
-                  Máscara Fantasma del Grito · Pack {pack.nombre}
+                  {PRODUCTO.nombreCorto} · {pack.nombre}
                 </h4>
                 <div class="text-xs text-noche/70 mt-1">
-                  <strong>Variante(s):</strong>{' '}
-                  {units.map((u, i) => `${i + 1}) ${u.modelo} (${u.talla})`).join(' · ')}
+                  <strong>Incluye:</strong> {pack.incluye}
                 </div>
               </div>
               <a
@@ -494,7 +489,7 @@ export default function OrderForm() {
 
             <div class="flex items-center justify-between pt-3 text-sm">
               <span class="text-noche/80">
-                Cantidad: <strong>{pack.unidades} {pack.unidades === 1 ? 'unidad' : 'unidades'}</strong>
+                Cantidad: <strong>{pack.unidades} {pack.unidades === 1 ? 'malla' : 'mallas'}</strong>
               </span>
               <div class="text-right">
                 <span class="text-xs text-noche/60 block leading-none">Pagas al recibir:</span>

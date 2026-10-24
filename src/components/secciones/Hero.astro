@@ -1,13 +1,17 @@
 ---
-import VariantSelector from '../islas/VariantSelector';
+import { Image } from 'astro:assets';
 import { formatCOP } from '../../lib/pedido-schema';
+import { tiendaConfig } from '../../config/tienda';
+import imgTelarana from '../../assets/images/hero/telarana-ventana.png';
+import imgApp from '../../assets/images/hero/control-app-celular.png';
+import imgLeds from '../../assets/images/beneficios/120-leds-alto-brillo.png';
+import imgFicha from '../../assets/images/bloques/ficha-tecnica-contenido.png';
 
 interface Props {
   producto: {
     nombre: string;
     precio: number;
     precioAnterior: number;
-    imagenes: string[];
     rating: number;
     numResenas: number;
   };
@@ -15,124 +19,121 @@ interface Props {
 
 const { producto } = Astro.props;
 const ahorro = producto.precioAnterior - producto.precio;
+
+const galeria = [
+  { img: imgTelarana, label: 'Ventana', alt: 'Malla LED RGB en forma de telaraña neón morada y cian en la ventana de una casa' },
+  { img: imgApp, label: 'App', alt: 'Mujer cambiando los colores de la malla LED desde la App del celular' },
+  { img: imgLeds, label: '120 LEDs', alt: 'Malla LED RGB de 135 cm encendida en multicolor sobre una pared' },
+  { img: imgFicha, label: 'En la caja', alt: 'Malla LED RGB con control remoto de 20 botones y cable USB' },
+];
+
+const bullets = [
+  { icon: '📏', titulo: 'Formato Gigante de 135 cm:', texto: 'Cubre ventanas, puertas, paredes o techos.' },
+  { icon: '📱', titulo: 'Control Dual Inteligente:', texto: 'App Bluetooth (iOS/Android) + Control Remoto de 20 botones incluido.' },
+  { icon: '🎵', titulo: 'Ritmo Musical y Conexión USB:', texto: 'Las luces bailan con la música y se conectan a cualquier puerto USB.' },
+];
+
+const stockUnidades = tiendaConfig.stock.unidades;
+const stockPorcentaje = Math.min(100, Math.round((stockUnidades / tiendaConfig.stock.totalInicial) * 100));
 ---
 
 <section id="hero-section" class="relative overflow-hidden bg-noche py-8 md:py-16 border-b border-white/10">
-  {/* Haz de linterna interactivo y gradiente de fondo */}
+  {/* Resplandor neón que sigue el puntero */}
   <div id="hero-flashlight" class="absolute inset-0 pointer-events-none z-10 transition-all duration-300"></div>
 
-  {/* Niebla atmosférica animada SVG lenta (40s) */}
-  <div class="absolute inset-0 pointer-events-none opacity-25 z-0 animate-fog overflow-hidden" aria-hidden="true">
-    <svg class="w-[200%] h-full min-h-[600px]" viewBox="0 0 1200 600" preserveAspectRatio="none" fill="none">
-      <path d="M0 300 C 300 200, 600 400, 1200 300 L 1200 600 L 0 600 Z" fill="url(#fogGradient)"></path>
-      <defs>
-        <radialGradient id="fogGradient" cx="50%" cy="50%" r="50%">
-          <stop offset="0%" stop-color="#2A1B3D" stop-opacity="0.8"></stop>
-          <stop offset="60%" stop-color="#16141A" stop-opacity="0.4"></stop>
-          <stop offset="100%" stop-color="#0A0A0B" stop-opacity="0"></stop>
-        </radialGradient>
-      </defs>
-    </svg>
-  </div>
+  {/* Halo RGB ambiental */}
+  <div class="absolute -top-24 -left-24 w-96 h-96 bg-neon-morado/20 rounded-full blur-3xl pointer-events-none" aria-hidden="true"></div>
+  <div class="absolute bottom-0 right-0 w-96 h-96 bg-neon-cian/10 rounded-full blur-3xl pointer-events-none" aria-hidden="true"></div>
 
   <div class="max-w-6xl mx-auto px-4 relative z-20">
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-center">
-      
-      {/* Columna Izquierda: Video + Galería scroll-snap con miniaturas */}
+
+      {/* Columna Izquierda: Galería 1:1 + 4 miniaturas */}
       <div class="space-y-4">
-        {/* Contenedor Principal (Foto destacada / Video) */}
-        <div class="relative rounded-[14px] overflow-hidden border border-white/15 bg-sombra shadow-2xl group">
-          {/* Badge -40% */}
-          <div class="absolute top-3 left-3 z-30 px-3 py-1 bg-sangre text-hueso text-xs sm:text-sm font-bold uppercase tracking-wider rounded-lg shadow-lg">
-            -40% DESCUENTO
+        <div class="relative rounded-2xl overflow-hidden borde-rgb shadow-2xl shadow-neon-morado/10 group">
+          {/* Badges sobre imagen */}
+          <div class="absolute top-3 left-3 z-30 px-3 py-1 bg-calabaza text-noche text-xs sm:text-sm font-bold uppercase tracking-wider rounded-lg shadow-lg">
+            -40% OFF HOY
+          </div>
+          <div class="absolute bottom-3 left-3 right-3 sm:right-auto z-30 px-3 py-1.5 bg-noche/85 backdrop-blur border border-neon-morado/40 text-hueso text-xs sm:text-sm font-semibold rounded-lg text-center">
+            🔥 Sirve para Halloween y Navidad
           </div>
 
-          <div class="absolute top-3 right-3 z-30 px-2.5 py-1 bg-noche/80 backdrop-blur border border-white/10 text-calabaza text-[11px] font-semibold rounded-lg flex items-center gap-1.5">
-            <span class="w-2 h-2 rounded-full bg-calabaza animate-ping"></span>
-            <span>Alta Demanda</span>
-          </div>
-
-          {/* Imagen principal interactiva con microinteracción de parpadeo */}
-          <div class="aspect-[4/5] sm:aspect-square w-full overflow-hidden bg-noche relative cursor-pointer" id="hero-main-photo">
-            <img
-              id="hero-active-image"
-              src={producto.imagenes[0]}
-              alt="Máscara fantasma de terror blanca con capucha negra puesta"
-              width="600"
-              height="600"
-              loading="eager"
-              fetchpriority="high"
-              decoding="async"
-              class="w-full h-full object-cover object-center transition-transform duration-500 group-hover:scale-105"
-            />
-            {/* Efecto de borde iluminado sobre la máscara blanca */}
-            <div class="absolute inset-0 bg-gradient-to-t from-noche via-transparent to-transparent opacity-60 pointer-events-none"></div>
+          {/* Imagen principal 1:1 (solo la primera se carga con prioridad) */}
+          <div class="aspect-square w-full overflow-hidden bg-noche relative" id="hero-main-photo">
+            {galeria.map((g, idx) => (
+              <Image
+                src={g.img}
+                alt={g.alt}
+                widths={[480, 768, 1024]}
+                sizes="(min-width: 1024px) 560px, 100vw"
+                loading={idx === 0 ? 'eager' : 'lazy'}
+                fetchpriority={idx === 0 ? 'high' : 'auto'}
+                decoding="async"
+                data-hero-slide={idx}
+                class:list={[
+                  'absolute inset-0 w-full h-full object-cover rounded-2xl transition-opacity duration-300',
+                  idx === 0 ? 'opacity-100' : 'opacity-0 invisible',
+                ]}
+              />
+            ))}
           </div>
         </div>
 
-        {/* Galería scroll-snap con 5 fotos + Video */}
-        <div>
-          <div class="text-xs text-ceniza font-semibold mb-2 flex items-center justify-between">
-            <span>Toca para ver detalles:</span>
-            <span class="text-[11px]">5 fotos + vista real</span>
-          </div>
-          <div class="flex gap-2.5 overflow-x-auto pb-2 no-scrollbar snap-x snap-mandatory">
-            {producto.imagenes.map((img, idx) => {
-              const labels = ['Frente', 'Perfil', 'Puesta', 'En grupo', 'Capucha'];
-              return (
-                <button
-                  type="button"
-                  class="relative flex-shrink-0 w-16 h-16 sm:w-20 sm:h-20 rounded-xl overflow-hidden border-2 border-white/10 hover:border-calabaza focus:border-calabaza transition-all snap-start cursor-pointer bg-sombra"
-                  onclick={`document.getElementById('hero-active-image').src = '${img}';`}
-                  aria-label={`Ver vista ${labels[idx] || idx + 1}`}
-                >
-                  <img
-                    src={img}
-                    alt={`Vista ${labels[idx] || idx + 1}`}
-                    width="80"
-                    height="80"
-                    loading="lazy"
-                    decoding="async"
-                    class="w-full h-full object-cover"
-                  />
-                  <span class="absolute bottom-0 inset-x-0 bg-noche/80 text-[9px] text-center font-bold text-hueso py-0.5 truncate">
-                    {labels[idx]}
-                  </span>
-                </button>
-              );
-            })}
-          </div>
+        {/* 4 miniaturas 1:1 */}
+        <div class="grid grid-cols-4 gap-2.5">
+          {galeria.map((g, idx) => (
+            <button
+              type="button"
+              data-hero-thumb={idx}
+              aria-label={`Ver foto: ${g.label}`}
+              aria-pressed={idx === 0 ? 'true' : 'false'}
+              class:list={[
+                'relative aspect-square rounded-xl overflow-hidden border-2 transition-all cursor-pointer bg-sombra',
+                idx === 0 ? 'border-neon-morado' : 'border-white/10 hover:border-neon-cian/60',
+              ]}
+            >
+              <Image
+                src={g.img}
+                alt=""
+                width={200}
+                height={200}
+                loading="lazy"
+                decoding="async"
+                class="w-full h-full object-cover"
+              />
+              <span class="absolute bottom-0 inset-x-0 bg-noche/80 text-[10px] text-center font-bold text-hueso py-0.5 truncate">
+                {g.label}
+              </span>
+            </button>
+          ))}
         </div>
       </div>
 
-      {/* Columna Derecha: Oferta, H1, Bullets, Variantes y CTA */}
+      {/* Columna Derecha: Copy de conversión */}
       <div class="space-y-4 sm:space-y-5">
-        
-        {/* Rating y Reseñas */}
-        <div class="flex items-center gap-2">
-          <div class="flex text-calabaza text-base" aria-hidden="true">
-            ★★★★★
-          </div>
-          <span class="text-sm font-bold text-hueso tabular-nums">
-            {producto.rating}
-          </span>
+
+        {/* Rating */}
+        <div class="flex flex-wrap items-center gap-2">
+          <div class="flex text-calabaza text-base" aria-hidden="true">★★★★★</div>
+          <span class="text-sm font-bold text-hueso tabular-nums">{producto.rating}</span>
           <span class="text-xs text-ceniza">
-            ({producto.numResenas.toLocaleString('es-CO')} reseñas verificadas)
+            ({producto.numResenas.toLocaleString('es-CO')}+ hogares decorados en Colombia)
           </span>
         </div>
 
-        {/* H1 Principal con Creepster en "GRITEN" */}
+        {/* H1 + Subtítulo */}
         <div>
-          <h1 class="font-heading text-[48px] sm:text-[56px] lg:text-[76px] leading-[0.95] text-hueso uppercase tracking-tight m-0">
-            QUE <span class="font-display text-calabaza tracking-normal drop-shadow-[0_0_15px_rgba(255,106,0,0.5)]">GRITEN</span> AL VERTE
+          <h1 class="font-heading text-[42px] sm:text-[54px] lg:text-[64px] leading-[0.95] text-hueso uppercase tracking-tight m-0">
+            TRANSFORMA TU CASA EN SEGUNDOS CON <span class="texto-rgb">120 LUCES LED INTELIGENTES</span>
           </h1>
-          <p class="text-base sm:text-lg text-ceniza mt-2 leading-relaxed">
-            Máscara + capucha integrada. <strong class="text-hueso">El disfraz más fácil de Halloween.</strong>
+          <p class="text-base sm:text-lg text-ceniza mt-3 leading-relaxed">
+            Malla LED RGB de 135 cm con App Móvil + Control Remoto. <strong class="text-hueso">Telaraña impactante en Halloween y estrella luminosa en Navidad.</strong>
           </p>
         </div>
 
-        {/* Precios y Ahorro */}
-        <div class="bg-sombra/90 border border-white/10 rounded-2xl p-4 flex flex-wrap items-baseline gap-3 shadow-inner">
+        {/* Precio y ahorro */}
+        <div class="borde-rgb rounded-2xl p-4 flex flex-wrap items-baseline gap-3">
           <div class="font-heading text-4xl sm:text-5xl text-hueso tabular-nums font-bold">
             {formatCOP(producto.precio)}
           </div>
@@ -144,27 +145,76 @@ const ahorro = producto.precioAnterior - producto.precio;
           </div>
         </div>
 
-        {/* 3 Bullets de alta conversión */}
-        <ul class="space-y-2 text-sm sm:text-base text-hueso/90 list-none p-0 m-0">
-          <li class="flex items-center gap-2.5">
-            <span class="w-5 h-5 rounded-full bg-calabaza/20 text-calabaza flex items-center justify-center text-xs font-bold flex-shrink-0">✓</span>
-            <span><strong>Lista para usar en 10 segundos:</strong> póntela y listo.</span>
-          </li>
-          <li class="flex items-center gap-2.5">
-            <span class="w-5 h-5 rounded-full bg-calabaza/20 text-calabaza flex items-center justify-center text-xs font-bold flex-shrink-0">✓</span>
-            <span><strong>Ves y respiras cómodo:</strong> malla ocular y aperturas ocultas.</span>
-          </li>
-          <li class="flex items-center gap-2.5">
-            <span class="w-5 h-5 rounded-full bg-calabaza/20 text-calabaza flex items-center justify-center text-xs font-bold flex-shrink-0">✓</span>
-            <span><strong>Talla adulto y niño:</strong> ajuste elástico que no se cae.</span>
-          </li>
+        {/* 3 Bullets rápidos */}
+        <ul class="space-y-2.5 text-sm sm:text-base text-hueso/90 list-none p-0 m-0">
+          {bullets.map((b) => (
+            <li class="flex items-start gap-2.5">
+              <span class="text-lg leading-6 flex-shrink-0" aria-hidden="true">{b.icon}</span>
+              <span><strong>{b.titulo}</strong> {b.texto}</span>
+            </li>
+          ))}
         </ul>
 
-        {/* Isla Selector de Modelo, Talla, Stock y Botón CTA */}
-        <VariantSelector client:visible />
+        {/* Stock de temporada */}
+        {tiendaConfig.stock.activo && (
+          <div class="bg-sombra/80 border border-white/10 rounded-xl p-3 text-xs">
+            <div class="flex items-center justify-between font-semibold mb-1.5">
+              <span class="text-rose-400 flex items-center gap-1.5">
+                <span class="w-2 h-2 rounded-full bg-rose-500 animate-ping"></span>
+                ¡Últimas {stockUnidades} unidades de temporada!
+              </span>
+              <span class="text-ceniza">Alta demanda hoy</span>
+            </div>
+            <div class="w-full h-2 bg-noche rounded-full overflow-hidden border border-white/5">
+              <div class="h-full bg-gradient-to-r from-neon-morado via-neon-cian to-calabaza rounded-full" style={`width: ${stockPorcentaje}%`}></div>
+            </div>
+          </div>
+        )}
+
+        {/* CTA principal: scroll suave al selector de packs */}
+        <div class="pt-1">
+          <a
+            href="#seccion-packs"
+            class="btn-glow w-full h-14 bg-calabaza hover:bg-calabaza-hover text-noche font-heading text-xl sm:text-2xl tracking-wide uppercase rounded-xl flex items-center justify-center gap-3 transition-all min-h-[56px] px-6 text-center shadow-lg"
+          >
+            <span>PEDIR AHORA — PAGO CONTRAENTREGA</span>
+            <svg class="w-5 h-5 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <path d="M12 5v14M19 12l-7 7-7-7"/>
+            </svg>
+          </a>
+          <p class="text-center text-xs text-ceniza mt-2 flex items-center justify-center gap-2">
+            <span>🔒 Pagas al recibir</span>
+            <span>·</span>
+            <span>🚚 Envío a toda Colombia</span>
+          </p>
+        </div>
 
       </div>
-
     </div>
   </div>
 </section>
+
+<script>
+  // Galería del hero: las miniaturas alternan la imagen visible sin recargar
+  const slides = document.querySelectorAll<HTMLElement>('[data-hero-slide]');
+  const thumbs = document.querySelectorAll<HTMLButtonElement>('[data-hero-thumb]');
+
+  thumbs.forEach((thumb) => {
+    thumb.addEventListener('click', () => {
+      const idx = thumb.dataset.heroThumb;
+      slides.forEach((slide) => {
+        const activo = slide.dataset.heroSlide === idx;
+        slide.classList.toggle('opacity-100', activo);
+        slide.classList.toggle('opacity-0', !activo);
+        slide.classList.toggle('invisible', !activo);
+        if (activo) slide.setAttribute('loading', 'eager');
+      });
+      thumbs.forEach((t) => {
+        const activo = t === thumb;
+        t.setAttribute('aria-pressed', String(activo));
+        t.classList.toggle('border-neon-morado', activo);
+        t.classList.toggle('border-white/10', !activo);
+      });
+    });
+  });
+</script>

@@ -1,83 +1,69 @@
 import { signal, computed } from '@preact/signals';
 
-export interface UnidadItem {
-  modelo: string; // 'Clásica blanca' | 'Con sangre'
-  talla: string;  // 'Adulto' | 'Niño'
-}
+// Identidad del producto que viaja en el payload del pedido (n8n / Dropi)
+export const PRODUCTO = {
+  nombre: 'Malla LED RGB Inteligente 135 cm',
+  nombreCorto: 'Malla LED RGB 135 cm',
+  sku: 'MALLA-LED-RGB-135',
+  variante: 'Multicolor RGB · 135 cm · 120 LEDs',
+};
 
 export interface PackItemDef {
   id: string;
   nombre: string;
+  subtitulo: string;
   unidades: number;
   precio: number;
   precioAntes: number;
-  precioPorMascara: number;
+  precioPorUnidad: number;
   ahorro: number;
-  etiqueta?: string;
-  incluyeExtras?: boolean;
-  descripcionExtras?: string;
+  incluye: string;
   badge?: string;
 }
 
 export const PACKS_DATA: PackItemDef[] = [
   {
-    id: 'individual',
-    nombre: 'Individual',
+    id: 'pack-1',
+    nombre: 'Pack 1 Malla',
+    subtitulo: 'Ventana o Sala',
     unidades: 1,
-    precio: 29900,
-    precioAntes: 49900,
-    precioPorMascara: 29900,
-    ahorro: 20000,
-    etiqueta: 'Básico',
-  },
-  {
-    id: 'pareja',
-    nombre: 'Pareja',
-    unidades: 2,
-    precio: 49900,
-    precioAntes: 99800,
-    precioPorMascara: 24950,
-    ahorro: 49900,
-    etiqueta: 'MÁS VENDIDO',
-    badge: 'MÁS VENDIDO',
-  },
-  {
-    id: 'grupo',
-    nombre: 'Grupo',
-    unidades: 4,
     precio: 89900,
-    precioAntes: 199600,
-    precioPorMascara: 22475,
-    ahorro: 109700,
-    etiqueta: 'PARA LA FIESTA',
-    badge: 'PARA LA FIESTA',
+    precioAntes: 149900,
+    precioPorUnidad: 89900,
+    ahorro: 60000,
+    incluye: '1x Malla LED RGB 135 cm + Control Remoto + App',
   },
   {
-    id: 'kit',
-    nombre: 'Kit Disfraz Completo',
-    unidades: 1,
-    precio: 69900,
-    precioAntes: 119900,
-    precioPorMascara: 69900,
-    ahorro: 50000,
-    etiqueta: 'KIT COMPLETO',
-    incluyeExtras: true,
-    descripcionExtras: 'Máscara + Túnica negra larga + Guantes negros',
-    badge: 'LISTO PARA SALIR',
+    id: 'pack-2',
+    nombre: 'Pack 2 Mallas',
+    subtitulo: 'Decoración Doble',
+    unidades: 2,
+    precio: 159900,
+    precioAntes: 299800,
+    precioPorUnidad: 79950,
+    ahorro: 139900,
+    incluye: '2x Mallas LED RGB 135 cm + 2x Controles Remotos · Ideal para Ventana + Puerta/Sala, sincronizables desde la misma App',
+    badge: 'MÁS VENDIDO — DECORACIÓN DOBLE',
+  },
+  {
+    id: 'pack-3',
+    nombre: 'Pack 3 Mallas',
+    subtitulo: 'Fachada & Casa Completa',
+    unidades: 3,
+    precio: 219900,
+    precioAntes: 449700,
+    precioPorUnidad: 73300,
+    ahorro: 229800,
+    incluye: '3x Mallas LED RGB 135 cm + 3x Controles Remotos con máximo ahorro por unidad',
+    badge: 'MÁXIMO AHORRO',
   },
 ];
 
-// Señal: pack seleccionado (por defecto 'pareja' - el MÁS VENDIDO)
-export const selectedPackId = signal<string>('pareja');
+// Señal: pack seleccionado (por defecto 'pack-2' - el MÁS VENDIDO)
+export const selectedPackId = signal<string>('pack-2');
 
 // Señal: ciudad seleccionada desde el ArrivalChecker o vacío
 export const selectedCity = signal<string>('Bogotá D.C.');
-
-// Señal: variantes por cada unidad del pack activo
-export const unitVariants = signal<UnidadItem[]>([
-  { modelo: 'Clásica blanca', talla: 'Adulto' },
-  { modelo: 'Con sangre', talla: 'Adulto' },
-]);
 
 // Computed: pack actual
 export const currentPack = computed(() => {
@@ -86,31 +72,8 @@ export const currentPack = computed(() => {
 
 // Cambiar de pack
 export function selectPack(packId: string) {
-  selectedPackId.value = packId;
-  const pack = PACKS_DATA.find((p) => p.id === packId);
-  const count = pack ? pack.unidades : 1;
-
-  // Ajustar la cantidad de unidades en unitVariants manteniendo selecciones previas si es posible
-  const current = [...unitVariants.value];
-  if (current.length < count) {
-    while (current.length < count) {
-      current.push({
-        modelo: current.length % 2 === 0 ? 'Clásica blanca' : 'Con sangre',
-        talla: 'Adulto',
-      });
-    }
-  } else if (current.length > count) {
-    current.splice(count);
-  }
-  unitVariants.value = current;
-}
-
-// Actualizar variante de una unidad específica
-export function updateUnitVariant(index: number, modelo: string, talla: string) {
-  const next = [...unitVariants.value];
-  if (next[index]) {
-    next[index] = { modelo, talla };
-    unitVariants.value = next;
+  if (PACKS_DATA.some((p) => p.id === packId)) {
+    selectedPackId.value = packId;
   }
 }
 

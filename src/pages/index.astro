@@ -1,47 +1,53 @@
 ---
 import Base from '../layouts/Base.astro';
 import { getCollection, getEntry } from 'astro:content';
+import { getImage } from 'astro:assets';
 import { tiendaConfig } from '../config/tienda';
+import imgHero from '../assets/images/hero/telarana-ventana.png';
 
-// Secciones en el orden exacto especificado
+// Secciones en el orden de la arquitectura de conversión:
+// demostración, versatilidad, ficha técnica y prueba social ANTES de packs y checkout
 import Hero from '../components/secciones/Hero.astro';
 import ArrivalChecker from '../components/islas/ArrivalChecker';
 import TrustBar from '../components/secciones/TrustBar.astro';
-import WhyThisMask from '../components/secciones/WhyThisMask.astro';
-import Details from '../components/secciones/Details.astro';
-import UgcGallery from '../components/secciones/UgcGallery.astro';
+import DualSeason from '../components/secciones/DualSeason.astro';
+import DualControl from '../components/secciones/DualControl.astro';
+import KeyBenefits from '../components/secciones/KeyBenefits.astro';
+import DecorSpaces from '../components/secciones/DecorSpaces.astro';
+import Installation from '../components/secciones/Installation.astro';
+import Comparison from '../components/secciones/Comparison.astro';
+import TechSpecs from '../components/secciones/TechSpecs.astro';
+import SocialProof from '../components/secciones/SocialProof.astro';
 import PacksSection from '../components/secciones/PacksSection.astro';
 import OrderForm from '../components/islas/OrderForm';
-import CostumeIdeas from '../components/secciones/CostumeIdeas.astro';
-import Testimonials from '../components/secciones/Testimonials.astro';
-import SafetyAndKids from '../components/secciones/SafetyAndKids.astro';
 import HowToOrder from '../components/secciones/HowToOrder.astro';
 import FaqSection from '../components/secciones/FaqSection.astro';
 import FinalCta from '../components/secciones/FinalCta.astro';
 
 // Cargar datos de Content Collections
-const productoEntry = await getEntry('producto', 'grito');
+const productoEntry = await getEntry('producto', 'malla-led');
 const testimoniosEntries = await getCollection('testimonios');
 const faqsEntries = await getCollection('faqs');
-const ideasEntries = await getCollection('ideasDisfraz');
 
 if (!productoEntry) {
-  throw new Error('No se encontró el producto grito en content/producto');
+  throw new Error('No se encontró el producto malla-led en content/producto');
 }
 
 const producto = productoEntry.data;
 const testimonios = testimoniosEntries.map((e) => e.data);
 const faqs = faqsEntries.map((e) => e.data);
-const ideas = ideasEntries.map((e) => e.data);
+
+const siteUrl = Astro.site || 'https://mascaradelgrito.co';
+const heroSchemaImg = await getImage({ src: imgHero, width: 1024, format: 'jpg' });
 
 // Schemas JSON-LD para SEO y rich snippets
 const productSchema = {
   '@context': 'https://schema.org/',
   '@type': 'Product',
   name: producto.nombre,
-  image: producto.imagenes.map((img) => new URL(img, Astro.site || 'https://mascaradelgrito.co').toString()),
-  description: 'Máscara blanca de terror fantasma con capucha de tela negra. Disfraz de Halloween para adultos y niños.',
-  sku: 'GRITO-HALLOWEEN-2026',
+  image: [new URL(heroSchemaImg.src, siteUrl).toString()],
+  description: producto.descripcion,
+  sku: producto.sku,
   brand: {
     '@type': 'Brand',
     name: tiendaConfig.nombreTienda,
@@ -53,10 +59,10 @@ const productSchema = {
   },
   offers: {
     '@type': 'Offer',
-    url: Astro.site ? Astro.site.toString() : 'https://mascaradelgrito.co',
+    url: siteUrl.toString(),
     priceCurrency: tiendaConfig.moneda,
     price: producto.precio.toString(),
-    priceValidUntil: tiendaConfig.fechaHalloween,
+    priceValidUntil: '2026-12-31',
     itemCondition: 'https://schema.org/NewCondition',
     availability: 'https://schema.org/InStock',
     seller: {
@@ -81,51 +87,47 @@ const faqSchema = {
 ---
 
 <Base
-  title={`Máscara de terror con capucha para Halloween | ${tiendaConfig.nombreTienda}`}
-  description="Máscara Fantasma del Grito con capucha negra integrada. El disfraz más fácil y aterrador de Halloween 2026. Talla adulto y niño. Pago contra entrega en Colombia."
+  title={`Malla LED RGB Inteligente 135 cm · Halloween y Navidad | ${tiendaConfig.nombreTienda}`}
+  description="Malla LED RGB de 135 cm con 120 luces, App Bluetooth + Control Remoto de 20 botones y ritmo musical. Telaraña neón en Halloween y estrella en Navidad. Pago contra entrega en Colombia."
   jsonLd={[productSchema, faqSchema]}
 >
-  {/* 3. Hero con video, galería de 5 fotos, H1 con Creepster, VariantSelector y CTA */}
+  {/* 02. Hero: galería 1:1 + copy de conversión (sin selectores) */}
   <Hero producto={producto} />
 
-  {/* 4. ¿Llega antes de Halloween? (isla Preact ArrivalChecker) */}
+  {/* 03. Calculador de entrega por ciudad + 4 garantías */}
   <div class="max-w-6xl mx-auto px-4 -mt-3 mb-6 relative z-30">
     <ArrivalChecker client:visible />
   </div>
-
-  {/* 5. Franja de confianza */}
   <TrustBar />
 
-  {/* 6. Por qué esta máscara: 3 tarjetas */}
-  <WhyThisMask />
+  {/* 04. De Halloween a Navidad en 1 clic */}
+  <DualSeason />
 
-  {/* 7. Detalles técnicos, medidas, materiales y qué incluye */}
-  <Details producto={producto} />
+  {/* 05. Control dual: App + Control Remoto + Música */}
+  <DualControl />
 
-  {/* 8. Cómo se ve puesta: galería de 6 fotos UGC de clientes con ciudad */}
-  <UgcGallery testimonios={testimonios} />
+  {/* 06. 3 beneficios clave */}
+  <KeyBenefits />
 
-  {/* 9. Packs: isla PackSelector sobre fondo bruma */}
+  {/* 07. 4 formas de decorar tu casa */}
+  <DecorSpaces />
+
+  {/* 08. Instalación en 3 pasos + seguridad USB */}
+  <Installation />
+
+  {/* 09. Tabla comparativa vs. luces tradicionales */}
+  <Comparison />
+
+  {/* 10. Ficha técnica y contenido de la caja */}
+  <TechSpecs producto={producto} />
+
+  {/* 11. Prueba social: rating + 6 tarjetas UGC */}
+  <SocialProof rating={producto.rating} numResenas={producto.numResenas} testimonios={testimonios} />
+
+  {/* 12. Packs de ahorro + checkout contraentrega + cómo pedir + FAQ + cierre */}
   <PacksSection />
-
-  {/* SECCIÓN #pedido: Formulario de pedido contraentrega (inmediatamente después de paquetes) */}
   <OrderForm client:visible />
-
-  {/* 10. Ideas de disfraz: 3 tarjetas que enlazan a los packs */}
-  <CostumeIdeas ideas={ideas} />
-
-  {/* 11. Testimonios: resumen 4,7 con barras y 6 reseñas */}
-  <Testimonials testimonios={testimonios} />
-
-  {/* 12. Seguridad y niños */}
-  <SafetyAndKids />
-
-  {/* 13. Cómo pedir en 3 pasos */}
   <HowToOrder />
-
-  {/* 14. FAQ con <details> sin JS */}
   <FaqSection faqs={faqs} />
-
-  {/* 15. CTA final con "31 OCT" gigante en Creepster */}
   <FinalCta />
 </Base>

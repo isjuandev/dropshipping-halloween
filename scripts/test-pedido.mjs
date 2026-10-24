@@ -10,7 +10,7 @@ const endpoint =
   process.env.PUBLIC_NEXOBITE_API_URL ||
   'https://api.nexobite.com/api/v1/public/dropshipping/viralyshop/leads';
 
-const productId = process.env.PUBLIC_NEXOBITE_PRODUCT_ID || '';
+const productId = process.env.PUBLIC_NEXOBITE_PRODUCT_ID || '2272533';
 const campaignSlug = process.env.PUBLIC_NEXOBITE_CAMPAIGN_SLUG || 'viralyshop';
 
 const randomSuffix = Math.random().toString(36).substring(2, 6).toUpperCase();
@@ -23,13 +23,14 @@ const payload = {
   ...(campaignSlug ? { campaignSlug } : {}),
   producto: {
     ...(productId ? { providerProductId: productId } : {}),
-    nombre: 'Máscara Fantasma del Grito · Pack Pareja',
-    variante: '1) Clásica blanca (Adulto), 2) Con sangre (Adulto)',
-    paquete: 'Pack Pareja',
+    nombre: 'Malla LED RGB Inteligente 135 cm · Pack 2 Mallas',
+    sku: 'MALLA-LED-RGB-135',
+    variante: 'Multicolor RGB · 135 cm · 120 LEDs',
+    paquete: 'Pack 2 Mallas',
     cantidad: 2,
-    extras: [],
-    precioUnitario: 24950,
-    total: 49900,
+    extras: ['2x Control remoto 20 botones'],
+    precioUnitario: 79950,
+    total: 159900,
   },
   cliente: {
     nombreCompleto: 'Ana Restrepo',

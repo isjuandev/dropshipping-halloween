@@ -1,0 +1,79 @@
+---
+import { Picture } from 'astro:assets';
+import imgControl from '../../assets/images/bloques/control-dual-app-remoto.png';
+
+const funciones = [
+  {
+    icon: '📱',
+    titulo: 'App Inteligente Bluetooth',
+    texto: 'Elige entre miles de colores, diseña patrones DIY y aplica temas navideños o de fiesta desde la App Hello Fairy (iOS y Android).',
+    color: 'border-neon-morado/40',
+  },
+  {
+    icon: '🎛️',
+    titulo: 'Control Remoto de 20 Botones Incluido',
+    texto: 'Enciende, apaga, cambia efectos, regula brillo y velocidad y activa el temporizador automático (4H / 8H).',
+    color: 'border-neon-cian/40',
+  },
+  {
+    icon: '🎵',
+    titulo: 'Sincronización con Música',
+    texto: 'Micrófono sensible que hace vibrar los 120 LEDs al ritmo de tus canciones en tiempo real.',
+    color: 'border-calabaza/40',
+  },
+];
+---
+
+<section class="py-14 md:py-24 bg-sombra border-y border-white/10 relative overflow-hidden">
+  <div class="absolute -bottom-32 -left-32 w-96 h-96 bg-neon-morado/15 rounded-full blur-3xl pointer-events-none" aria-hidden="true"></div>
+
+  <div class="max-w-6xl mx-auto px-4 relative z-10">
+
+    <div class="text-center max-w-2xl mx-auto mb-10 sm:mb-14">
+      <span class="badge-rgb text-xs uppercase tracking-widest text-hueso font-bold px-3 py-1 rounded-full inline-block mb-3">
+        Tecnología RGB Smart
+      </span>
+      <h2 class="font-heading text-4xl sm:text-5xl md:text-6xl text-hueso tracking-wide m-0">
+        CONTROL TOTAL DESDE TU CELULAR O CONTROL REMOTO
+      </h2>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-14 items-center">
+      {/* Imagen demostrativa */}
+      <div class="aspect-[4/5] rounded-2xl overflow-hidden borde-rgb shadow-2xl max-w-md mx-auto w-full">
+        <Picture
+          pictureAttributes={{ class: 'block w-full h-full' }}
+          src={imgControl}
+          formats={['avif']}
+          fallbackFormat="webp"
+          widths={[480, 768, 1024]}
+          sizes="(min-width: 768px) 448px, 92vw"
+          alt="Persona controlando la malla LED con la App del celular y el control remoto de 20 botones"
+          loading="lazy"
+          decoding="async"
+          class="w-full h-full object-cover rounded-2xl"
+        />
+      </div>
+
+      {/* 3 bloques de funciones */}
+      <div class="space-y-4">
+        {funciones.map((f) => (
+          <div class:list={['flex items-start gap-4 p-5 rounded-2xl bg-noche/70 border', f.color]}>
+            <span class="text-3xl w-12 h-12 rounded-xl bg-sombra border border-white/10 flex items-center justify-center flex-shrink-0" aria-hidden="true">
+              {f.icon}
+            </span>
+            <div>
+              <h3 class="font-heading text-2xl text-hueso tracking-wide m-0 leading-tight">
+                {f.titulo}
+              </h3>
+              <p class="text-sm text-ceniza leading-relaxed m-0 mt-1">
+                {f.texto}
+              </p>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+
+  </div>
+</section>

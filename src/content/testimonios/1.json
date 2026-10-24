@@ -2,9 +2,9 @@
   "id": "t1",
   "nombre": "Andrés Mejía",
   "ciudad": "Bogotá D.C.",
-  "foto": "/images/ugc-bogota.jpg",
-  "texto": "Llegó al día siguiente a Chapinero. Me salvó la vida para la fiesta de la oficina: me puse un saco negro con capucha y la máscara y asusté a medio mundo. ¡Calidad 10/10!",
+  "foto": "../../assets/images/resenas/bogota-ventana-sala.png",
+  "texto": "La puse en el ventanal de la sala y desde la calle se ve impresionante, los vecinos me preguntaron dónde la compré. La conecté al cargador del celular y listo, en 2 minutos estaba prendida.",
   "estrellas": 5,
-  "packComprado": "Pack Pareja",
-  "fecha": "Hace 3 días"
+  "packComprado": "Pack 1 Malla",
+  "fecha": "Hace 2 días"
 }
