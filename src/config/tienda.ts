@@ -102,7 +102,7 @@ export const tiendaConfig: TiendaConfig = {
   },
   turnstileSiteKey: import.meta.env.PUBLIC_TURNSTILE_SITE_KEY || '',
   gtmId: import.meta.env.PUBLIC_GTM_ID || '',
-  pixelId: import.meta.env.PUBLIC_PIXEL_ID || '',
+  pixelId: import.meta.env.PUBLIC_PIXEL_ID || '1101201176110449',
   razonSocial: 'ViralyShop S.A.S.',
   nit: '901.789.432-1',
 };

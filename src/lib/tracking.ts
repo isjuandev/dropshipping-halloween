@@ -5,6 +5,27 @@ declare global {
   }
 }
 
+const readCookie = (name: string): string => {
+  if (typeof document === 'undefined') return '';
+  const match = document.cookie.match(new RegExp(`(?:^|; )${name}=([^;]*)`));
+  return match ? decodeURIComponent(match[1]) : '';
+};
+
+/**
+ * Cookies de Meta (`_fbp`, `_fbc`) para que NexoBite pueda casar el pedido con el clic del anuncio.
+ * Si `_fbc` todavía no existe (primer clic), se arma con el `fbclid` que llega en la URL.
+ */
+export function getMetaCookies(fbclid?: string): { fbp?: string; fbc?: string } {
+  const fbp = readCookie('_fbp');
+  const fbcCookie = readCookie('_fbc');
+  const fbc = fbcCookie || (fbclid ? `fb.1.${Date.now()}.${fbclid}` : '');
+
+  return {
+    ...(fbp ? { fbp } : {}),
+    ...(fbc ? { fbc } : {}),
+  };
+}
+
 /**
  * Registra evento de inicio de checkout al enfocar por primera vez el formulario de pedido
  */
