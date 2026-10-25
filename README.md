@@ -16,7 +16,7 @@ Landing page de producto único de alta conversión (CRO) diseñada para la temp
   * 🎄 **Navidad:** Transformable en estrella, dosel o cascada decorativa para fiestas decembrinas.
 * **Control Dual:** App para celular (Bluetooth con ritmo musical y sincronización) + Control remoto infrarrojo de 20 botones.
 * **Alimentación:** Conexión USB 5V de bajo voltaje (segura para niños, mascotas y apta para powerbanks).
-* **ID en Dropi / NexoBite:** `#2272533`
+* **ID en Dropi / NexoBite:** `#2243235`
 * **Campaña:** `viralyshop`
 
 ---
@@ -71,7 +71,7 @@ Copia `.env.example` a `.env` si necesitas sobreescribir valores:
 PUBLIC_NEXOBITE_API_URL=https://api.nexobite.com/api/v1/public/dropshipping/viralyshop/leads
 
 # ID del producto en Dropi / NexoBite
-PUBLIC_NEXOBITE_PRODUCT_ID=2272533
+PUBLIC_NEXOBITE_PRODUCT_ID=2243235
 
 # Campaña de dropshipping activa
 PUBLIC_NEXOBITE_CAMPAIGN_SLUG=viralyshop

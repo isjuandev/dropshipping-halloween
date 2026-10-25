@@ -10,7 +10,7 @@ const endpoint =
   process.env.PUBLIC_NEXOBITE_API_URL ||
   'https://api.nexobite.com/api/v1/public/dropshipping/viralyshop/leads';
 
-const productId = process.env.PUBLIC_NEXOBITE_PRODUCT_ID || '2272533';
+const productId = process.env.PUBLIC_NEXOBITE_PRODUCT_ID || '2243235';
 const campaignSlug = process.env.PUBLIC_NEXOBITE_CAMPAIGN_SLUG || 'viralyshop';
 
 const randomSuffix = Math.random().toString(36).substring(2, 6).toUpperCase();
