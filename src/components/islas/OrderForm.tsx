@@ -10,7 +10,7 @@ import {
   type PedidoPayload,
   type NexoBiteLeadResponse,
 } from '../../lib/pedido-schema';
-import { trackBeginCheckout } from '../../lib/tracking';
+import { getMetaCookies, trackBeginCheckout } from '../../lib/tracking';
 import { tiendaConfig } from '../../config/tienda';
 
 interface DepartamentoItem {
@@ -305,6 +305,7 @@ export default function OrderForm() {
         utm_content: utms.utm_content || '',
         fbclid: utms.fbclid || '',
         referrer: document.referrer || '',
+        ...getMetaCookies(utms.fbclid),
       },
       antispam: {
         empresa: empresaHoneypot,

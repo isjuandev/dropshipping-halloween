@@ -77,6 +77,8 @@ export const pedidoPayloadSchema = z.object({
     utm_content: z.string().optional().default(''),
     fbclid: z.string().optional().default(''),
     referrer: z.string().optional().default(''),
+    fbp: z.string().optional(),
+    fbc: z.string().optional(),
   }),
   antispam: z.object({
     empresa: z.string().default(''),
